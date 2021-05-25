@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "swaplist",
     "itemmgmt",
+    "usermgmt",
 ]
 
 MIDDLEWARE = [
