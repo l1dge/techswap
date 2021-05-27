@@ -7,7 +7,10 @@ class Wanted(models.Model):
         User,
         on_delete=models.CASCADE,
     )
-    location = models.CharField(max_length=200)
+    location = models.ForeignKey(
+        "itemmgmt.Location",
+        on_delete=models.CASCADE,
+    )
     condition_req = models.CharField(max_length=200)
     item_id = models.ForeignKey("itemmgmt.Items", on_delete=models.CASCADE)
 
