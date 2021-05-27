@@ -2,37 +2,37 @@ from django.db import models
 
 
 class Users(models.Model):
-    Name = models.CharField(max_length=200)
-    Password = models.CharField(max_length=200)
-    Profile = models.ForeignKey(
+    name = models.CharField(max_length=200)
+    password = models.CharField(max_length=200)
+    profile = models.ForeignKey(
         "usermgmt.Profile",
         on_delete=models.CASCADE,
     )
-    Feedback = models.ManyToManyField("Feedback", related_name="Feedback")
+    feedback = models.ManyToManyField("Feedback", related_name="Feedback")
 
 
 class Feedback(models.Model):
-    Status = models.CharField(max_length=200)
-    Comments = models.TextField(max_length=300)
+    status = models.CharField(max_length=200)
+    comments = models.TextField(max_length=300)
 
 
 class Profile(models.Model):
-    Username = models.CharField(max_length=200)
-    Address = models.ForeignKey(
+    username = models.CharField(max_length=200)
+    address = models.ForeignKey(
         "usermgmt.Address",
         on_delete=models.CASCADE,
     )
-    Email = models.CharField(max_length=200)
-    EmailVerified = models.BooleanField(default=False)
-    Phone = models.CharField(max_length=200)
-    Rating = models.IntegerField()
+    email = models.CharField(max_length=200)
+    email_verified = models.BooleanField(default=False)
+    phone = models.CharField(max_length=200)
+    rating = models.IntegerField()
 
 
 class Address(models.Model):
-    HouseNum = models.IntegerField()
-    Street = models.CharField(max_length=200)
-    Town = models.CharField(max_length=200)
-    City = models.CharField(max_length=200)
-    County = models.CharField(max_length=200)
-    Country = models.CharField(max_length=200)
-    Zip = models.CharField(max_length=200)
+    house_num = models.IntegerField()
+    street = models.CharField(max_length=200)
+    town = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    county = models.CharField(max_length=200)
+    country = models.CharField(max_length=200)
+    zip = models.CharField(max_length=200)

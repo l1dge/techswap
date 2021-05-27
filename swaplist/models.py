@@ -2,25 +2,25 @@ from django.db import models
 
 
 class Wanted(models.Model):
-    UserID = models.ForeignKey(
+    user_id = models.ForeignKey(
         "usermgmt.Users",
         on_delete=models.CASCADE,
     )
-    Location = models.CharField(max_length=200)
-    ConditionReq = models.CharField(max_length=200)
-    ItemID = models.ForeignKey("itemmgmt.Items", on_delete=models.CASCADE)
+    location = models.CharField(max_length=200)
+    condition_req = models.CharField(max_length=200)
+    item_id = models.ForeignKey("itemmgmt.Items", on_delete=models.CASCADE)
 
 
 class ForSwap(models.Model):
-    UserID = models.ForeignKey(
+    uswer_id = models.ForeignKey(
         "usermgmt.Users",
         on_delete=models.CASCADE,
     )
-    ItemID = models.ForeignKey(
+    item_id = models.ForeignKey(
         "itemmgmt.Items", related_name="ItemID", on_delete=models.CASCADE
     )
-    Location = models.ForeignKey(
+    location = models.ForeignKey(
         "itemmgmt.Location",
         on_delete=models.CASCADE,
     )
-    SwapAvail = models.BooleanField(default=False)
+    swap_avail = models.BooleanField(default=False)
