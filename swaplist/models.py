@@ -12,7 +12,7 @@ class Wanted(models.Model):
 
 
 class ForSwap(models.Model):
-    uswer_id = models.ForeignKey(
+    user_id = models.ForeignKey(
         "usermgmt.Users",
         on_delete=models.CASCADE,
     )
