@@ -1,9 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Wanted(models.Model):
     user_id = models.ForeignKey(
-        "usermgmt.Users",
+        User,
         on_delete=models.CASCADE,
     )
     location = models.CharField(max_length=200)
@@ -13,7 +14,7 @@ class Wanted(models.Model):
 
 class ForSwap(models.Model):
     user_id = models.ForeignKey(
-        "usermgmt.Users",
+        User,
         on_delete=models.CASCADE,
     )
     item_id = models.ForeignKey(

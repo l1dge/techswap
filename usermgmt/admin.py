@@ -1,3 +1,7 @@
 from django.contrib import admin
+from usermgmt.models import Feedback, Profile
 
-# Register your models here.
+class ProfileAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(Profile, ProfileAdmin)
+

@@ -1,14 +1,7 @@
 from django.db import models
-
-
-class Users(models.Model):
-    name = models.CharField(max_length=200)
-    password = models.CharField(max_length=200)
-    profile = models.ForeignKey(
-        "usermgmt.Profile",
-        on_delete=models.CASCADE,
-    )
-    feedback = models.ManyToManyField("Feedback", related_name="Feedback")
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Feedback(models.Model):
@@ -17,15 +10,28 @@ class Feedback(models.Model):
 
 
 class Profile(models.Model):
-    username = models.CharField(max_length=200)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     address = models.ForeignKey(
         "usermgmt.Address",
         on_delete=models.CASCADE,
+        null=True, blank=True,
     )
-    email = models.CharField(max_length=200)
-    email_verified = models.BooleanField(default=False)
-    phone = models.CharField(max_length=200)
-    rating = models.IntegerField()
+    phone = models.CharField(max_length=200, null=True, blank=True)
+    rating = models.IntegerField(default=0)
+    feedback = models.ManyToManyField("Feedback", related_name="Feedback")
+
+    def __str__(self):
+        return self.user.username
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 
 class Address(models.Model):
@@ -36,3 +42,6 @@ class Address(models.Model):
     county = models.CharField(max_length=200)
     country = models.CharField(max_length=200)
     zip = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"{self.street} ({self.town})"
