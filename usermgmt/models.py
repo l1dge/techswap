@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Users(models.Model):
-    ID = models.IntegerField(primary_key=True, editable=False)
     Name = models.CharField(max_length=200)
     Password = models.CharField(max_length=200)
     Profile = models.ForeignKey(
@@ -13,13 +12,11 @@ class Users(models.Model):
 
 
 class Feedback(models.Model):
-    ID = models.IntegerField(primary_key=True)
     Status = models.CharField(max_length=200)
     Comments = models.TextField(max_length=300)
 
 
 class Profile(models.Model):
-    ID = models.IntegerField(primary_key=True, editable=False)
     Username = models.CharField(max_length=200)
     Address = models.ForeignKey(
         "usermgmt.Address",
@@ -32,7 +29,6 @@ class Profile(models.Model):
 
 
 class Address(models.Model):
-    ID = models.IntegerField(primary_key=True, editable=False)
     HouseNum = models.IntegerField()
     Street = models.CharField(max_length=200)
     Town = models.CharField(max_length=200)

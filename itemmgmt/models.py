@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Items(models.Model):
-    ID = models.IntegerField(primary_key=True, editable=False)
     PhotoID = models.ForeignKey("Photos", on_delete=models.CASCADE)
     Feedback = models.ForeignKey(
         "usermgmt.Feedback", on_delete=models.CASCADE, default=None
@@ -18,17 +17,14 @@ class Items(models.Model):
 
 
 class Photos(models.Model):
-    ID = models.IntegerField(primary_key=True, editable=False)
     FileLoc = models.URLField()
 
 
 class Categories(models.Model):
-    ID = models.IntegerField(primary_key=True, editable=False)
     Name = models.CharField(max_length=200)
 
 
 class Location(models.Model):
-    ID = models.IntegerField(primary_key=True, editable=False)
     Name = models.CharField(max_length=200)
     Town = models.CharField(max_length=200)
     City = models.CharField(max_length=200)

@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Wanted(models.Model):
-    ID = models.IntegerField(primary_key=True, editable=False)
     UserID = models.ForeignKey(
         "usermgmt.Users",
         on_delete=models.CASCADE,
@@ -13,7 +12,6 @@ class Wanted(models.Model):
 
 
 class ForSwap(models.Model):
-    ID = models.IntegerField(primary_key=True, editable=False)
     UserID = models.ForeignKey(
         "usermgmt.Users",
         on_delete=models.CASCADE,
