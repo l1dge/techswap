@@ -8,6 +8,9 @@ class Feedback(models.Model):
     status = models.CharField(max_length=200)
     comments = models.TextField(max_length=300)
 
+    def __str__(self):
+        return '%s %s' % (self.status, self.comments)
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -21,7 +24,7 @@ class Profile(models.Model):
     feedback = models.ManyToManyField("Feedback", related_name="Feedback")
 
     def __str__(self):
-        return self.user.username
+        return '%s %s %s' % (self.user, self.rating, self.feedback)
 
 
 @receiver(post_save, sender=User)
@@ -41,7 +44,7 @@ class Address(models.Model):
     city = models.CharField(max_length=200)
     county = models.CharField(max_length=200)
     country = models.CharField(max_length=200)
-    zip = models.CharField(max_length=200)
+    zipcode = models.CharField(max_length=200)
 
     def __str__(self):
-        return f"{self.street} ({self.town})"
+        return '%s %s %s' % (self.street, self.town, self.country)
