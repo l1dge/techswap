@@ -23,11 +23,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+#DATABASES = {
+    #"default": {
+        #"ENGINE": config("DB_ENGINE"),
+        #"NAME": BASE_DIR / config("DB_NAME"),
+    #}
+#}
 DATABASES = {
-    "default": {
-        "ENGINE": config("DB_ENGINE"),
-        "NAME": BASE_DIR / config("DB_NAME"),
-    }
+    "default": dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 }
 
 # SECURITY WARNING: keep the secret key used in production secret!
