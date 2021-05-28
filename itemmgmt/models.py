@@ -15,13 +15,22 @@ class Items(models.Model):
     active = models.BooleanField(default=False)
     swap_agrd = models.BooleanField(default=False)
 
+    def __str__(self):
+        return '%s %s %s %s' % (self.name, self.category, self.location, self.active)
+
 
 class Photos(models.Model):
     file_loc = models.URLField()
 
+    def __str__(self):
+        return '%s' % (self.file_loc)
+
 
 class Categories(models.Model):
     name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return '%s' % (self.name)
 
 
 class Location(models.Model):
@@ -31,3 +40,6 @@ class Location(models.Model):
     county = models.CharField(max_length=200)
     country = models.CharField(max_length=200)
     zip = models.CharField(max_length=200)
+
+    def __str__(self):
+        return '%s %s %s' % (self.name, self.town, self.country)
