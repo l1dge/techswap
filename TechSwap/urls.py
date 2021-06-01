@@ -16,10 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from pages.views import home_view, about_view, social_view, contact_view
+
 urlpatterns = [
     path("usermgmt/", include("usermgmt.urls")),
     path("swaplist/", include("swaplist.urls")),
     path("itemmgmt/", include("itemmgmt.urls")),
+    path("", home_view, name="home"),
+    path("home/", home_view, name="home"),
+    path("about/", about_view, name="about"),
+    path("contact/", contact_view, name="contact"),
+    path("social/", social_view, name="social"),
     path("admin/", admin.site.urls),
-    path("", include("swaplist.urls")),
 ]

@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Items(models.Model):
-    photo_id = models.ForeignKey("photos", on_delete=models.CASCADE)
+    photo_id = models.ForeignKey("photos", default=None, on_delete=models.CASCADE)
     feedback = models.ForeignKey(
         "usermgmt.Feedback", on_delete=models.CASCADE, default=None
     )
@@ -16,21 +16,21 @@ class Items(models.Model):
     swap_agrd = models.BooleanField(default=False)
 
     def __str__(self):
-        return '%s %s %s %s' % (self.name, self.category, self.location, self.active)
+        return "%s %s %s %s" % (self.name, self.category, self.location, self.active)
 
 
 class Photos(models.Model):
     file_loc = models.URLField()
 
     def __str__(self):
-        return '%s' % (self.file_loc)
+        return "%s" % (self.file_loc)
 
 
 class Categories(models.Model):
     name = models.CharField(max_length=200)
 
     def __str__(self):
-        return '%s' % (self.name)
+        return "%s" % (self.name)
 
 
 class Location(models.Model):
@@ -42,4 +42,4 @@ class Location(models.Model):
     zip = models.CharField(max_length=200)
 
     def __str__(self):
-        return '%s %s %s' % (self.name, self.town, self.country)
+        return "%s %s %s" % (self.name, self.town, self.country)
