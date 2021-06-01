@@ -1,3 +1,16 @@
 from django.contrib import admin
+from swaplist.models import Wanted, ForSwap
 
-# Register your models here.
+
+class WantedAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(Wanted, WantedAdmin)
+
+
+class ForSwapAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(ForSwap, ForSwapAdmin)

@@ -4,9 +4,12 @@
 {% include 'itemhead.html' %}
 <p></p>
     <h1> {{ object.name }} </h1>
-    <p>  {{ object.category }}</p>
-    <p>  {{ object.description }}</p>
-    <p>  {{ object.condition }}</p>
-    <p>  {{ object.location }}</p>
+    {% for cat in object.category.all %}
+        <p> Categories:  {{ cat }}  </p>
+    {% endfor %}
+    
+    <p>  Description: {{ object.description }}</p>
+    <p>  Condition: {{ object.condition }}</p>
+    <p>  Location: {{ object.location }}</p>
 <p></p>
 {% endblock %}
