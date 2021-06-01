@@ -8,7 +8,7 @@ def home_view(request, *args, **kwargs):
 
 def about_view(request, *args, **kwargs):
     my_context = {
-        "my_text": "This is about us",
+        "my_text": "This is all about TechSwap",
         "my_list": [123, 1234, 12345, 123456, 1234567],
     }
     return render(request, "about.html", my_context)

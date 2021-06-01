@@ -8,10 +8,18 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>TechSwap</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% comment %} <meta name="viewport" content="width=device-width, initial-scale=1"> {% endcomment %}
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="From me to you to me" />
+        <meta name="author" content="" />
         {% load static %}
-            <link rel="stylesheet" href="{% static "/css/starter.css" %}">
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="{% static "assets/favicon.ico" %}" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link rel="stylesheet" href="{% static "/css/styles.css"  %}" />
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -24,6 +32,6 @@
                        
         
         {% endblock %}
-        <script src="" async defer></script>
+        {% include 'footer.html' %}
     </body>
 </html>

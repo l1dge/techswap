@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% include 'itemhead.html' %}
+<p></p>
     <h1> {{ object.name }} </h1>
     <p>  {{ object.category }}</p>
+    <p>  {{ object.description }}</p>
     <p>  {{ object.condition }}</p>
     <p>  {{ object.location }}</p>
+<p></p>
 {% endblock %}

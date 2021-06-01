@@ -7,6 +7,7 @@ class Items(models.Model):
     photo_id = models.ManyToManyField("photos", default=None)
     feedback = models.ManyToManyField("usermgmt.Feedback", related_name="ItemFeedback")
     name = models.CharField(max_length=200)
+    description = models.TextField(max_length=500, default=None)
     category = models.ManyToManyField("Categories")
     condition = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
