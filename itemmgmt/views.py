@@ -1,11 +1,11 @@
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from .forms import ItemForm
-from .models import Items
+from .models import Items, Photos, Categories, Location
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the itemmgmt index.")
+# def index(request):
+#     return HttpResponse("Hello, world. You're at the itemmgmt index.")
 
 
 def item_create_view(request):
@@ -29,7 +29,7 @@ def item_detail_view(request):
     #     "description": obj.description,
     #     "summary": obj.summary,
     # }
-    context = {"Item": obj}
+    context = {"object": obj}
 
     return render(request, "itemmgmt/item_detail.html", context)
 

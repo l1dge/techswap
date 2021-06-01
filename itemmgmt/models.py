@@ -2,12 +2,10 @@ from django.db import models
 
 
 class Items(models.Model):
-    photo_id = models.ForeignKey("photos", default=None, on_delete=models.CASCADE)
-    feedback = models.ForeignKey(
-        "usermgmt.Feedback", on_delete=models.CASCADE, default=None
-    )
+    photo_id = models.ManyToManyField("photos", default=None)
+    feedback = models.ManyToManyField("usermgmt.Feedback", related_name="ItemFeedback")
     name = models.CharField(max_length=200)
-    category = models.ManyToManyField("categories", related_name="category")
+    category = models.ManyToManyField("Categories")
     condition = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
     swap_comp = models.BooleanField(default=False)
