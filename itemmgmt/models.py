@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.fields import TextField
+from django.urls import reverse
 
 
 class Items(models.Model):
@@ -15,6 +17,9 @@ class Items(models.Model):
 
     def __str__(self):
         return "%s %s %s %s" % (self.name, self.category, self.location, self.active)
+
+    def get_absolute_url(self):
+        return reverse("itemmgmt:itemdet", kwargs={"my_id": self.id})
 
 
 class Photos(models.Model):

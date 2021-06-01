@@ -48,6 +48,6 @@ def dynamic_lookup_view(request, my_id):
     #     "description": obj.description,
     #     "summary": obj.summary,
     # }
-    context = {"Item": obj}
+    context = {"object": obj}
 
     return render(request, "itemmgmt/dynamic_item_detail.html", context)

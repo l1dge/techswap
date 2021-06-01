@@ -2,9 +2,9 @@
 
 {% block content %}
 {% for objects in object %}
-    <h1> <a href="{{ objects.get_absolute_url }}">{{ objects.name }}</a>  </h1>
-    <p>  {{ objects.category }}</p>
+    <h2> <a href="{{ objects.get_absolute_url }}">{{ objects.name }}</a>  </h2>
+    {% comment %} <p>  {{ objects.category }}</p>
     <p>  {{ objects.condition }}</p>
-    <p>  {{ objects.location }}</p>
+    <p>  {{ objects.location }}</p> {% endcomment %}
 {% endfor %}
 {% endblock %}
