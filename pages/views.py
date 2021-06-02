@@ -3,7 +3,12 @@ from django.shortcuts import render
 
 # Create your views here.
 def home_view(request, *args, **kwargs):
-    return render(request, "home.html", {})
+    num_visits = request.session.get("num_visits", 0)
+    request.session["num_visits"] = num_visits + 1
+    context = {
+        "num_visits": num_visits,
+    }
+    return render(request, "home.html", context=context)
 
 
 def about_view(request, *args, **kwargs):

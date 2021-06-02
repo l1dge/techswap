@@ -1,13 +1,13 @@
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, HttpResponse
+from django.contrib.auth.decorators import login_required
+
+
 from .forms import ItemForm
 from .models import Items, Photos, Categories, Location
 
 
-# def index(request):
-#     return HttpResponse("Hello, world. You're at the itemmgmt index.")
-
-
+@login_required
 def item_create_view(request):
     form = ItemForm(request.POST or None)
     if form.is_valid():
@@ -19,7 +19,7 @@ def item_create_view(request):
     return render(request, "itemmgmt/item_create.html", context)
 
 
-# Create your views here.
+@login_required
 def item_detail_view(request):
     # obj = Items.objects.get(id=1)
     obj = Items.objects.filter()
@@ -34,6 +34,7 @@ def item_detail_view(request):
     return render(request, "itemmgmt/item_detail.html", context)
 
 
+@login_required
 def dynamic_lookup_view(request, my_id):
     # obj = get_object_or_404(Items, id=my_id)
     # obj = Items.objects.get(id=my_id)

@@ -22,12 +22,30 @@
                             </ul>
                         </li>
                     </ul>
-                    <form class="d-flex">
+                    {% if user.is_authenticated %}
+                        
+                        <form class="d-flex">
+                        <p>User: {{ user.get_username }} </p>
+                        <button class="btn btn-outline-dark" type="submit">
+                            <i class="bi bi-door-open"></i>
+                            <a href="{% url 'logout'%}?next={{request.path}}">Logout</a>
+                        </button>
+                        </form>
+                    {% else %}
+                        <form class="d-flex">
+                        <button class="btn btn-outline-dark" type="submit">
+                            <i class="bi bi-door-closed"></i>
+                            <a href="{% url 'login'%}?next={{request.path}}">Login</a>
+                        </button>
+                        </form>
+                    {% endif %} 
+                    
+                    {% comment %} <form class="d-flex">
                         <button class="btn btn-outline-dark" type="submit">
                             <i class="fas fa-user"></i>
                             Login
                         </button>
-                    </form>
+                    </form> {% endcomment %}
                 </div>
             </div>
         </nav>

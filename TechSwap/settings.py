@@ -51,10 +51,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "swaplist",
-    "itemmgmt",
-    "usermgmt",
-    "pages",
+    "swaplist.apps.SwaplistConfig",
+    "itemmgmt.apps.ItemmgmtConfig",
+    "usermgmt.apps.UsermgmtConfig",
+    "pages.apps.PagesConfig",
 ]
 
 MIDDLEWARE = [
@@ -136,3 +136,9 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_URL = config("LOGIN_URL")
+LOGIN_REDIRECT_URL = config("LOGIN_REDIRECT_URL")
+
+# Used for testing email, logs to console.
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
