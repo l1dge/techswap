@@ -4,45 +4,9 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 {% if user.is_authenticated %}
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" a href="/home">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" a href="/about">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/social">Community</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/itemmgmt/create">Create Item</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/itemmgmt">Items</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/swaplist">Swaps</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/usermgmt">Users</a></li>
-                        <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#!">All Items</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" href="#!">Popular Items</a></li>
-                            <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
-                        </ul>
-                        </li>
-                    </ul>
-                    <form class="d-flex">
-                    <p>User: {{ user.get_username }} </p>
-                    <button class="btn btn-outline-dark" type="submit">
-                        <i class="bi bi-door-open"></i>
-                        <a href="{% url 'logout'%}?next={{request.path}}">Logout</a>
-                    </button>
-                    </form>
+                    {% include "navbar/nav_authenticated.html" %}
                 {% else %}
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" a href="/home">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" a href="/about">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/social">Community</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
-                    </ul>
-                    <form class="d-flex">
-                    <button class="btn btn-outline-dark" type="submit">
-                        <i class="bi bi-door-closed"></i>
-                        <a href="{% url 'login'%}?next={{request.path}}">Login</a>
-                    </button>
-                    </form>
+                    {% include "navbar/navbar.html" %}
                 {% endif %} 
                 </div>
             </div>
