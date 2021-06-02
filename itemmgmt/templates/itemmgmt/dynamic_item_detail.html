@@ -5,11 +5,11 @@
 <p></p>
     <h1> {{ object.name }} </h1>
     {% for cat in object.category.all %}
-        <p> Categories:  {{ cat }}  </p>
+        <p><span class="form-label">Categories: </span>{{ cat }}  </p>
     {% endfor %}
     
-    <p>  Description: {{ object.description }}</p>
-    <p>  Condition: {{ object.condition }}</p>
-    <p>  Location: {{ object.location }}</p>
+    <p><span class="form-label">Description: </span>{{ object.description }}</p>
+    <p><span class="form-label">Condition: </span>{{ object.condition }}</p>
+    <p><span class="form-label">Location: </span>{{ object.location }}</p>
 <p></p>
 {% endblock %}
