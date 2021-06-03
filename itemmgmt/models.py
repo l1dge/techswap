@@ -4,13 +4,12 @@ from django.urls import reverse
 
 
 class Items(models.Model):
-    photo_id = models.ManyToManyField("photos", default=None)
-    feedback = models.ManyToManyField("usermgmt.Feedback", related_name="ItemFeedback")
     name = models.CharField(max_length=200)
     description = models.TextField(max_length=500, default=None)
     category = models.ManyToManyField("Categories")
     condition = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
+    photoID = models.ManyToManyField("Photos", default="None")
     swap_comp = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
@@ -24,12 +23,11 @@ class Items(models.Model):
 
 
 class Photos(models.Model):
-    file_loc = models.URLField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    upload = models.FileField()
+    upload = models.FileField(upload_to="uploads/")
 
     def __str__(self):
-        return f"{self.file_loc} {self.uploaded_at}"
+        return f"{self.item} {self.uploaded_at}"
 
 
 class Categories(models.Model):
