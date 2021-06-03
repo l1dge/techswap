@@ -29,3 +29,7 @@ urlpatterns = [
     path("social/", social_view, name="social"),
     path("admin/", admin.site.urls),
 ]
+
+urlpatterns += [
+    path("accounts/", include("django.contrib.auth.urls"), name="accounts"),
+]
