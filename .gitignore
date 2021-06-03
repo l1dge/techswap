@@ -133,3 +133,4 @@ dmypy.json
 #My Stuff
 .env
 *.*\~
+*.code-workspace
