@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% include 'abouthead.html' %}
+
+    <p>
+        {{ my_text }}
+    </p>
+
+    <ul>
+        {% for my_item in my_list %}
+            <li>{{ my_item }} </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

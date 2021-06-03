@@ -1,7 +1,8 @@
 from django.urls import path
 
-from . import views
+from swaplist.views import index
 
+app_name = "swaplist"
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", index, name="swap"),
 ]
