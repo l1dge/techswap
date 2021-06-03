@@ -9,7 +9,7 @@ class Feedback(models.Model):
     comments = models.TextField(max_length=300)
 
     def __str__(self):
-        return '%s %s' % (self.status, self.comments)
+        return f"{self.status} {self.comments}"
 
 
 class Profile(models.Model):
@@ -17,20 +17,22 @@ class Profile(models.Model):
     address = models.ForeignKey(
         "usermgmt.Address",
         on_delete=models.CASCADE,
-        null=True, blank=True,
+        null=True,
+        blank=True,
     )
     phone = models.CharField(max_length=200, null=True, blank=True)
     rating = models.IntegerField(default=0)
     feedback = models.ManyToManyField("Feedback", related_name="Feedback")
 
     def __str__(self):
-        return '%s %s %s' % (self.user, self.rating, self.feedback)
+        return f"{self.user} {self.rating} {self.feedback}"
 
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
@@ -47,4 +49,4 @@ class Address(models.Model):
     zipcode = models.CharField(max_length=200)
 
     def __str__(self):
-        return '%s %s %s' % (self.street, self.town, self.country)
+        return f"{self.street} {self.town} {self.country}"

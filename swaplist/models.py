@@ -15,7 +15,7 @@ class Wanted(models.Model):
     item_id = models.ForeignKey("itemmgmt.Items", on_delete=models.CASCADE)
 
     def __str__(self):
-        return '%s %s %s' % (self.user_id, self.location, self.item_id)
+        return f"{self.user_id} {self.location} {self.item_id}"
 
 
 class ForSwap(models.Model):
@@ -33,4 +33,4 @@ class ForSwap(models.Model):
     swap_avail = models.BooleanField(default=False)
 
     def __str__(self):
-        return '%s %s %s' % (self.user_id, self.location, self.swap_avail)
+        return f"{self.user_id} {self.location} {self.swap_avail}"

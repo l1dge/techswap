@@ -17,7 +17,7 @@ class Items(models.Model):
     swap_agrd = models.BooleanField(default=False)
 
     def __str__(self):
-        return "%s %s %s %s" % (self.name, self.category, self.location, self.active)
+        return f"{self.name} {self.category} {self.location} {self.active}"
 
     def get_absolute_url(self):
         return reverse("itemmgmt:itemdet", kwargs={"my_id": self.id})
@@ -27,14 +27,14 @@ class Photos(models.Model):
     file_loc = models.URLField()
 
     def __str__(self):
-        return "%s" % (self.file_loc)
+        return f"{self.file_loc}"
 
 
 class Categories(models.Model):
     name = models.CharField(max_length=200)
 
     def __str__(self):
-        return "%s" % (self.name)
+        return f"{self.name}"
 
 
 class Location(models.Model):
@@ -46,4 +46,4 @@ class Location(models.Model):
     zip = models.CharField(max_length=200)
 
     def __str__(self):
-        return "%s %s %s" % (self.name, self.town, self.country)
+        return f"{self.name} {self.town} {self.country}"
