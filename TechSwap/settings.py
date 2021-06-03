@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "itemmgmt.apps.ItemmgmtConfig",
     "usermgmt.apps.UsermgmtConfig",
     "pages.apps.PagesConfig",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -142,3 +143,10 @@ LOGIN_REDIRECT_URL = config("LOGIN_REDIRECT_URL")
 
 # Used for testing email, logs to console.
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Amazon S3 credentials
+FILE_URL = os.environ.get("FILE_URL")
+S3_BUCKET = os.environ.get("S3_BUCKET")
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+DEFAULT_FILE_STORAGE = "mysite.storage_backends.MediaStorage"
