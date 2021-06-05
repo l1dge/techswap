@@ -1,15 +1,21 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
-from itemmgmt.views import item_detail_view, ItemCreateView, dynamic_lookup_view
+from itemmgmt.views import (
+    ItemListView,
+    ItemCreateView,
+    ItemHomeView,
+    ItemDetailView,
+)
 
 app_name = "itemmgmt"
 urlpatterns = [
-    path("", item_detail_view, name="item"),
+    path("", ItemHomeView.as_view(), name="itemhome"),
+    path("list/", ItemListView.as_view(), name="itemlist"),
     path(
         "create/",
         ItemCreateView.as_view(),
         name="itemcreate",
     ),
-    path("itemdet/<int:my_id>/", dynamic_lookup_view, name="itemdet"),
+    path("itemdet/<int:pk>/", ItemDetailView.as_view(), name="itemdetail"),
 ]
