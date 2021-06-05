@@ -1,13 +1,18 @@
 {% extends 'base.html' %}
-
+{% block title %}Create New Item{% endblock %}
 {% block content %}
-
 {% include 'itemhead.html' %}
-<p></p>
-<form method="POST" enctype="multipart/form-data"> 
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Save" />
-</form>
-<p></p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 mx-auto p-5">
+            <h3>Add New Item</h3>
+            <hr>
+            <form method="POST" enctype="multipart/form-data"> 
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-info">Submit Item</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

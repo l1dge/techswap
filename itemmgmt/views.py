@@ -1,28 +1,42 @@
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404, HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView
+import requests
 
 
 from .forms import ItemForm
-from .models import Items, Photos, Categories, Location
+from .models import Item, ItemImage
 
 
-@login_required
-def item_create_view(request):
-    form = ItemForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        form = ItemForm()
+class LoginRequiredMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            pass
+        else:
+            return redirect("/")
+        return super().dispatch(request, *args, **kwargs)
 
-    context = {"form": form}
 
-    return render(request, "itemmgmt/item_create.html", context)
+class ItemCreateView(LoginRequiredMixin, CreateView):
+    template_name = "itemmgmt/item_create.html"
+    form_class = ItemForm
+    success_url = reverse_lazy("itemmgmt:itemcreate")
+
+    def form_valid(self, form):
+        p = form.save()
+        images = self.request.FILES.getlist("more_images")
+        for i in images:
+            ItemImage.objects.create(item=p, image=i)
+        return super().form_valid(form)
 
 
 @login_required
 def item_detail_view(request):
     # obj = Items.objects.filter()
-    obj = Items.objects.all()
+    obj = Item.objects.all().order_by("-id")
 
     context = {"object": obj}
 
@@ -32,10 +46,10 @@ def item_detail_view(request):
 @login_required
 def dynamic_lookup_view(request, my_id):
     try:
-        obj = Items.objects.get(id=my_id)
-    except Items.DoesNotExist:
+        obj = Item.objects.get(id=my_id)
+    except Item.DoesNotExist:
         raise Http404
 
-    context = {"object": obj}
+    context = {"item": obj}
 
     return render(request, "itemmgmt/dynamic_item_detail.html", context)

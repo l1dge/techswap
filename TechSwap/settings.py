@@ -113,9 +113,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en-gb"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/London"
 
 USE_I18N = True
 
@@ -145,9 +145,9 @@ LOGIN_REDIRECT_URL = config("LOGIN_REDIRECT_URL")
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Amazon S3 credentials
-FILE_URL = os.environ.get("FILE_URL")
-AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
-AWS_QUERYSTRING_AUTH = os.environ.get("AWS_QUERYSTRING_AUTH")
-AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+FILE_URL = config("FILE_URL")
+AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
+AWS_QUERYSTRING_AUTH = False
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
