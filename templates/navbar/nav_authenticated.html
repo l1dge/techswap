@@ -1,9 +1,31 @@
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" a href="/home">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" a href="/about">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/social">Community</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
-                        <li class="nav-item dropdown">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'home' %}">TechSwap</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item"><a class="nav-link" a href="{% url 'about' %}">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'social' %}">Community</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                My Account
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% if request.user.is_authenticated %}
+                    <a class="dropdown-item" href="{% url 'usermgmt:customerprofile' %}">My Profile</a>
+                    <a class="dropdown-item" href="{% url 'usermgmt:customerlogout' %}">Logout</a>
+                    {% else %}
+                    <a class="dropdown-item" href="{% url 'usermgmt:customerregistration' %}">Register</a>
+                    <a class="dropdown-item" href="{% url 'usermgmt:customerlogin' %}">Login</a>
+                    {% endif %}
+                </div>
+            </li>
+            <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Items</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="/itemmgmt">Items</a></li>
@@ -11,22 +33,22 @@
                             <li class="dropdown-item"><a class="nav-link" href="/itemmgmt">Item List</a></li>
                             <li class="dropdown-item"><a class="nav-link" href="/itemmgmt/create">Create Item</a></li>
                         </ul>
-                        <li class="nav-item"><a class="nav-link" href="/swaplist">Swaps</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/usermgmt">Users</a></li>
-                        <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#!">All Items</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" href="#!">Popular Items</a></li>
-                            <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
-                        </ul>
                         </li>
-                    </ul>
-                    <form class="d-flex">
-                    <p>User: {{ user.get_username }} </p>
-                    <button class="btn btn-outline-dark" type="submit">
-                        <i class="bi bi-door-open"></i>
-                        <a href="{% url 'logout'%}?next={{request.path}}">Logout</a>
-                    </button>
-                    </form>
+                        <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Swaps</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/swaplist">Swaps</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li class="dropdown-item"><a class="nav-link" href="/swaplist">My Swaps</a></li>
+                            <li class="dropdown-item"><a class="nav-link" href="/swaplist/addswap">New Swap</a></li>
+                            <li class="dropdown-item"><a class="nav-link" href="/swaplist/wantedlist">Wanted List</a></li>
+                        </ul>
+                        <li class="nav-item"><a class="nav-link" href="/usermgmt">Users</a></li>
+                        </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" action="{% url 'search' %}" method="GET">
+            <input name="keyword" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required>
+            <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+</nav>

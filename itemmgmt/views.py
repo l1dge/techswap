@@ -14,9 +14,7 @@ from .models import Item, ItemImage
 
 class LoginRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            pass
-        else:
+        if not request.user.is_authenticated:
             return redirect("/")
         return super().dispatch(request, *args, **kwargs)
 
