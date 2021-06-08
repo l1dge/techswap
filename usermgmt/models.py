@@ -5,6 +5,7 @@ from django.dispatch import receiver
 
 
 class Feedback(models.Model):
+    item = models.ForeignKey("itemmgmt.Item", null=True, on_delete=models.SET_NULL)
     status = models.CharField(max_length=200)
     comments = models.TextField(max_length=300)
 
