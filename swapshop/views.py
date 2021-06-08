@@ -1,4 +1,3 @@
-import requests
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -22,18 +21,26 @@ from .models import *
 from .utils import password_reset_token
 
 
-class LoginRequiredMixin(object):
+class SwapMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect("/")
+        cart_id = request.session.get("cart_id")
+        if cart_id:
+            cart_obj = Cart.objects.get(id=cart_id)
+            if request.user.is_authenticated and request.user.appuser:
+                cart_obj.appuser = request.user.appuser
+                cart_obj.save()
         return super().dispatch(request, *args, **kwargs)
 
 
-class ItemHomeView(LoginRequiredMixin, TemplateView):
-    template_name = "itemmgmt/itemhome.html"
+class HomeView(SwapMixin, TemplateView):
+    template_name = "home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["myname"] = "l1dge"
+        # num_visits = request.session.get("num_visits", 0)
+        # request.session["num_visits"] = num_visits + 1
+        # context["num_visits"] = num_visits
         all_items = Item.objects.all().order_by("-id")
         paginator = Paginator(all_items, 8)
         page_number = self.request.GET.get("page")
@@ -43,48 +50,129 @@ class ItemHomeView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class ItemCreateView(LoginRequiredMixin, CreateView):
-    template_name = "itemmgmt/itemcreate.html"
-    form_class = ItemForm
-    success_url = reverse_lazy("itemmgmt:itemcreate")
+class AllItemsView(SwapMixin, TemplateView):
+    template_name = "allitems.html"
 
-    def form_valid(self, form):
-        p = form.save()
-        images = self.request.FILES.getlist("more_images")
-        for i in images:
-            ItemImage.objects.create(item=p, image=i)
-        return super().form_valid(form)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["allcategories"] = Category.objects.all()
+        return context
 
 
-class ItemListView(LoginRequiredMixin, ListView):
-    template_name = "itemmgmt/itemlist.html"
-    queryset = Item.objects.all().order_by("-id")
-    context_object_name = "allitems"
+class ItemDetailView(SwapMixin, DetailView):
+    template_name = "itemdetail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        url_slug = self.kwargs["slug"]
+        item = Item.objects.get(slug=url_slug)
+        item.view_count += 1
+        item.save()
+        context["item"] = item
+        return context
 
 
-class ItemDetailView(LoginRequiredMixin, DetailView):
-    template_name = "itemmgmt/dynamicitemdetail.html"
-    model = Item
-    context_object_name = "item_obj"
+class AddToCartView(SwapMixin, TemplateView):
+    template_name = "addtocart.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        item_id = self.kwargs["itm_id"]
+        item_obj = Item.objects.get(id=item_id)
+
+        # check if cart exists
+        cart_id = self.request.session.get("cart_id", None)
+        if cart_id:
+            cart_obj = Cart.objects.get(id=cart_id)
+            this_item_in_cart = cart_obj.cartitem_set.filter(item=item_obj)
+
+            # item already exists in cart
+            if this_item_in_cart.exists():
+                cartitem = this_item_in_cart.last()
+                cartitem.quantity += 1
+                cart_obj.save()
+            # new item is added in cart
+            else:
+                cartitem = CartProduct.objects.create(
+                    cart=cart_obj,
+                    item=item_obj,
+                    quantity=1,
+                )
+                cart_obj.save()
+
+        else:
+            cart_obj = Cart.objects.create(total=0)
+            self.request.session["cart_id"] = cart_obj.id
+            cartitem = CartProduct.objects.create(
+                cart=cart_obj,
+                item=item_obj,
+                quantity=1,
+            )
+            cart_obj.save()
+
+        return context
 
 
-@login_required
-def index(request):
+class ManageCartView(SwapMixin, View):
+    def get(self, request, *args, **kwargs):
+        cp_id = self.kwargs["cp_id"]
+        action = request.GET.get("action")
+        cp_obj = CartProduct.objects.get(id=cp_id)
+        cart_obj = cp_obj.cart
 
-    return render(request, "swaplist/index.html", {})
+        if action == "inc":
+            cp_obj.quantity += 1
+            cp_obj.subtotal += cp_obj.rate
+            cp_obj.save()
+            cart_obj.total += cp_obj.rate
+            cart_obj.save()
+        elif action == "dcr":
+            cp_obj.quantity -= 1
+            cp_obj.subtotal -= cp_obj.rate
+            cp_obj.save()
+            cart_obj.total -= cp_obj.rate
+            cart_obj.save()
+            if cp_obj.quantity == 0:
+                cp_obj.delete()
+
+        elif action == "rmv":
+            cart_obj.total -= cp_obj.subtotal
+            cart_obj.save()
+            cp_obj.delete()
+        else:
+            pass
+        return redirect("swapshop:mycart")
 
 
-class LoginRequiredMixin(object):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect("/")
-        return super().dispatch(request, *args, **kwargs)
+class EmptyCartView(SwapMixin, View):
+    def get(self, request, *args, **kwargs):
+        cart_id = request.session.get("cart_id", None)
+        if cart_id:
+            cart = Cart.objects.get(id=cart_id)
+            cart.cartitem_set.all().delete()
+            cart.total = 0
+            cart.save()
+        return redirect("swapshop:mycart")
+
+
+class MyCartView(SwapMixin, TemplateView):
+    template_name = "mycart.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cart_id = self.request.session.get("cart_id", None)
+        if cart_id:
+            cart = Cart.objects.get(id=cart_id)
+        else:
+            cart = None
+        context["cart"] = cart
+        return context
 
 
 class AppUserRegistrationView(CreateView):
     template_name = "userregistration.html"
     form_class = AppUserRegistrationForm
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("swapshop:home")
 
     def form_valid(self, form):
         username = form.cleaned_data.get("username")
@@ -106,13 +194,13 @@ class AppUserRegistrationView(CreateView):
 class AppUserLogoutView(View):
     def get(self, request):
         logout(request)
-        return redirect("home")
+        return redirect("swapshop:home")
 
 
 class AppUserLoginView(FormView):
     template_name = "userlogin.html"
     form_class = AppUserLoginForm
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("swapshop:home")
 
     # form_valid method is a type of post method and is available in createview formview and updateview
     def form_valid(self, form):
@@ -138,8 +226,20 @@ class AppUserLoginView(FormView):
             return self.success_url
 
 
+class AboutView(SwapMixin, TemplateView):
+    template_name = "about.html"
+
+
+class ContactView(SwapMixin, TemplateView):
+    template_name = "contactus.html"
+
+
+class SocialView(SwapMixin, TemplateView):
+    template_name = "social.html"
+
+
 class AppUserProfileView(TemplateView):
-    template_name = "userprofile.html"
+    template_name = "appuserprofile.html"
 
     def dispatch(self, request, *args, **kwargs):
         if (
@@ -153,17 +253,17 @@ class AppUserProfileView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user.username
-        context["user"] = user
-        items = Item.objects.filter(created_by=user).order_by("-id")
+        appuser = self.request.user.appuser
+        context["appuser"] = appuser
+        items = Swap.objects.filter(cart__client=appuser).order_by("-id")
         context["items"] = items
         return context
 
 
 class AppUserItemDetailView(DetailView):
-    template_name = "useritemdetail.html"
+    template_name = "appuseritemdetail.html"
     model = Item
-    context_object_name = "ord_obj"
+    context_object_name = "itm_obj"
 
     def dispatch(self, request, *args, **kwargs):
         if (
@@ -173,31 +273,25 @@ class AppUserItemDetailView(DetailView):
             item_id = self.kwargs["pk"]
             item = Item.objects.get(id=item_id)
             if request.user.appuser != item.cart.appuser:
-                return redirect("usermgmt:userprofile")
+                return redirect("swapshop:userprofile")
         else:
             return redirect("/login/?next=/profile/")
         return super().dispatch(request, *args, **kwargs)
 
 
-class AppUserItemListView(LoginRequiredMixin, ListView):
-    template_name = "usermgmt/useritemlist.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if (
-            request.user.is_authenticated
-            and AppUser.objects.filter(user=request.user).exists()
-        ):
-            pass
-        else:
-            return redirect("/login/?next=/profile/")
-        return super().dispatch(request, *args, **kwargs)
+class SearchView(TemplateView):
+    template_name = "search.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user.username
-        context["user"] = user
-        items = Item.objects.filter(created_by=user).order_by("-id")
-        context["items"] = items
+        kw = self.request.GET.get("keyword")
+        results = Item.objects.filter(
+            Q(title__icontains=kw)
+            | Q(description__icontains=kw)
+            | Q(return_policy__icontains=kw)
+        )
+        print(results)
+        context["results"] = results
         return context
 
 
@@ -246,7 +340,7 @@ class PasswordResetView(FormView):
         if user is not None and password_reset_token.check_token(user, token):
             pass
         else:
-            return redirect(reverse("usermgmt:passworforgot") + "?m=e")
+            return redirect(reverse("swapshop:passwordforgot") + "?m=e")
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -257,3 +351,112 @@ class PasswordResetView(FormView):
         user.set_password(password)
         user.save()
         return super().form_valid(form)
+
+
+# Admin Pages
+
+
+class AdminRequiredMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect("/")
+        return super().dispatch(request, *args, **kwargs)
+
+
+class AdminLoginView(FormView):
+    template_name = "adminpages/adminlogin.html"
+    form_class = AppUserLoginForm
+    success_url = reverse_lazy("swapshop:adminhome")
+
+    def form_valid(self, form):
+        uname = form.cleaned_data.get("username")
+        pword = form.cleaned_data["password"]
+        usr = authenticate(username=uname, password=pword)
+        if usr is not None and Admin.objects.filter(user=usr).exists():
+            login(self.request, usr)
+        else:
+            return render(
+                self.request,
+                self.template_name,
+                {"form": self.form_class, "error": "Invalid credentials"},
+            )
+        return super().form_valid(form)
+
+
+class AdminHomeView(AdminRequiredMixin, TemplateView):
+    template_name = "adminpages/adminhome.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["pendingorders"] = Order.objects.filter(
+            order_status="Order Received"
+        ).order_by("-id")
+        return context
+
+
+class AdminSwapDetailView(AdminRequiredMixin, DetailView):
+    template_name = "adminpages/adminswapdetail.html"
+    model = Swap
+    context_object_name = "swp_obj"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["allstatus"] = SWAP_STATUS
+        return context
+
+
+class AdminSwapListView(AdminRequiredMixin, ListView):
+    template_name = "adminpages/adminswaplist.html"
+    queryset = Swap.objects.all().order_by("-id")
+    context_object_name = "allswaps"
+
+
+class AdminSwapStatusChangeView(AdminRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        swap_id = self.kwargs["pk"]
+        swap_obj = Swap.objects.get(id=swap_id)
+        new_status = request.POST.get("status")
+        swap_obj.swap_status = new_status
+        swap_obj.save()
+        return redirect(
+            reverse_lazy("swapshop:adminswapdetail", kwargs={"pk": swap_id})
+        )
+
+
+class AdminItemListView(AdminRequiredMixin, ListView):
+    template_name = "adminpages/adminitemlist.html"
+    queryset = Item.objects.all().order_by("-id")
+    context_object_name = "allitems"
+
+
+class AdminItemCreateView(AdminRequiredMixin, CreateView):
+    template_name = "adminpages/adminitemcreate.html"
+    form_class = ItemForm
+    success_url = reverse_lazy("swapshop:adminitemlist")
+
+    def form_valid(self, form):
+        p = form.save()
+        images = self.request.FILES.getlist("more_images")
+        for i in images:
+            ItemImage.objects.create(item=p, image=i)
+        return super().form_valid(form)
+
+
+# User Items List
+class ItemCreateView(SwapMixin, CreateView):
+    template_name = "itemcreate.html"
+    form_class = ItemForm
+    success_url = reverse_lazy("swapshop:itemcreate")
+
+    def form_valid(self, form):
+        p = form.save()
+        images = self.request.FILES.getlist("more_images")
+        for i in images:
+            ItemImage.objects.create(item=p, image=i)
+        return super().form_valid(form)
+
+
+class ItemListView(SwapMixin, ListView):
+    template_name = "itemlist.html"
+    queryset = Item.objects.all().order_by("-id")
+    context_object_name = "allitems"

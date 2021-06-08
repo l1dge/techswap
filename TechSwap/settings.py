@@ -51,10 +51,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "swaplist.apps.SwaplistConfig",
-    "itemmgmt.apps.ItemmgmtConfig",
-    "usermgmt.apps.UsermgmtConfig",
-    "pages.apps.PagesConfig",
     "swapshop.apps.SwapshopConfig",
     "storages",
 ]

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}{{product.title}}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Product: {{product.title}}</h3><hr>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{product.image.url}}" alt="" class="img-fluid">
+            <div class="row">
+                {% for pi in product.productimage_set.all %}
+                <div class="col-md-4 p-3">
+                    <a href="{{pi.image.url}}" target="_blank">
+                        <img src="{{pi.image.url}}" class="img-fluid" style="height: 100px; object-fit: contain;" alt="">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h4>{{product.title}} (Viewed {{product.view_count}} times)</h4>
+            <h5>Category: {{product.category}}</h5>
+            <h5>Price: <strike>Rs. {{product.marked_price}}</strike> Rs. {{product.selling_price}}</h5>
+            <a href="{% url 'ecomapp:addtocart' product.id %}" class="btn btn-info">Add To Cart</a>
+            <hr>
+            <p class="text-info">Warranty: {{product.warranty}}</p>
+            <p class="text-info">Return Policy:{{product.return_policy}}</p>
+            <hr>
+            <p>{{product.description}}</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

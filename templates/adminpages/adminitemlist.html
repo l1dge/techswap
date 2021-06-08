@@ -1,0 +1,34 @@
+{% extends 'adminpages/adminbase.html' %}
+{% block title %}All Items{% endblock %}
+
+
+{% block content %}
+<div class="container"> 
+    <div class="row">
+        <div class="col-md-12">
+            <h3>All Product list</h3><hr>
+            <a href="{% url 'swapshop:adminitemcreate' %}">Add New Item</a>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item Title</th>
+                        <th>Image</th>
+                        <th>Views</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in allitems %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{p.title}}</td>
+                        <td><img src="{{p.image.url}}" style="height: 60px;" alt=""></td>
+                        <td>{{p.view_count}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

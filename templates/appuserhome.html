@@ -1,4 +1,4 @@
-{% extends "usermgmt/appuserbase.html" %}
+{% extends "appuserbase.html" %}
 
 {% block title %}User Home{% endblock %}
 
@@ -21,7 +21,7 @@
                     {% for item in item_list %}
                     <tr>
                         <td>{{forloop.counter}}</td>
-                        <td><a href="{% url 'itemmgmt:itemdetail' item.id %}">{{item.name}}</a></td>
+                        <td><a href="{% url 'swapshop:itemdetail' item.id %}">{{item.name}}</a></td>
                         <td>{{item.uploaded_at}}</td>
                         <td>{{item.location}}</td>
                         <td>{{item.condition}}</td>

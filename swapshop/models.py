@@ -75,7 +75,7 @@ class ItemImage(models.Model):
 
 
 class Cart(models.Model):
-    customer = models.ForeignKey(
+    client = models.ForeignKey(
         AppUser, on_delete=models.SET_NULL, null=True, blank=True
     )
     total = models.PositiveIntegerField(default=0)
@@ -96,7 +96,7 @@ class CartProduct(models.Model):
         return "Cart: " + str(self.cart.id) + " CartProduct: " + str(self.id)
 
 
-ITEM_STATUS = (
+SWAP_STATUS = (
     ("Item Active", "Item Active"),
     ("Item Wanted", "Item Wanted"),
     ("Swap Initiated", "Swap Initiate"),
@@ -115,7 +115,7 @@ class Swap(models.Model):
     # subtotal = models.PositiveIntegerField()
     # discount = models.PositiveIntegerField()
     # total = models.PositiveIntegerField()
-    swap_status = models.CharField(max_length=50, choices=ITEM_STATUS)
+    swap_status = models.CharField(max_length=50, choices=SWAP_STATUS)
     created_at = models.DateTimeField(auto_now_add=True)
     # payment_method = models.CharField(
     # max_length=20, choices=METHOD, default="Cash On Delivery"
@@ -123,7 +123,7 @@ class Swap(models.Model):
     swap_completed = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
-        return "Order: " + str(self.id)
+        return "Swap: " + str(self.id)
 
 
 class Location(models.Model):

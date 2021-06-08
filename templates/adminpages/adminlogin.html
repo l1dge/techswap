@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}User Login{% endblock %}
+{% block title %}Admin Login{% endblock %}
 
 {% block content %}
 <style>
@@ -11,18 +11,16 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6 mx-auto">
-            <h3>User Login Form</h3>
+            <h3>Admin Login Form</h3>
             <hr>
             <form action="" method="POST">
                 {% csrf_token %}
                 {{form.as_p}}
-                <button class="btn btn-primary">Login as a User</button>
+                <button class="btn btn-primary">Login as a Admin</button>
                 {% if error %}
                 <li style="color: red;">{{error}}</li>
                 {% endif %}
             </form>
-            <p>Forgot Password?<a href="{% url 'swapshop:passwordforgot' %}">Reset now.</a></p>
-            <p> or dont have account? <a href="{% url 'swapshop:appuserregistration' %}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}">Register here</a></p>
         </div>
     </div>
 </div>

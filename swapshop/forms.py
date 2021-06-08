@@ -5,6 +5,28 @@ from django.forms import fields
 from .models import *
 
 
+class AppUserRegistrationForm(forms.ModelForm):
+    username = forms.CharField(widget=forms.TextInput())
+    password = forms.CharField(widget=forms.PasswordInput())
+    email = forms.CharField(widget=forms.EmailInput())
+
+    class Meta:
+        model = AppUser
+        fields = ["username", "password", "email", "full_name", "address"]
+
+    def clean_username(self):
+        uname = self.cleaned_data.get("username")
+        if User.objects.filter(username=uname).exists():
+            raise forms.ValidationError("This username already exists.")
+
+        return uname
+
+
+class AppUserLoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput())
+    password = forms.CharField(widget=forms.PasswordInput())
+
+
 class ItemForm(forms.ModelForm):
     more_images = forms.FileField(
         required=False,
@@ -58,28 +80,6 @@ class ItemForm(forms.ModelForm):
                 }
             ),
         }
-
-
-class AppUserRegistrationForm(forms.ModelForm):
-    username = forms.CharField(widget=forms.TextInput())
-    password = forms.CharField(widget=forms.PasswordInput())
-    email = forms.CharField(widget=forms.EmailInput())
-
-    class Meta:
-        model = AppUser
-        fields = ["username", "password", "email", "full_name", "address"]
-
-    def clean_username(self):
-        uname = self.cleaned_data.get("username")
-        if User.objects.filter(username=uname).exists():
-            raise forms.ValidationError("This username already exists.")
-
-        return uname
-
-
-class AppUserLoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput())
-    password = forms.CharField(widget=forms.PasswordInput())
 
 
 class PasswordForgotForm(forms.Form):
