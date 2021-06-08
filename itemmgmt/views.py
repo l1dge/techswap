@@ -1,9 +1,10 @@
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.core.paginator import Paginator
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView, TemplateView, DetailView
 import requests
 
 
@@ -13,15 +14,27 @@ from .models import Item, ItemImage
 
 class LoginRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            pass
-        else:
+        if not request.user.is_authenticated:
             return redirect("/")
         return super().dispatch(request, *args, **kwargs)
 
 
+class ItemHomeView(LoginRequiredMixin, TemplateView):
+    template_name = "itemmgmt/itemhome.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        all_items = Item.objects.all().order_by("-id")
+        paginator = Paginator(all_items, 8)
+        page_number = self.request.GET.get("page")
+        print(page_number)
+        item_list = paginator.get_page(page_number)
+        context["item_list"] = item_list
+        return context
+
+
 class ItemCreateView(LoginRequiredMixin, CreateView):
-    template_name = "itemmgmt/item_create.html"
+    template_name = "itemmgmt/itemcreate.html"
     form_class = ItemForm
     success_url = reverse_lazy("itemmgmt:itemcreate")
 
@@ -33,23 +46,13 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-@login_required
-def item_detail_view(request):
-    # obj = Items.objects.filter()
-    obj = Item.objects.all().order_by("-id")
-
-    context = {"object": obj}
-
-    return render(request, "itemmgmt/item_detail.html", context)
+class ItemListView(LoginRequiredMixin, ListView):
+    template_name = "itemmgmt/itemlist.html"
+    queryset = Item.objects.all().order_by("-id")
+    context_object_name = "allitems"
 
 
-@login_required
-def dynamic_lookup_view(request, my_id):
-    try:
-        obj = Item.objects.get(id=my_id)
-    except Item.DoesNotExist:
-        raise Http404
-
-    context = {"item": obj}
-
-    return render(request, "itemmgmt/dynamic_item_detail.html", context)
+class ItemDetailView(LoginRequiredMixin, DetailView):
+    template_name = "itemmgmt/dynamicitemdetail.html"
+    model = Item
+    context_object_name = "item_obj"

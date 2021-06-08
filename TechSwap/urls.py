@@ -15,21 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
 
-from pages.views import home_view, about_view, social_view, contact_view
+from pages.views import HomeView, AboutView, SocialView, ContactView, SearchView
 
 urlpatterns = [
     path("usermgmt/", include("usermgmt.urls")),
     path("swaplist/", include("swaplist.urls")),
     path("itemmgmt/", include("itemmgmt.urls")),
-    path("", home_view, name="home"),
-    path("home/", home_view, name="home"),
-    path("about/", about_view, name="about"),
-    path("contact/", contact_view, name="contact"),
-    path("social/", social_view, name="social"),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("", HomeView, name="home"),
+    path("home/", HomeView, name="home"),
+    path("about/", AboutView, name="about"),
+    path("contact/", ContactView, name="contact"),
+    path("social/", SocialView, name="social"),
     path("admin/", admin.site.urls),
-]
-
-urlpatterns += [
-    path("accounts/", include("django.contrib.auth.urls"), name="accounts"),
+    path("search/", SearchView.as_view(), name="search"),
 ]

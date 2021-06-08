@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Detailed Information</h3><hr>
+            <p><span class="font-weight-bold">Name: </span> {{appuser.full_name}}</p>
+            <p><span class="font-weight-bold">Username: </span> {{appuser.user}}</p>
+            <p><span class="font-weight-bold">Email: </span> {{appuser.email}}</p>
+            <p><span class="font-weight-bold">Address: </span> {{appuser.address}}</p>
+            <p><span class="font-weight-bold">Joined on: </span> {{appuser.joined_on}}</p>
+        </div>
+        <div class="col-md-8">
+            <h3>Previous Items</h3>
+            <hr>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item ID</th>
+                        <th>Description</th>
+                        <th>Swapped</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for itm in items %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        {% comment %} <td><a href="{% url 'usermgmt:useritemdetail' itm.pk %}"> #ITEM_{{itm.id}}</a></td> {% endcomment %}
+                        {% comment %} <td>{{itm.total}}</td> {% endcomment %}
+                        <td>{{itm.created_at|timesince}} ago</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

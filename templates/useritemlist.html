@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'itemhead.html' %}
+{% for objects in object %}
+<p></p>
+    <h2> <a href="{{ objects.get_absolute_url }}">{{ objects.name }}</a>  </h2>
+<p></p>
+{% endfor %}
+{% endblock %}
