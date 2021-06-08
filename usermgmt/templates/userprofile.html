@@ -6,12 +6,12 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <h3>Detail Information</h3><hr>
-            <p><span class="font-weight-bold">Name: </span> {{customer.full_name}}</p>
-            <p><span class="font-weight-bold">Username: </span> {{customer.user.username}}</p>
-            <p><span class="font-weight-bold">Email: </span> {{customer.user.email}}</p>
-            <p><span class="font-weight-bold">Address: </span> {{customer.address}}</p>
-            <p><span class="font-weight-bold">Joined on: </span> {{customer.joined_on}}</p>
+            <h3>Detailed Information</h3><hr>
+            <p><span class="font-weight-bold">Name: </span> {{appuser.full_name}}</p>
+            <p><span class="font-weight-bold">Username: </span> {{appuser.user.username}}</p>
+            <p><span class="font-weight-bold">Email: </span> {{appuser.user.email}}</p>
+            <p><span class="font-weight-bold">Address: </span> {{appuser.address}}</p>
+            <p><span class="font-weight-bold">Joined on: </span> {{appuser.joined_on}}</p>
         </div>
         <div class="col-md-8">
             <h3>Previous Orders</h3>
@@ -30,7 +30,7 @@
                     {% for ord in orders %}
                     <tr>
                         <td>{{forloop.counter}}</td>
-                        <td><a href="{% url 'ecomapp:customerorderdetail' ord.pk %}"> #ORDER_{{ord.id}}</a></td>
+                        <td><a href="{% url 'usermgmt:useritemdetail' ord.pk %}"> #ORDER_{{ord.id}}</a></td>
                         <td>{{ord.total}}</td>
                         <td>{{ord.created_at|timesince}} ago</td>
                         <td>{{ord.order_status}}</td>

@@ -17,11 +17,11 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     {% if not request.user.is_authenticated %}
-                    <a class="dropdown-item" href="{% url 'usermgmt:customerregistration' %}">Register</a>
-                    <a class="dropdown-item" href="{% url 'usermgmt:customerlogin' %}">Login</a>
+                    <a class="dropdown-item" href="{% url 'usermgmt:userregistration' %}">Register</a>
+                    <a class="dropdown-item" href="{% url 'usermgmt:userlogin' %}">Login</a>
                     {% else %}
-                    <a class="dropdown-item" href="{% url 'usermgmt:customerprofile' %}">My Profile</a>
-                    <a class="dropdown-item" href="{% url 'usermgmt:customerlogout' %}">Logout</a>
+                    <a class="dropdown-item" href="{% url 'usermgmt:userprofile' %}">My Profile</a>
+                    <a class="dropdown-item" href="{% url 'usermgmt:userlogout' %}">Logout</a>
                     {% endif %}
                 </div>
             </li>
@@ -32,3 +32,4 @@
         </form>
     </div>
 </nav>
+<hr>

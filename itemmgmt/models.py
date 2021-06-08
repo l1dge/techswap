@@ -2,12 +2,21 @@ from django.db import models
 from django.db.models.fields import TextField
 from django.urls import reverse
 
+ITEM_CONDITION = (
+    ("Like New", "Like New"),
+    ("Excelllent", "Excelllent"),
+    ("Good", "Good"),
+    ("Used", "Used"),
+    ("Poor", "Poor"),
+    ("Spares or Repair", "Spares or Repair"),
+)
+
 
 class Item(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(max_length=500, default=None)
     category = models.ManyToManyField("Category")
-    condition = models.CharField(max_length=200)
+    condition = models.CharField(max_length=50, choices=ITEM_CONDITION)
     image = models.FileField(upload_to="uploads/items")
     uploaded_at = models.DateTimeField(auto_now_add=True)
     location = models.CharField(max_length=200)

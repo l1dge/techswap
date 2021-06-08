@@ -4,6 +4,32 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
+class Admin(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=50)
+    image = models.FileField(upload_to="admins")
+    mobile = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.user.username
+
+
+class AppUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=200)
+    # address = models.CharField(max_length=200, null=True, blank=True)
+    address = models.ForeignKey(
+        "usermgmt.Address",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    joined_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.full_name
+
+
 class Feedback(models.Model):
     item = models.ForeignKey("itemmgmt.Item", null=True, on_delete=models.SET_NULL)
     status = models.CharField(max_length=200)
