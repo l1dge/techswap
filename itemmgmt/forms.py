@@ -13,7 +13,7 @@ class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
         fields = [
-            "name",
+            "title",
             "category",
             "description",
             "image",
@@ -21,10 +21,10 @@ class ItemForm(forms.ModelForm):
             "location",
         ]
         widgets = {
-            "name": forms.TextInput(
+            "title": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Enter Item name here...",
+                    "placeholder": "Enter Item title here...",
                 }
             ),
             "category": forms.SelectMultiple(

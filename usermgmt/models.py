@@ -17,13 +17,7 @@ class Admin(models.Model):
 class AppUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=200)
-    # address = models.CharField(max_length=200, null=True, blank=True)
-    address = models.ForeignKey(
-        "usermgmt.Address",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
+    address = models.CharField(max_length=200, null=True, blank=True)
     joined_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -50,6 +44,7 @@ class Profile(models.Model):
     phone = models.CharField(max_length=200, null=True, blank=True)
     rating = models.IntegerField(default=0)
     feedback = models.ManyToManyField("Feedback", related_name="Feedback")
+    items = models.ManyToManyField("itemmgmt.item", related_name="Items")
 
     def __str__(self):
         return f"{self.user} {self.rating} {self.feedback}"
@@ -67,7 +62,7 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 class Address(models.Model):
-    house_num = models.IntegerField()
+    house_num = models.CharField(max_length=200)
     street = models.CharField(max_length=200)
     town = models.CharField(max_length=200)
     city = models.CharField(max_length=200)

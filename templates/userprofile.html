@@ -8,32 +8,29 @@
         <div class="col-md-4">
             <h3>Detailed Information</h3><hr>
             <p><span class="font-weight-bold">Name: </span> {{appuser.full_name}}</p>
-            <p><span class="font-weight-bold">Username: </span> {{appuser.user.username}}</p>
-            <p><span class="font-weight-bold">Email: </span> {{appuser.user.email}}</p>
+            <p><span class="font-weight-bold">Username: </span> {{appuser.user}}</p>
+            <p><span class="font-weight-bold">Email: </span> {{appuser.email}}</p>
             <p><span class="font-weight-bold">Address: </span> {{appuser.address}}</p>
             <p><span class="font-weight-bold">Joined on: </span> {{appuser.joined_on}}</p>
         </div>
         <div class="col-md-8">
-            <h3>Previous Orders</h3>
+            <h3>Previous Items</h3>
             <hr>
             <table class="table">
                 <thead>
                     <tr>
-                        <th>SN</th>
-                        <th>Order ID</th>
-                        <th>Amount</th>
-                        <th>Ordered on</th>
-                        <th>Status</th>
+                        <th>Item ID</th>
+                        <th>Description</th>
+                        <th>Swapped</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ord in orders %}
+                    {% for itm in items %}
                     <tr>
                         <td>{{forloop.counter}}</td>
-                        <td><a href="{% url 'usermgmt:useritemdetail' ord.pk %}"> #ORDER_{{ord.id}}</a></td>
-                        <td>{{ord.total}}</td>
-                        <td>{{ord.created_at|timesince}} ago</td>
-                        <td>{{ord.order_status}}</td>
+                        {% comment %} <td><a href="{% url 'usermgmt:useritemdetail' itm.pk %}"> #ITEM_{{itm.id}}</a></td> {% endcomment %}
+                        {% comment %} <td>{{itm.total}}</td> {% endcomment %}
+                        <td>{{itm.created_at|timesince}} ago</td>
                     </tr>
                     {% endfor %}
                 </tbody>

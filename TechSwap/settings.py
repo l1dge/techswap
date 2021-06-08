@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "itemmgmt.apps.ItemmgmtConfig",
     "usermgmt.apps.UsermgmtConfig",
     "pages.apps.PagesConfig",
+    "swapshop.apps.SwapshopConfig",
     "storages",
 ]
 
