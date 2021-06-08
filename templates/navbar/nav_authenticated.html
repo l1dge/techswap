@@ -26,25 +26,25 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Items</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'swapshop:allitems' %}">Items</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li class="dropdown-item"><a class="nav-link" href="{% url 'swapshop:allitems' %}">Item List</a></li>
-                            <li class="dropdown-item"><a class="nav-link" href="{% url 'swapshop:itemcreate' %}">Create Item</a></li>
-                        </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Swaps</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/swaplist">Swaps</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li class="dropdown-item"><a class="nav-link" href="/swaplist">My Swaps</a></li>
-                            <li class="dropdown-item"><a class="nav-link" href="/swaplist/addswap">New Swap</a></li>
-                            <li class="dropdown-item"><a class="nav-link" href="/swaplist/wantedlist">Wanted List</a></li>
-                        </ul>
-                        <li class="nav-item"><a class="nav-link" href="/">Users</a></li>
-                        </li>
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Items</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'swapshop:allitems' %}">Items</a>
+                    <hr class="dropdown-divider" />
+                    <a class="dropdown-item" href="{% url 'swapshop:allitems' %}">Item List</a>
+                    <a class="dropdown-item" href="{% url 'swapshop:itemcreate' %}">Create Item</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Swaps</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/swaplist">Swaps</a>
+                    <hr class="dropdown-divider" />
+                    <a class="dropdown-item" href="/swaplist">My Swaps</a>
+                    <a class="dropdown-item" href="/swaplist/addswap">New Swap</a>
+                    <a class="dropdown-item" href="/swaplist/wantedlist">Wanted List</a>
+                </div>
+                <li class="nav-item"><a class="nav-link" href="/">Users</a></li>
+                </li>
             </ul>
             <form class="form-inline my-2 my-lg-0" action="{% url 'swapshop:search' %}" method="GET">
             <input name="keyword" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required>

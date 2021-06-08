@@ -5,15 +5,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 
-ITEM_CONDITION = (
-    ("Like New", "Like New"),
-    ("Excelllent", "Excelllent"),
-    ("Good", "Good"),
-    ("Used", "Used"),
-    ("Poor", "Poor"),
-    ("Spares or Repair", "Spares or Repair"),
-)
-
 
 class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -41,6 +32,16 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
+
+
+ITEM_CONDITION = (
+    ("Like New", "Like New"),
+    ("Excelllent", "Excelllent"),
+    ("Good", "Good"),
+    ("Used", "Used"),
+    ("Poor", "Poor"),
+    ("Spares or Repair", "Spares or Repair"),
+)
 
 
 class Item(models.Model):

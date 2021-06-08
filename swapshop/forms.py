@@ -42,6 +42,8 @@ class ItemForm(forms.ModelForm):
             "image",
             "condition",
             "location",
+            "created_by",
+            "slug",
         ]
         widgets = {
             "title": forms.TextInput(
@@ -67,7 +69,7 @@ class ItemForm(forms.ModelForm):
                     "class": "form-control",
                 }
             ),
-            "condition": forms.TextInput(
+            "condition": forms.Select(
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter Item condition here...",
@@ -77,6 +79,18 @@ class ItemForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter Item location here...",
+                }
+            ),
+            "created_by": forms.Select(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Select Username",
+                }
+            ),
+            "slug": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Item Slug here...",
                 }
             ),
         }
