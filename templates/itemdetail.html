@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}{{item.title}}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Product: {{item.title}}</h3><hr>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{item.image.url}}" alt="" class="img-fluid">
+            <div class="row">
+                {% for pi in item.itemimage_set.all %}
+                <div class="col-md-4 p-3">
+                    <a href="{{pi.image.url}}" target="_blank">
+                        <img src="{{pi.image.url}}" class="img-fluid" style="height: 100px; object-fit: contain;" alt="">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h4>{{item.title}} (Viewed {{item.view_count}} times)</h4>
+            <h5>Category: {{item.category}}</h5>
+            <a href="{% url 'swapshop:addtocart' item.slug %}" class="btn btn-info">Add To Cart</a>
+            <hr>
+            <hr>
+            <p>{{item.description}}</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

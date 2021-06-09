@@ -14,7 +14,7 @@
                     <img src="{{result.image.url}}" class="img-fluid" alt="">
                 </div>
                 <div class="col-md-9">
-                    <h4><a href="{% url 'itemmgmt:itemdetail' result.slug %}">{{result.title}}</a></h4>
+                    <h4><a href="{% url 'swapshop:itemdetail' result.id %}">{{result.title}}</a></h4>
                     <p>{{result.description|truncatewords:50}}</p>
                 </div>
             </div>

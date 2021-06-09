@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'swapshop:adminhome' %}">Home</a> | 
+        <a href="{% url 'swapshop:adminswaplist' %}">All Swaps</a> | 
+        <a href="{% url 'swapshop:adminitemlist' %}">All Items</a> | 
+        <a href="{% url 'swapshop:home' %}" target="_blank">Visit site</a>
+    </div>
+    {% block content %}
+
+    {% endblock %}
+</body>
+</html>

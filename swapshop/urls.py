@@ -5,28 +5,55 @@ from .views import *
 
 app_name = "swapshop"
 urlpatterns = [
-    path("", ItemHomeView.as_view(), name="itemhome"),
-    path("list/", ItemListView.as_view(), name="itemlist"),
+    # Client side pages
+    path("", HomeView.as_view(), name="home"),
+    path("about/", AboutView.as_view(), name="about"),
+    path("contact-us/", ContactView.as_view(), name="contact"),
+    path("social/", SocialView.as_view(), name="social"),
+    path("all-items/", AllItemsView.as_view(), name="allitems"),
+    path("item/<int:pk>/", ItemDetailView.as_view(), name="itemdetail"),
+    # path("item/<slug:slug>/", ItemDetailView.as_view(), name="itemdetail"),
     path(
-        "create/",
+        "add/",
         ItemCreateView.as_view(),
         name="itemcreate",
     ),
-    path("itemdet/<int:pk>/", ItemDetailView.as_view(), name="itemdetail"),
-    path("", index, name="swap"),
-    path("register/", AppUserRegistrationView.as_view(), name="userregistration"),
-    path("logout/", AppUserLogoutView.as_view(), name="userlogout"),
-    path("login/", AppUserLoginView.as_view(), name="userlogin"),
-    path("profile/", AppUserProfileView.as_view(), name="userprofile"),
+    path("add-to-cart-<int:pro_id>/", AddToCartView.as_view(), name="addtocart"),
+    path("my-cart/", MyCartView.as_view(), name="mycart"),
+    path("manage-cart/<int:cp_id>/", ManageCartView.as_view(), name="managecart"),
+    path("empty-cart/", EmptyCartView.as_view(), name="emptycart"),
+    path("register/", AppUserRegistrationView.as_view(), name="appuserregistration"),
+    path("logout/", AppUserLogoutView.as_view(), name="appuserlogout"),
+    path("login/", AppUserLoginView.as_view(), name="appuserlogin"),
+    path("profile/", AppUserProfileView.as_view(), name="appuserprofile"),
     path(
-        "profile/order-<int:pk>/",
+        "profile/item-<int:pk>/",
         AppUserItemDetailView.as_view(),
-        name="userorderdetail",
+        name="appuseritemdetail",
     ),
-    path("forgot-password/", PasswordForgotView.as_view(), name="passworforgot"),
+    path("search/", SearchView.as_view(), name="search"),
+    path("forgot-password/", PasswordForgotView.as_view(), name="passwordforgot"),
     path(
         "password-reset/<email>/<token>/",
         PasswordResetView.as_view(),
         name="passwordreset",
+    ),
+    # Admin Side pages
+    path("admin-login/", AdminLoginView.as_view(), name="adminlogin"),
+    path("admin-home/", AdminHomeView.as_view(), name="adminhome"),
+    path(
+        "admin-order/<int:pk>/", AdminSwapDetailView.as_view(), name="adminswapdetail"
+    ),
+    path("admin-all-orders/", AdminSwapListView.as_view(), name="adminswaplist"),
+    path(
+        "admin-swap-<int:pk>-change/",
+        AdminSwapStatusChangeView.as_view(),
+        name="adminswapstatuschange",
+    ),
+    path("admin-item/list/", AdminItemListView.as_view(), name="adminitemlist"),
+    path(
+        "admin-item/add/",
+        AdminItemCreateView.as_view(),
+        name="adminitemcreate",
     ),
 ]

@@ -5,15 +5,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 
-ITEM_CONDITION = (
-    ("Like New", "Like New"),
-    ("Excelllent", "Excelllent"),
-    ("Good", "Good"),
-    ("Used", "Used"),
-    ("Poor", "Poor"),
-    ("Spares or Repair", "Spares or Repair"),
-)
-
 
 class Admin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -43,6 +34,16 @@ class Category(models.Model):
         return self.title
 
 
+ITEM_CONDITION = (
+    ("Like New", "Like New"),
+    ("Excelllent", "Excelllent"),
+    ("Good", "Good"),
+    ("Used", "Used"),
+    ("Poor", "Poor"),
+    ("Spares or Repair", "Spares or Repair"),
+)
+
+
 class Item(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
@@ -60,7 +61,7 @@ class Item(models.Model):
     view_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.title}"
 
     def get_absolute_url(self):
         return reverse("itemdet", kwargs={"my_id": self.id})
@@ -75,7 +76,7 @@ class ItemImage(models.Model):
 
 
 class Cart(models.Model):
-    customer = models.ForeignKey(
+    client = models.ForeignKey(
         AppUser, on_delete=models.SET_NULL, null=True, blank=True
     )
     total = models.PositiveIntegerField(default=0)
@@ -96,7 +97,7 @@ class CartProduct(models.Model):
         return "Cart: " + str(self.cart.id) + " CartProduct: " + str(self.id)
 
 
-ITEM_STATUS = (
+SWAP_STATUS = (
     ("Item Active", "Item Active"),
     ("Item Wanted", "Item Wanted"),
     ("Swap Initiated", "Swap Initiate"),
@@ -109,21 +110,13 @@ ITEM_STATUS = (
 class Swap(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
     ordered_by = models.CharField(max_length=200)
-    # shipping_address = models.CharField(max_length=200)
-    # mobile = models.CharField(max_length=10)
     email = models.EmailField(null=True, blank=True)
-    # subtotal = models.PositiveIntegerField()
-    # discount = models.PositiveIntegerField()
-    # total = models.PositiveIntegerField()
-    swap_status = models.CharField(max_length=50, choices=ITEM_STATUS)
+    swap_status = models.CharField(max_length=50, choices=SWAP_STATUS)
     created_at = models.DateTimeField(auto_now_add=True)
-    # payment_method = models.CharField(
-    # max_length=20, choices=METHOD, default="Cash On Delivery"
-    # )
     swap_completed = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
-        return "Order: " + str(self.id)
+        return "Swap: " + str(self.id)
 
 
 class Location(models.Model):

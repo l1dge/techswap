@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} All Items {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>All Items</h3><hr>
+    {% for cat in allcategories %}
+    <h4>{{cat.title}}</h4><hr>
+    <div class="row">
+        {% for p in cat.item_set.all %}
+        <div class="col-md-3">
+            <div class="m-4">
+                <h4><a href="{% url 'swapshop:itemdetail' p.pk %}">{{p.title}}</a></h4>
+                <img src="{{p.image.url}}" alt="" class="img-fluid" style="height: 2500; object-fit: cover;">
+                <a href="{% url 'swapshop:addtocart' p.id %}" class="btn btn-primary">Add To List</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

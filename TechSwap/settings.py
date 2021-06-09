@@ -24,12 +24,6 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-# "default": {
-# "ENGINE": config("DB_ENGINE"),
-# "NAME": BASE_DIR / config("DB_NAME"),
-# }
-# }
 DATABASES = {"default": dj_database_url.config(default=config("DATABASE_URL"))}
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -51,10 +45,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "swaplist.apps.SwaplistConfig",
-    "itemmgmt.apps.ItemmgmtConfig",
-    "usermgmt.apps.UsermgmtConfig",
-    "pages.apps.PagesConfig",
     "swapshop.apps.SwapshopConfig",
     "storages",
 ]
