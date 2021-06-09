@@ -11,7 +11,8 @@ urlpatterns = [
     path("contact-us/", ContactView.as_view(), name="contact"),
     path("social/", SocialView.as_view(), name="social"),
     path("all-items/", AllItemsView.as_view(), name="allitems"),
-    path("item/<slug:slug>/", ItemDetailView.as_view(), name="itemdetail"),
+    path("item/<int:pk>/", ItemDetailView.as_view(), name="itemdetail"),
+    # path("item/<slug:slug>/", ItemDetailView.as_view(), name="itemdetail"),
     path(
         "add/",
         ItemCreateView.as_view(),

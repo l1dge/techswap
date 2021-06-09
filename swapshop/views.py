@@ -59,17 +59,17 @@ class AllItemsView(SwapMixin, TemplateView):
         return context
 
 
-class ItemDetailView(SwapMixin, DetailView):
-    template_name = "itemdetail.html"
+# class ItemDetailView(SwapMixin, DetailView):
+#     template_name = "itemdetail.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        url_slug = self.kwargs["slug"]
-        item = Item.objects.get(slug=url_slug)
-        item.view_count += 1
-        item.save()
-        context["item"] = item
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         url_slug = self.kwargs["slug"]
+#         item = Item.objects.get(slug=url_slug)
+#         item.view_count += 1
+#         item.save()
+#         context["item"] = item
+#         return context
 
 
 class AddToCartView(SwapMixin, TemplateView):
@@ -286,9 +286,7 @@ class SearchView(TemplateView):
         context = super().get_context_data(**kwargs)
         kw = self.request.GET.get("keyword")
         results = Item.objects.filter(
-            Q(title__icontains=kw)
-            | Q(description__icontains=kw)
-            | Q(return_policy__icontains=kw)
+            Q(title__icontains=kw) | Q(description__icontains=kw)
         )
         print(results)
         context["results"] = results
@@ -460,3 +458,9 @@ class ItemListView(SwapMixin, ListView):
     template_name = "itemlist.html"
     queryset = Item.objects.all().order_by("-id")
     context_object_name = "allitems"
+
+
+class ItemDetailView(SwapMixin, DetailView):
+    template_name = "dynamicitemdetail.html"
+    queryset = Item.objects.all().order_by("-id")
+    context_object_name = "item_obj"

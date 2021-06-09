@@ -8,13 +8,13 @@
         <div class="col-md-4">
             <h3>Detailed Information</h3><hr>
             <p><span class="font-weight-bold">Name: </span> {{appuser.full_name}}</p>
-            <p><span class="font-weight-bold">Username: </span> {{appuser.appuser.username}}</p>
-            <p><span class="font-weight-bold">Email: </span> {{appuser.appuser.email}}</p>
+            <p><span class="font-weight-bold">Username: </span> {{appuser.user.username}}</p>
+            <p><span class="font-weight-bold">Email: </span> {{appuser.user.email}}</p>
             <p><span class="font-weight-bold">Address: </span> {{appuser.address}}</p>
             <p><span class="font-weight-bold">Joined on: </span> {{appuser.joined_on}}</p>
         </div>
         <div class="col-md-8">
-            <h3>Previous Items</h3>
+            <h3>Previous Swaps</h3>
             <hr>
             <table class="table">
                 <thead>
@@ -29,6 +29,7 @@
                     <tr>
                         <td>{{forloop.counter}}</td>
                         <td>{{itm.created_at|timesince}} ago</td>
+                        <td>{{itm.swap_agrd|timesince}} ago</td>
                     </tr>
                     {% endfor %}
                 </tbody>

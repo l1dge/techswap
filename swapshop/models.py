@@ -61,7 +61,7 @@ class Item(models.Model):
     view_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.title}"
 
     def get_absolute_url(self):
         return reverse("itemdet", kwargs={"my_id": self.id})
@@ -110,17 +110,9 @@ SWAP_STATUS = (
 class Swap(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
     ordered_by = models.CharField(max_length=200)
-    # shipping_address = models.CharField(max_length=200)
-    # mobile = models.CharField(max_length=10)
     email = models.EmailField(null=True, blank=True)
-    # subtotal = models.PositiveIntegerField()
-    # discount = models.PositiveIntegerField()
-    # total = models.PositiveIntegerField()
     swap_status = models.CharField(max_length=50, choices=SWAP_STATUS)
     created_at = models.DateTimeField(auto_now_add=True)
-    # payment_method = models.CharField(
-    # max_length=20, choices=METHOD, default="Cash On Delivery"
-    # )
     swap_completed = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
