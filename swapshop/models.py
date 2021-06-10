@@ -4,6 +4,7 @@ from django.db.models.fields import TextField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from location_field.models.plain import PlainLocationField
 
 
 class Admin(models.Model):
@@ -52,7 +53,8 @@ class Item(models.Model):
     image = models.FileField(upload_to="items")
     condition = models.CharField(max_length=50, choices=ITEM_CONDITION)
     created_at = models.DateTimeField(auto_now_add=True)
-    location = models.CharField(max_length=200)
+    city = models.CharField(max_length=255)
+    location = PlainLocationField(based_fields=["city"], zoom=7)
     swap_comp = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
     active = models.BooleanField(default=False)

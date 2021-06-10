@@ -447,7 +447,10 @@ class ItemCreateView(SwapMixin, CreateView):
     success_url = reverse_lazy("swapshop:itemcreate")
 
     def form_valid(self, form):
-        p = form.save()
+        userid = self.request.user.id
+        p = form.save(commit=False)
+        p.created_by = AppUser.objects.get(id=userid)
+        p.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:
             ItemImage.objects.create(item=p, image=i)

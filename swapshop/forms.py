@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import fields
-
+from location_field.models.plain import PlainLocationField
 from .models import *
 
 
@@ -25,75 +25,6 @@ class AppUserRegistrationForm(forms.ModelForm):
 class AppUserLoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput())
     password = forms.CharField(widget=forms.PasswordInput())
-
-
-class ItemForm(forms.ModelForm):
-    more_images = forms.FileField(
-        required=False,
-        widget=forms.FileInput(attrs={"class": "form-control", "multiple": True}),
-    )
-
-    class Meta:
-        model = Item
-        fields = [
-            "title",
-            "category",
-            "description",
-            "image",
-            "condition",
-            "location",
-            "created_by",
-            "slug",
-        ]
-        widgets = {
-            "title": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Enter Item title here...",
-                }
-            ),
-            "category": forms.SelectMultiple(
-                attrs={
-                    "class": "form-control",
-                }
-            ),
-            "description": forms.Textarea(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Enter Item description here...",
-                    "rows": "5",
-                }
-            ),
-            "image": forms.ClearableFileInput(
-                attrs={
-                    "class": "form-control",
-                }
-            ),
-            "condition": forms.Select(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Enter Item condition here...",
-                }
-            ),
-            "location": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Enter Item location here...",
-                }
-            ),
-            "created_by": forms.Select(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Select Username",
-                }
-            ),
-            "slug": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Enter Item Slug here...",
-                }
-            ),
-        }
 
 
 class PasswordForgotForm(forms.Form):
@@ -143,3 +74,70 @@ class PasswordResetForm(forms.Form):
         if new_password != confirm_new_password:
             raise forms.ValidationError("New Passwords did not match!")
         return confirm_new_password
+
+
+class ItemForm(forms.ModelForm):
+    more_images = forms.FileField(
+        required=False,
+        widget=forms.FileInput(attrs={"class": "form-control", "multiple": True}),
+    )
+
+    class Meta:
+        model = Item
+        exclude = [
+            "created_by",
+        ]
+        fields = [
+            "title",
+            "category",
+            "description",
+            "image",
+            "condition",
+            "city",
+            "location",
+            "slug",
+        ]
+        widgets = {
+            "title": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Item title here...",
+                }
+            ),
+            "category": forms.SelectMultiple(
+                attrs={
+                    "class": "form-control",
+                }
+            ),
+            "description": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Item description here...",
+                    "rows": "5",
+                }
+            ),
+            "image": forms.ClearableFileInput(
+                attrs={
+                    "class": "form-control",
+                }
+            ),
+            "condition": forms.Select(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Item condition here...",
+                }
+            ),
+            "city": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Item City here...",
+                }
+            ),
+            "location": PlainLocationField(based_fields=["city"]),
+            "slug": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Item Slug here...",
+                }
+            ),
+        }
