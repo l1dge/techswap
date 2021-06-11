@@ -38,6 +38,7 @@ class PasswordForgotForm(forms.Form):
         )
     )
 
+    # @todo Change the check below to the negative i.e if not etc.
     def clean_email(self):
         e = self.cleaned_data.get("email")
         if AppUser.objects.filter(user__email=e).exists():
