@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "swapshop.apps.SwapshopConfig",
     "storages",
+    "location_field.apps.DefaultConfig",
 ]
 
 MIDDLEWARE = [
@@ -147,3 +148,19 @@ AWS_QUERYSTRING_AUTH = False
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+
+# OpenStreetMap
+LOCATION_FIELD_PATH = STATIC_URL + "location_field"
+LOCATION_FIELD = {
+    "map.provider": "google",
+    "map.zoom": 13,
+    "search.provider": "google",
+    "search.suffix": "",
+    # Google
+    "provider.google.api": "//maps.google.com/maps/api/js?sensor=false",
+    "provider.google.api_key": config("LOCATION_API_KEY"),
+    "provider.google.api_libraries": "",
+    "provider.google.map.type": "ROADMAP",
+}
+LOCATION_API_KEY = config("LOCATION_API_KEY")

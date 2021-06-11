@@ -15,10 +15,12 @@ from django.views.generic import (
     TemplateView,
     View,
 )
+from django.utils.text import slugify
 
 from .forms import *
-from .models import *
+from .models import Cart, Item, AppUser, CartProduct, User, Swap
 from .utils import password_reset_token
+from django.conf import settings
 
 
 class SwapMixin(object):
@@ -48,28 +50,6 @@ class HomeView(SwapMixin, TemplateView):
         item_list = paginator.get_page(page_number)
         context["item_list"] = item_list
         return context
-
-
-class AllItemsView(SwapMixin, TemplateView):
-    template_name = "allitems.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["allcategories"] = Category.objects.all()
-        return context
-
-
-# class ItemDetailView(SwapMixin, DetailView):
-#     template_name = "itemdetail.html"
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         url_slug = self.kwargs["slug"]
-#         item = Item.objects.get(slug=url_slug)
-#         item.view_count += 1
-#         item.save()
-#         context["item"] = item
-#         return context
 
 
 class AddToCartView(SwapMixin, TemplateView):
@@ -447,7 +427,10 @@ class ItemCreateView(SwapMixin, CreateView):
     success_url = reverse_lazy("swapshop:itemcreate")
 
     def form_valid(self, form):
-        p = form.save()
+        userid = self.request.user.id
+        p = form.save(commit=False)
+        p.created_by = AppUser.objects.get(id=userid)
+        p.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:
             ItemImage.objects.create(item=p, image=i)
@@ -462,5 +445,36 @@ class ItemListView(SwapMixin, ListView):
 
 class ItemDetailView(SwapMixin, DetailView):
     template_name = "dynamicitemdetail.html"
-    queryset = Item.objects.all().order_by("-id")
-    context_object_name = "item_obj"
+    queryset = Item.objects.all()
+    query_pk_and_slug = True
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        url_slug = self.kwargs["slug"]
+        item = Item.objects.get(slug=url_slug)
+        item.view_count += 1
+        item.save()
+        context = {"item_obj": item, "API_KEY": settings.LOCATION_API_KEY}
+        return context
+
+
+class AllItemsView(SwapMixin, TemplateView):
+    template_name = "allitems.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["allcategories"] = Category.objects.all()
+        return context
+
+
+# class ItemDetailView(SwapMixin, DetailView):
+#     template_name = "itemdetail.html"
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         url_slug = self.kwargs["slug"]
+#         item = Item.objects.get(slug=url_slug)
+#         item.view_count += 1
+#         item.save()
+#         context["item"] = item
+#         return context

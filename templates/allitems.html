@@ -11,7 +11,7 @@
         {% for p in cat.item_set.all %}
         <div class="col-md-3">
             <div class="m-4">
-                <h4><a href="{% url 'swapshop:itemdetail' p.pk %}">{{p.title}}</a></h4>
+                <h4><a href="{% url 'swapshop:itemdetail' p.slug %}">{{p.title}}</a></h4>
                 <img src="{{p.image.url}}" alt="" class="img-fluid" style="height: 2500; object-fit: cover;">
                 <a href="{% url 'swapshop:addtocart' p.id %}" class="btn btn-primary">Add To List</a>
             </div>

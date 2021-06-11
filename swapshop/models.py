@@ -4,6 +4,8 @@ from django.db.models.fields import TextField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from location_field.models.plain import PlainLocationField
+from django.utils.text import slugify
 
 
 class Admin(models.Model):
@@ -46,13 +48,14 @@ ITEM_CONDITION = (
 
 class Item(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, default="", editable=False, max_length=255)
     category = models.ManyToManyField(Category)
     description = models.TextField(max_length=500, default=None)
     image = models.FileField(upload_to="items")
     condition = models.CharField(max_length=50, choices=ITEM_CONDITION)
     created_at = models.DateTimeField(auto_now_add=True)
-    location = models.CharField(max_length=200)
+    city = models.CharField(max_length=255)
+    location = PlainLocationField(based_fields=["city"], zoom=7)
     swap_comp = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
@@ -64,7 +67,13 @@ class Item(models.Model):
         return f"{self.title}"
 
     def get_absolute_url(self):
-        return reverse("itemdet", kwargs={"my_id": self.id})
+        kwargs = {"pk": self.id, "slug": self.slug, "my_id": self.id}
+        return reverse("itemdetail", kwargs=kwargs)
+
+    def save(self, *args, **kwargs):
+        value = self.title
+        self.slug = slugify(value, allow_unicode=True)
+        super().save(*args, **kwargs)
 
 
 class ItemImage(models.Model):
