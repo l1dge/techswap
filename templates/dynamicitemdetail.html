@@ -1,7 +1,9 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
 {% include 'itemhead.html' %}
+
 <div class="container">
     <h3>Item: {{ item_obj.name }} </h3><hr>
     <div class="row">
@@ -23,7 +25,13 @@
             {% endfor %}
             </h5><hr>
             <p>Condition: {{ item_obj.condition }}</p>
+            <p>City: {{ item_obj.city }}</p>
             <p>Location: {{ item_obj.location }}</p>
+                <div id="map">
+                    <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ item_obj.location }}&zoom=13&size=600x300&maptype=roadmap&key={{ API_KEY }}">
+                </div>
+
+
             <hr>
             <p>Description: {{ item_obj.description }}</p>
             <p>Created by: {{ item_obj.created_by }}

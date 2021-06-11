@@ -163,3 +163,4 @@ LOCATION_FIELD = {
     "provider.google.api_libraries": "",
     "provider.google.map.type": "ROADMAP",
 }
+LOCATION_API_KEY = config("LOCATION_API_KEY")

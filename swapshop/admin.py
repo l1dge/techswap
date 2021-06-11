@@ -6,7 +6,10 @@ class ItemsAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register([Item, ItemImage, Category, Location], ItemsAdmin)
+admin.site.register(
+    [Item, ItemImage, Category, Location],
+    ItemsAdmin,
+)
 
 
 class WantedAdmin(admin.ModelAdmin):

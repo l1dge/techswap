@@ -84,9 +84,7 @@ class ItemForm(forms.ModelForm):
 
     class Meta:
         model = Item
-        exclude = [
-            "created_by",
-        ]
+        exclude = ["created_by"]
         fields = [
             "title",
             "category",
@@ -95,7 +93,6 @@ class ItemForm(forms.ModelForm):
             "condition",
             "city",
             "location",
-            "slug",
         ]
         widgets = {
             "title": forms.TextInput(
@@ -130,14 +127,8 @@ class ItemForm(forms.ModelForm):
             "city": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Enter Item City here...",
+                    "placeholder": "Enter City location here...",
                 }
             ),
             "location": PlainLocationField(based_fields=["city"]),
-            "slug": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Enter Item Slug here...",
-                }
-            ),
         }
