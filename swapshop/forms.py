@@ -4,7 +4,7 @@ from django.forms import fields
 from location_field.models.plain import PlainLocationField
 from .models import *
 
-
+# @TODO: "Look into using allauth as suggested by Bob."
 class AppUserRegistrationForm(forms.ModelForm):
     username = forms.CharField(widget=forms.TextInput())
     password = forms.CharField(widget=forms.PasswordInput())
@@ -14,6 +14,7 @@ class AppUserRegistrationForm(forms.ModelForm):
         model = AppUser
         fields = ["username", "password", "email", "full_name", "address"]
 
+    # @TODO: "Check for lower and upercase usernames"
     def clean_username(self):
         uname = self.cleaned_data.get("username")
         if User.objects.filter(username=uname).exists():

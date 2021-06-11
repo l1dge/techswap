@@ -37,12 +37,8 @@ class Category(models.Model):
 
 
 ITEM_CONDITION = (
-    ("Like New", "Like New"),
-    ("Excelllent", "Excelllent"),
-    ("Good", "Good"),
-    ("Used", "Used"),
-    ("Poor", "Poor"),
-    ("Spares or Repair", "Spares or Repair"),
+    (s, s)
+    for s in ("Like New", "Excelllent", "Good", "Used", "Poor", "Spares or Repair")
 )
 
 
@@ -64,7 +60,7 @@ class Item(models.Model):
     view_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.title}"
+        return self.title
 
     def get_absolute_url(self):
         kwargs = {"pk": self.id, "slug": self.slug, "my_id": self.id}
@@ -81,7 +77,7 @@ class ItemImage(models.Model):
     image = models.FileField(upload_to="items/multimages/")
 
     def __str__(self):
-        return f"{self.item.title}"
+        return self.item.title
 
 
 class Cart(models.Model):
@@ -92,7 +88,7 @@ class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return "Cart: " + str(self.id)
+        return f"Cart: {self.id}"
 
 
 class CartProduct(models.Model):
@@ -103,16 +99,19 @@ class CartProduct(models.Model):
     subtotal = models.PositiveIntegerField()
 
     def __str__(self):
-        return "Cart: " + str(self.cart.id) + " CartProduct: " + str(self.id)
+        return f"Cart: {self.cart.id} CartProduct: {self.id}"
 
 
 SWAP_STATUS = (
-    ("Item Active", "Item Active"),
-    ("Item Wanted", "Item Wanted"),
-    ("Swap Initiated", "Swap Initiate"),
-    ("Swap Agreed", "Swap Agreed"),
-    ("Swap Complete", "Swap Complete"),
-    ("Swap Cancelled", "Swap Cancelled"),
+    (s, s)
+    for s in (
+        "Item Active",
+        "Item Wanted",
+        "Swap Initiated",
+        "Swap Agreed",
+        "Swap Complete",
+        "Swap Cancelled",
+    )
 )
 
 
@@ -125,7 +124,7 @@ class Swap(models.Model):
     swap_completed = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
-        return "Swap: " + str(self.id)
+        return f"Swap: {self.id}"
 
 
 class Location(models.Model):
