@@ -429,7 +429,7 @@ class ItemCreateView(SwapMixin, CreateView):
     def form_valid(self, form):
         userid = self.request.user.id
         p = form.save(commit=False)
-        p.created_by = AppUser.objects.get(id=userid)
+        p.created_by = AppUser.objects.get(user_id=userid)
         p.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:
