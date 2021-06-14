@@ -1,10 +1,8 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import Http404, JsonResponse
 from django.shortcuts import *
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
@@ -21,6 +19,7 @@ from .forms import *
 from .models import Cart, Item, AppUser, CartProduct, User, Swap
 from .utils import password_reset_token
 from django.conf import settings
+import logging
 
 
 class SwapMixin(object):
@@ -155,12 +154,25 @@ class AppUserRegistrationView(CreateView):
     success_url = reverse_lazy("swapshop:home")
 
     def form_valid(self, form):
+        email = form.cleaned_data.get("email")
         username = form.cleaned_data.get("username")
         password = form.cleaned_data.get("password")
-        email = form.cleaned_data.get("email")
-        user = User.objects.create_user(username, email, password)
+        first_name = form.cleaned_data.get("first_name")
+        last_name = form.cleaned_data.get("last_name")
+        image = form.cleaned_data.get("image")
+        mobile = form.cleaned_data.get("mobile")
+        user = AppUser.objects.create_user(
+            email,
+            username,
+            first_name,
+            last_name,
+            password,
+            image,
+            mobile,
+        )
         form.instance.user = user
-        login(self.request, user)
+
+        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -169,6 +181,22 @@ class AppUserRegistrationView(CreateView):
             return next_url
         else:
             return self.success_url
+
+
+# class ItemCreateView(SwapMixin, CreateView):
+#     template_name = "itemcreate.html"
+#     form_class = ItemForm
+#     success_url = reverse_lazy("swapshop:itemcreate")
+
+#     def form_valid(self, form):
+#         userid = self.request.user.id
+#         p = form.save(commit=False)
+#         p.created_by = AppUser.objects.get(user_id=userid)
+#         p.save()
+#         images = self.request.FILES.getlist("more_images")
+#         for i in images:
+#             ItemImage.objects.create(item=p, image=i)
+#         return super().form_valid(form)
 
 
 class AppUserLogoutView(View):
@@ -228,7 +256,7 @@ class AppUserProfileView(TemplateView):
         ):
             pass
         else:
-            return redirect("/login/?next=/profile/")
+            return redirect("/accounts/login/?next=/profile/")
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -255,7 +283,7 @@ class AppUserItemDetailView(DetailView):
             if request.user.appuser != item.cart.appuser:
                 return redirect("swapshop:userprofile")
         else:
-            return redirect("/login/?next=/profile/")
+            return redirect("/accounts/login/?next=/profile/")
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -276,7 +304,7 @@ class SearchView(TemplateView):
 class PasswordForgotView(FormView):
     template_name = "forgotpassword.html"
     form_class = PasswordForgotForm
-    success_url = "/forgot-password/?m=s"
+    success_url = "/accounts/forgot-password/?m=s"
 
     def form_valid(self, form):
         # get email from user
@@ -290,7 +318,7 @@ class PasswordForgotView(FormView):
         text_content = "Please Click the link below to reset your password. "
         html_content = (
             url
-            + "/password-reset/"
+            + "/accounts/password-reset/"
             + email
             + "/"
             + password_reset_token.make_token(user)
@@ -309,7 +337,7 @@ class PasswordForgotView(FormView):
 class PasswordResetView(FormView):
     template_name = "passwordreset.html"
     form_class = PasswordResetForm
-    success_url = "/login/"
+    success_url = "/accounts/login/"
 
     def dispatch(self, request, *args, **kwargs):
         email = self.kwargs.get("email")

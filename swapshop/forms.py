@@ -1,23 +1,79 @@
 from django import forms
-from django.contrib.auth.models import User
+
+# from django.contrib.auth.models import User
 from django.forms import fields
 from location_field.models.plain import PlainLocationField
 from .models import *
 
 # @todo Look into using allauth as suggested by Bob.
 class AppUserRegistrationForm(forms.ModelForm):
-    username = forms.CharField(widget=forms.TextInput())
-    password = forms.CharField(widget=forms.PasswordInput())
-    email = forms.CharField(widget=forms.EmailInput())
+    email = forms.EmailInput()
+    username = forms.TextInput()
+    password = forms.PasswordInput()
+    first_name = forms.TextInput()
+    last_name = forms.TextInput()
+    image = forms.ClearableFileInput()
+    mobile = forms.TextInput()
+    is_admin = False
 
     class Meta:
         model = AppUser
-        fields = ["username", "password", "email", "full_name", "address"]
+        fields = [
+            "email",
+            "username",
+            "password",
+            "first_name",
+            "last_name",
+            "image",
+            "mobile",
+        ]
+        widgets = {
+            "email": forms.EmailInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Email here...",
+                }
+            ),
+            "username": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Username here...",
+                }
+            ),
+            "password": forms.PasswordInput(
+                attrs={
+                    "class": "form-control",
+                }
+            ),
+            "first_name": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter First Name here...",
+                }
+            ),
+            "last_name": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Last Name here...",
+                }
+            ),
+            "image": forms.ClearableFileInput(
+                attrs={
+                    "class": "form-control",
+                }
+            ),
+            "mobile": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Mobile Number here...",
+                }
+            ),
+        }
 
     # @todo Check for lower and upercase usernames
     def clean_username(self):
         uname = self.cleaned_data.get("username")
-        if User.objects.filter(username=uname).exists():
+        if AppUser.objects.filter(username=uname).exists():
             raise forms.ValidationError("This username already exists.")
 
         return uname

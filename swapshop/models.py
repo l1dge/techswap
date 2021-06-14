@@ -1,4 +1,9 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import (
+    User,
+    AbstractBaseUser,
+    PermissionsMixin,
+    BaseUserManager,
+)
 from django.db import models
 from django.db.models.fields import TextField
 from django.db.models.signals import post_save
@@ -6,28 +11,11 @@ from django.dispatch import receiver
 from django.urls import reverse
 from location_field.models.plain import PlainLocationField
 from django.utils.text import slugify
+from django.utils.timezone import now
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
-
-class Admin(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=50)
-    image = models.FileField(upload_to="admins")
-    mobile = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.user.username
-
-
-class AppUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=200)
-    address = models.CharField(max_length=200, null=True, blank=True)
-    joined_on = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.full_name
-
-
+# Item Management
 class Category(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
@@ -56,7 +44,7 @@ class Item(models.Model):
     archived = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
     swap_agrd = models.BooleanField(default=False)
-    created_by = models.ForeignKey(AppUser, on_delete=models.DO_NOTHING)
+    created_by = models.ForeignKey("AppUser", on_delete=models.DO_NOTHING)
     view_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -82,7 +70,7 @@ class ItemImage(models.Model):
 
 class Cart(models.Model):
     client = models.ForeignKey(
-        AppUser, on_delete=models.SET_NULL, null=True, blank=True
+        "AppUser", on_delete=models.SET_NULL, null=True, blank=True
     )
     total = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -140,9 +128,8 @@ class Location(models.Model):
 
 
 class Wanted(models.Model):
-    user_id = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
+    user_id = models.ManyToManyField(
+        "AppUser",
     )
     location = models.ForeignKey(
         Location,
@@ -156,9 +143,8 @@ class Wanted(models.Model):
 
 
 class ForSwap(models.Model):
-    user_id = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
+    user_id = models.ManyToManyField(
+        "AppUser",
     )
     item_id = models.ForeignKey(Item, related_name="ItemID", on_delete=models.CASCADE)
     location = models.ForeignKey(
@@ -171,40 +157,109 @@ class ForSwap(models.Model):
         return f"{self.user_id} {self.location} {self.swap_avail}"
 
 
-class Feedback(models.Model):
-    item = models.ForeignKey(Item, null=True, on_delete=models.SET_NULL)
-    status = models.CharField(max_length=200)
-    comments = models.TextField(max_length=300)
+# User stuff
+# class Admin(AbstractUser):
+#     first_name = models.CharField(max_length=200)
+#     last_name = models.CharField(max_length=200)
+#     image = models.FileField(upload_to="admins")
+#     mobile = models.CharField(max_length=20)
+
+#     def __str__(self):
+#         return self.full_name
+
+
+class CustomAccountManager(BaseUserManager):
+    def create_user(
+        self,
+        email,
+        username,
+        first_name,
+        last_name,
+        password,
+        image,
+        mobile,
+        **other_fields,
+    ):
+        if not email:
+            raise ValueError(_("You must provide an email address"))
+
+        email = self.normalize_email(email)
+        user = self.model(
+            email=email,
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            image=image,
+            mobile=mobile,
+            **other_fields,
+        )
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(
+        self, email, username, first_name, last_name, password, **other_fields
+    ):
+        email = self.normalize_email(email)
+        suser = self.model(
+            email=email,
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            **other_fields,
+        )
+        suser.is_superuser = True
+        suser.is_staff = True
+        suser.is_active = True
+        suser.set_password(password)
+        suser.save()
+
+        if not other_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must be assigned to is_staff=True")
+        if not other_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must be assigned to is_superuser=True")
+
+        return suser
+
+
+class AppUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(_("email address"), max_length=50, unique=True)
+    username = models.CharField(unique=True, max_length=200)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    image = models.FileField(upload_to="profile_images", null=True, blank=True)
+    mobile = models.CharField(max_length=20)
+    joined_on = models.DateTimeField(auto_now_add=True)
+    is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
+
+    objects = CustomAccountManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = [
+        "username",
+        "first_name",
+        "last_name",
+        "mobile",
+    ]
 
     def __str__(self):
-        return f"{self.status} {self.comments}"
-
-
-class Address(models.Model):
-    house_num = models.CharField(max_length=200)
-    street = models.CharField(max_length=200)
-    town = models.CharField(max_length=200)
-    city = models.CharField(max_length=200)
-    county = models.CharField(max_length=200)
-    country = models.CharField(max_length=200)
-    zipcode = models.CharField(max_length=200)
-
-    def __str__(self):
-        return f"{self.street} {self.town} {self.country}"
+        return f"{self.username} {self.first_name} {self.last_name} {self.mobile}"
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    address = models.ForeignKey(
-        Address,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
+    user_id = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone = models.CharField(max_length=200, null=True, blank=True)
+    # image = models.FileField(upload_to="profile_images", default=None)
     rating = models.IntegerField(default=0)
-    feedback = models.ManyToManyField(Feedback, related_name="Feedback")
+    feedback = models.ManyToManyField("Feedback", related_name="Feedback")
     items = models.ManyToManyField(Item, related_name="Items")
+    bio = models.TextField(_("bio"), max_length=500, blank=True)
+    address = models.ForeignKey(
+        "Address", on_delete=models.CASCADE, default=None, blank=True
+    )
+    birth_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user} {self.rating} {self.feedback}"
@@ -219,3 +274,25 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+class Address(models.Model):
+    house_num = models.CharField(max_length=200, null=True, blank=True)
+    street = models.CharField(max_length=200, null=True, blank=True)
+    town = models.CharField(max_length=200, null=True, blank=True)
+    city = models.CharField(max_length=200, null=True, blank=True)
+    county = models.CharField(max_length=200, null=True, blank=True)
+    country = models.CharField(max_length=200, null=True, blank=True)
+    zipcode = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.street} {self.town} {self.country}"
+
+
+class Feedback(models.Model):
+    item = models.ForeignKey(Item, null=True, on_delete=models.SET_NULL)
+    status = models.CharField(max_length=200, null=True, blank=True)
+    comments = models.TextField(max_length=300, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.status} {self.comments}"

@@ -17,19 +17,25 @@ urlpatterns = [
     path("my-cart/", MyCartView.as_view(), name="mycart"),
     path("manage-cart/<int:cp_id>/", ManageCartView.as_view(), name="managecart"),
     path("empty-cart/", EmptyCartView.as_view(), name="emptycart"),
-    path("register/", AppUserRegistrationView.as_view(), name="appuserregistration"),
-    path("logout/", AppUserLogoutView.as_view(), name="appuserlogout"),
-    path("login/", AppUserLoginView.as_view(), name="appuserlogin"),
-    path("profile/", AppUserProfileView.as_view(), name="appuserprofile"),
     path(
-        "profile/item-<int:pk>/",
+        "accounts/register/",
+        AppUserRegistrationView.as_view(),
+        name="appuserregistration",
+    ),
+    path("accounts/logout/", AppUserLogoutView.as_view(), name="appuserlogout"),
+    path("accounts/login/", AppUserLoginView.as_view(), name="appuserlogin"),
+    path("accounts/profile/", AppUserProfileView.as_view(), name="appuserprofile"),
+    path(
+        "accounts/profile/item-<int:pk>/",
         AppUserItemDetailView.as_view(),
         name="appuseritemdetail",
     ),
     path("search/", SearchView.as_view(), name="search"),
-    path("forgot-password/", PasswordForgotView.as_view(), name="passwordforgot"),
     path(
-        "password-reset/<email>/<token>/",
+        "accounts/forgot-password/", PasswordForgotView.as_view(), name="passwordforgot"
+    ),
+    path(
+        "accounts/password-reset/<email>/<token>/",
         PasswordResetView.as_view(),
         name="passwordreset",
     ),

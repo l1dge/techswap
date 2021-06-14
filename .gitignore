@@ -134,3 +134,4 @@ dmypy.json
 .env
 *.*\~
 *.code-workspace
+static_cdn/
