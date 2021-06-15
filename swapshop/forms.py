@@ -12,7 +12,7 @@ class AppUserRegistrationForm(forms.ModelForm):
     password = forms.PasswordInput()
     first_name = forms.TextInput()
     last_name = forms.TextInput()
-    image = forms.ClearableFileInput()
+    # image = forms.ClearableFileInput()
     mobile = forms.TextInput()
     is_admin = False
 
@@ -24,7 +24,7 @@ class AppUserRegistrationForm(forms.ModelForm):
             "password",
             "first_name",
             "last_name",
-            "image",
+            # "image",
             "mobile",
         ]
         widgets = {
@@ -57,11 +57,11 @@ class AppUserRegistrationForm(forms.ModelForm):
                     "placeholder": "Enter Last Name here...",
                 }
             ),
-            "image": forms.ClearableFileInput(
-                attrs={
-                    "class": "form-control",
-                }
-            ),
+            # "image": forms.ClearableFileInput(
+            #     attrs={
+            #         "class": "form-control",
+            #     }
+            # ),
             "mobile": forms.TextInput(
                 attrs={
                     "class": "form-control",
@@ -80,7 +80,7 @@ class AppUserRegistrationForm(forms.ModelForm):
 
 
 class AppUserLoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput())
+    email = forms.CharField(widget=forms.EmailInput())
     password = forms.CharField(widget=forms.PasswordInput())
 
 
