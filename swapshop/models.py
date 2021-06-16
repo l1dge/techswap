@@ -176,9 +176,8 @@ class CustomAccountManager(BaseUserManager):
         first_name,
         last_name,
         password,
-        image,
         mobile,
-        **other_fields,
+        **kwargs,
     ):
         if not email:
             raise ValueError(_("You must provide an email address"))
@@ -189,16 +188,15 @@ class CustomAccountManager(BaseUserManager):
             username=username,
             first_name=first_name,
             last_name=last_name,
-            image=image,
             mobile=mobile,
-            **other_fields,
+            **kwargs,
         )
         user.set_password(password)
         user.save()
         return user
 
     def create_superuser(
-        self, email, username, first_name, last_name, password, **other_fields
+        self, email, username, first_name, last_name, password, **kwargs
     ):
         email = self.normalize_email(email)
         suser = self.model(
@@ -206,7 +204,7 @@ class CustomAccountManager(BaseUserManager):
             username=username,
             first_name=first_name,
             last_name=last_name,
-            **other_fields,
+            **kwargs,
         )
         suser.is_superuser = True
         suser.is_staff = True
@@ -214,9 +212,9 @@ class CustomAccountManager(BaseUserManager):
         suser.set_password(password)
         suser.save()
 
-        if not other_fields.get("is_staff") is not True:
+        if not kwargs.get("is_staff") is not True:
             raise ValueError("Superuser must be assigned to is_staff=True")
-        if not other_fields.get("is_superuser") is not True:
+        if not kwargs.get("is_superuser") is not True:
             raise ValueError("Superuser must be assigned to is_superuser=True")
 
         return suser
@@ -227,8 +225,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(unique=True, max_length=200)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    image = models.FileField(upload_to="profile_images", null=True)
-    mobile = models.CharField(max_length=20)
+    mobile = models.CharField(max_length=50)
     joined_on = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -249,34 +246,32 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Profile(models.Model):
-    user_id = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone = models.CharField(max_length=200, null=True, blank=True)
-    # image = models.FileField(upload_to="profile_images", default=None)
-    rating = models.IntegerField(default=0)
-    feedback = models.ManyToManyField("Feedback", related_name="Feedback")
-    items = models.ManyToManyField(Item, related_name="Items")
+    image = models.FileField(upload_to="profile_images", null=True, blank=True)
+    rating = models.IntegerField(default=0, blank=True)
+    feedback = models.ManyToManyField("Feedback", related_name="Feedback", blank=True)
+    items = models.ManyToManyField(Item, related_name="Items", blank=True)
     bio = models.TextField(_("bio"), max_length=500, blank=True)
-    address = models.ForeignKey(
-        "Address", on_delete=models.CASCADE, default=None, blank=True
-    )
     birth_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user} {self.rating} {self.feedback}"
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=AppUser)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
 
 
-@receiver(post_save, sender=User)
+@receiver(post_save, sender=AppUser)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
 
 class Address(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     house_num = models.CharField(max_length=200, null=True, blank=True)
     street = models.CharField(max_length=200, null=True, blank=True)
     town = models.CharField(max_length=200, null=True, blank=True)
@@ -287,6 +282,17 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.street} {self.town} {self.country}"
+
+
+@receiver(post_save, sender=AppUser)
+def create_user_address(sender, instance, created, **kwargs):
+    if created:
+        Address.objects.create(user=instance)
+
+
+@receiver(post_save, sender=AppUser)
+def save_user_address(sender, instance, **kwargs):
+    instance.address.save()
 
 
 class Feedback(models.Model):

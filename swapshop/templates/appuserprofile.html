@@ -7,11 +7,11 @@
     <div class="row">
         <div class="col-md-4">
             <h3>Detailed Information</h3><hr>
-            <p><span class="font-weight-bold">Name: </span> {{appuser.full_name}}</p>
-            <p><span class="font-weight-bold">Username: </span> {{appuser.user.username}}</p>
-            <p><span class="font-weight-bold">Email: </span> {{appuser.user.email}}</p>
-            <p><span class="font-weight-bold">Address: </span> {{appuser.address}}</p>
-            <p><span class="font-weight-bold">Joined on: </span> {{appuser.joined_on}}</p>
+            <p><span class="font-weight-bold">Name: </span> {{ user.first_name }} {{ user.last_name }}</p>
+            <p><span class="font-weight-bold">Username: </span> {{user.username}}</p>
+            <p><span class="font-weight-bold">Email: </span> {{user.email}}</p>
+            <p><span class="font-weight-bold">Address: </span> {{user.address}}</p>
+            <p><span class="font-weight-bold">Joined on: </span> {{user.joined_on}}</p>
         </div>
         <div class="col-md-8">
             <h3>Previous Swaps</h3>

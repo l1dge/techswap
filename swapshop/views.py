@@ -151,7 +151,7 @@ class MyCartView(SwapMixin, TemplateView):
 class AppUserRegistrationView(CreateView):
     template_name = "userregistration.html"
     form_class = AppUserRegistrationForm
-    success_url = reverse_lazy("swapshop:home")
+    success_url = reverse_lazy("swapshop:appuserlogin")
 
     def form_valid(self, form):
         email = form.cleaned_data.get("email")
@@ -159,7 +159,6 @@ class AppUserRegistrationView(CreateView):
         password = form.cleaned_data.get("password")
         first_name = form.cleaned_data.get("first_name")
         last_name = form.cleaned_data.get("last_name")
-        image = form.cleaned_data.get("image")
         mobile = form.cleaned_data.get("mobile")
         user = AppUser.objects.create_user(
             email,
@@ -167,12 +166,15 @@ class AppUserRegistrationView(CreateView):
             first_name,
             last_name,
             password,
-            image,
             mobile,
         )
         form.instance.user = user
 
-        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
+        # login(
+        #     self.request,
+        #     user,
+        #     backend="allauth.account.auth_backends.AuthenticationBackend",
+        # )
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -181,22 +183,6 @@ class AppUserRegistrationView(CreateView):
             return next_url
         else:
             return self.success_url
-
-
-# class ItemCreateView(SwapMixin, CreateView):
-#     template_name = "itemcreate.html"
-#     form_class = ItemForm
-#     success_url = reverse_lazy("swapshop:itemcreate")
-
-#     def form_valid(self, form):
-#         userid = self.request.user.id
-#         p = form.save(commit=False)
-#         p.created_by = AppUser.objects.get(user_id=userid)
-#         p.save()
-#         images = self.request.FILES.getlist("more_images")
-#         for i in images:
-#             ItemImage.objects.create(item=p, image=i)
-#         return super().form_valid(form)
 
 
 class AppUserLogoutView(View):
@@ -208,14 +194,14 @@ class AppUserLogoutView(View):
 class AppUserLoginView(FormView):
     template_name = "userlogin.html"
     form_class = AppUserLoginForm
-    success_url = reverse_lazy("swapshop:home")
+    success_url = reverse_lazy("swapshop:appuserprofile")
 
     # form_valid method is a type of post method and is available in createview formview and updateview
     def form_valid(self, form):
-        uname = form.cleaned_data.get("username")
+        uname = form.cleaned_data.get("email")
         pword = form.cleaned_data["password"]
-        usr = authenticate(username=uname, password=pword)
-        if usr is not None and AppUser.objects.filter(user=usr).exists():
+        usr = authenticate(email=uname, password=pword)
+        if usr is not None and AppUser.objects.filter(email=uname).exists():
             login(self.request, usr)
         else:
             return render(
@@ -250,20 +236,22 @@ class AppUserProfileView(TemplateView):
     template_name = "appuserprofile.html"
 
     def dispatch(self, request, *args, **kwargs):
-        if (
+        if not (
             request.user.is_authenticated
-            and AppUser.objects.filter(user=request.user).exists()
+            and AppUser.objects.filter(id=request.user.id).exists()
         ):
-            pass
-        else:
             return redirect("/accounts/login/?next=/profile/")
+
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        appuser = self.request.user.appuser
+        appuser = AppUser.objects.filter(id=self.request.user.id)
         context["appuser"] = appuser
-        items = Swap.objects.filter(cart__client=appuser).order_by("-id")
+        if not (Swap.objects.filter(cart__client=appuser).order_by("-id").exists()):
+            items = None
+        else:
+            items = Swap.objects.filter(cart__client=appuser).order_by("-id")
         context["items"] = items
         return context
 
@@ -282,8 +270,8 @@ class AppUserItemDetailView(DetailView):
             item = Item.objects.get(id=item_id)
             if request.user.appuser != item.cart.appuser:
                 return redirect("swapshop:userprofile")
-        else:
-            return redirect("/accounts/login/?next=/profile/")
+            else:
+                return redirect("/accounts/login/?next=/profile/")
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -457,7 +445,7 @@ class ItemCreateView(SwapMixin, CreateView):
     def form_valid(self, form):
         userid = self.request.user.id
         p = form.save(commit=False)
-        p.created_by = AppUser.objects.get(user_id=userid)
+        p.created_by = AppUser.objects.get(id=userid)
         p.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:
