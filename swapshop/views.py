@@ -160,6 +160,7 @@ class AppUserRegistrationView(CreateView):
         first_name = form.cleaned_data.get("first_name")
         last_name = form.cleaned_data.get("last_name")
         mobile = form.cleaned_data.get("mobile")
+        is_active = True
         user = AppUser.objects.create_user(
             email,
             username,
@@ -167,6 +168,7 @@ class AppUserRegistrationView(CreateView):
             last_name,
             password,
             mobile,
+            is_active,
         )
         form.instance.user = user
 
@@ -246,13 +248,15 @@ class AppUserProfileView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        appuser = AppUser.objects.filter(id=self.request.user.id)
+        uimage = Profile.objects.filter(id=self.request.user.id)
+        appuser = self.request.user.id
         context["appuser"] = appuser
         if not (Swap.objects.filter(cart__client=appuser).order_by("-id").exists()):
             items = None
         else:
             items = Swap.objects.filter(cart__client=appuser).order_by("-id")
         context["items"] = items
+        context["uimage"] = uimage
         return context
 
 

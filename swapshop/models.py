@@ -177,6 +177,7 @@ class CustomAccountManager(BaseUserManager):
         last_name,
         password,
         mobile,
+        is_active,
         **kwargs,
     ):
         if not email:
@@ -189,6 +190,7 @@ class CustomAccountManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             mobile=mobile,
+            is_active=is_active,
             **kwargs,
         )
         user.set_password(password)

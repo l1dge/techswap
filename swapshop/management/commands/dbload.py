@@ -6,10 +6,12 @@ from django.contrib.auth.models import User
 import random
 import itertools
 
-fake = Faker()
-fake.add_provider(internet)
-fake.add_provider(phone_number)
-fake.add_provider(address)
+fakeuser = Faker()
+fakeuser.add_provider(internet)
+fakeuser.add_provider(phone_number)
+fakeuser.add_provider(address)
+
+fakeitem = Faker()
 
 
 class Command(BaseCommand):
@@ -26,12 +28,12 @@ class Command(BaseCommand):
         for count in range(int(susers)):
             try:
                 newuser = AppUser.objects.create_user(
-                    username=fake.user_name(),
-                    password=fake.password(),
-                    email=fake.ascii_free_email(),
-                    first_name=fake.first_name(),
-                    last_name=fake.last_name(),
-                    mobile=fake.phone_number(),
+                    username=fakeuser.user_name(),
+                    password=fakeuser.password(),
+                    email=fakeuser.ascii_free_email(),
+                    first_name=fakeuser.first_name(),
+                    last_name=fakeuser.last_name(),
+                    mobile=fakeuser.phone_number(),
                     is_staff=True,
                     is_superuser=True,
                 )
@@ -51,12 +53,12 @@ class Command(BaseCommand):
         for count in range(int(ausers)):
             try:
                 newuser = AppUser.objects.create_user(
-                    username=fake.user_name(),
-                    password=fake.password(),
-                    email=fake.ascii_free_email(),
-                    first_name=fake.first_name(),
-                    last_name=fake.last_name(),
-                    mobile=fake.phone_number(),
+                    username=fakeuser.user_name(),
+                    password=fakeuser.password(),
+                    email=fakeuser.ascii_free_email(),
+                    first_name=fakeuser.first_name(),
+                    last_name=fakeuser.last_name(),
+                    mobile=fakeuser.phone_number(),
                 )
 
             except newuser.AlreadyExists:
