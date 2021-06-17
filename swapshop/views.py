@@ -164,11 +164,6 @@ class UserRegistrationView(CreateView):
         )
         form.instance.user = user
 
-        # login(
-        #     self.request,
-        #     user,
-        #     backend="allauth.account.auth_backends.AuthenticationBackend",
-        # )
         return super().form_valid(form)
 
     def get_success_url(self):

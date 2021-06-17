@@ -11,24 +11,24 @@ class UserRegistrationForm(SignupForm, forms.ModelForm):
     class Meta:
         model = User
         fields = [
-            "email",
             "username",
+            "email",
             "password",
             "first_name",
             "last_name",
         ]
 
     widgets = {
-        "email": forms.EmailInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": "Enter Email here...",
-            }
-        ),
         "username": forms.TextInput(
             attrs={
                 "class": "form-control",
                 "placeholder": "Enter Username here...",
+            }
+        ),
+        "email": forms.EmailInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter Email here...",
             }
         ),
         "password": forms.PasswordInput(
