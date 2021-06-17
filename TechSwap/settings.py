@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "allauth.socialaccount.providers.github",
     "swapshop.apps.SwapshopConfig",
     "storages",
     "location_field.apps.DefaultConfig",
@@ -50,7 +51,11 @@ ROOT_URLCONF = "TechSwap.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [
+            os.path.join(BASE_DIR, "templates"),
+            os.path.join(BASE_DIR, "swapshop/templates"),
+            os.path.join(BASE_DIR, "swapshop/templates/allauth"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -64,8 +69,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "TechSwap.wsgi.application"
-
-AUTH_USER_MODEL = "swapshop.AppUser"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -87,6 +90,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 LANGUAGE_CODE = "en-gb"
 
@@ -107,8 +112,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_URL = config("LOGIN_URL")
-LOGIN_REDIRECT_URL = config("LOGIN_REDIRECT_URL")
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 86400  # 1 day in seconds
+ACCOUNT_FORMS = {"signup": "swapshop.forms.UserRegistrationForm"}
+ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 # Used for testing email, logs to console.
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -166,24 +176,3 @@ DEBUG_TOOLBAR_PANELS = [
     "debug_toolbar.panels.redirects.RedirectsPanel",
     "debug_toolbar.panels.profiling.ProfilingPanel",
 ]
-# debugging
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "handlers": {
-#         "console": {
-#             "class": "logging.StreamHandler",
-#         },
-#     },
-#     "root": {
-#         "handlers": ["console"],
-#         "level": "DEBUG",
-#     },
-#     "loggers": {
-#         "django": {
-#             "handlers": ["console"],
-#             "level": os.getenv("DJANGO_LOG_LEVEL", "DEBUG"),
-#             "propagate": False,
-#         },
-#     },
-# }

@@ -1,9 +1,4 @@
-from django.contrib.auth.models import (
-    User,
-    AbstractBaseUser,
-    PermissionsMixin,
-    BaseUserManager,
-)
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.fields import TextField
 from django.db.models.signals import post_save
@@ -45,7 +40,7 @@ class Item(models.Model):
     archived = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
     swap_agrd = models.BooleanField(default=False)
-    created_by = models.ForeignKey("AppUser", on_delete=models.DO_NOTHING)
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     view_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -70,9 +65,7 @@ class ItemImage(models.Model):
 
 
 class Cart(models.Model):
-    client = models.ForeignKey(
-        "AppUser", on_delete=models.SET_NULL, null=True, blank=True
-    )
+    client = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     total = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -130,7 +123,7 @@ class Location(models.Model):
 
 class Wanted(models.Model):
     user_id = models.ManyToManyField(
-        "AppUser",
+        User,
     )
     location = models.ForeignKey(
         Location,
@@ -145,7 +138,7 @@ class Wanted(models.Model):
 
 class ForSwap(models.Model):
     user_id = models.ManyToManyField(
-        "AppUser",
+        User,
     )
     item_id = models.ForeignKey(Item, related_name="ItemID", on_delete=models.CASCADE)
     location = models.ForeignKey(
@@ -156,112 +149,6 @@ class ForSwap(models.Model):
 
     def __str__(self):
         return f"{self.user_id} {self.location} {self.swap_avail}"
-
-
-# User stuff
-# class Admin(AbstractUser):
-#     first_name = models.CharField(max_length=200)
-#     last_name = models.CharField(max_length=200)
-#     image = models.FileField(upload_to="admins")
-#     mobile = models.CharField(max_length=20)
-
-#     def __str__(self):
-#         return self.full_name
-
-
-class CustomAccountManager(BaseUserManager):
-    use_in_migrations = True
-
-    def _create_user(self, email, password, **extra_fields):
-        if not email:
-            raise ValueError(_("You must provide an email address"))
-
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_user(self, email, password=None, **extra_fields):
-        extra_fields.setdefault("username", self.username)
-        extra_fields.setdefault("first_name", self.first_name)
-        extra_fields.setdefault("last_name", self.last_name)
-        extra_fields.setdefault("mobile", self.mobile)
-        extra_fields.setdefault("is_active", True)
-
-        return self._create_user(email, password, **extra_fields)
-
-    def create_superuser(
-        self, email, username, first_name, last_name, password, **extra_fields
-    ):
-        email = self.normalize_email(email)
-        suser = self.model(
-            email=email,
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            **extra_fields,
-        )
-        suser.is_superuser = True
-        suser.is_staff = True
-        suser.is_active = True
-        suser.set_password(password)
-        suser.save()
-
-        if not extra_fields.get("is_staff") is not True:
-            raise ValueError("Superuser must be assigned to is_staff=True")
-        if not extra_fields.get("is_superuser") is not True:
-            raise ValueError("Superuser must be assigned to is_superuser=True")
-
-        return suser
-
-
-class AppUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(_("email address"), max_length=50, unique=True)
-    username = models.CharField(unique=True, max_length=200)
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-    mobile = models.CharField(max_length=50)
-    joined_on = models.DateTimeField(auto_now_add=True)
-    is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-
-    objects = CustomAccountManager()
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = [
-        "username",
-        "first_name",
-        "last_name",
-        "mobile",
-    ]
-
-    class Meta:
-        verbose_name = _("appuser")
-        verbose_name_plural = _("appusers")
-
-    def get_full_name(self):
-        """
-        Returns the first_name plus the last_name, with a space in between.
-        """
-
-        return f"{self.first_name} {self.last_name}"
-
-    def get_short_name(self):
-        """
-        Returns the short name for the user.
-        """
-        return self.first_name
-
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        """
-        Sends an email to this User.
-        """
-        send_mail(subject, message, from_email, [self.email], **kwargs)
-
-    def __str__(self):
-        return f"{self.username} {self.first_name} {self.last_name} {self.mobile}"
 
 
 class Profile(models.Model):
@@ -278,13 +165,13 @@ class Profile(models.Model):
         return f"{self.user} {self.rating} {self.feedback}"
 
 
-@receiver(post_save, sender=AppUser)
+@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
 
 
-@receiver(post_save, sender=AppUser)
+@receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
@@ -303,13 +190,13 @@ class Address(models.Model):
         return f"{self.street} {self.town} {self.country}"
 
 
-@receiver(post_save, sender=AppUser)
+@receiver(post_save, sender=User)
 def create_user_address(sender, instance, created, **kwargs):
     if created:
         Address.objects.create(user=instance)
 
 
-@receiver(post_save, sender=AppUser)
+@receiver(post_save, sender=User)
 def save_user_address(sender, instance, **kwargs):
     instance.address.save()
 

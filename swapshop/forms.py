@@ -1,85 +1,167 @@
 from django import forms
 
 # from django.contrib.auth.models import User
-from django.forms import fields
+# from django.forms import fields
 from location_field.models.plain import PlainLocationField
 from .models import *
+from allauth.account.forms import SignupForm
 
 # @todo Look into using allauth as suggested by Bob.
-class AppUserRegistrationForm(forms.ModelForm):
-    email = forms.EmailInput()
-    username = forms.TextInput()
-    password = forms.PasswordInput()
-    first_name = forms.TextInput()
-    last_name = forms.TextInput()
-    # image = forms.ClearableFileInput()
-    mobile = forms.TextInput()
-    is_admin = False
-
+class UserRegistrationForm(SignupForm, forms.ModelForm):
     class Meta:
-        model = AppUser
+        model = User
         fields = [
             "email",
             "username",
             "password",
             "first_name",
             "last_name",
-            # "image",
-            "mobile",
+        ]
+
+    widgets = {
+        "email": forms.EmailInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter Email here...",
+            }
+        ),
+        "username": forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter Username here...",
+            }
+        ),
+        "password": forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+            }
+        ),
+        "first_name": forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter First Name here...",
+            }
+        ),
+        "last_name": forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter Last Name here...",
+            }
+        ),
+    }
+
+    def signup(self, request, user):
+
+        user.first_name = self.cleaned_data["first_name"]
+        user.last_name = self.cleaned_data["last_name"]
+        user.save()
+        return user
+
+    # # @todo Check for lower and upercase usernames
+    # def clean_username(self):
+    #     uname = self.cleaned_data.get("username")
+    #     if User.objects.filter(username=uname).exists():
+    #         raise forms.ValidationError("This username already exists.")
+
+    #     return uname
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = [
+            "image",
+            "phone",
+            "bio",
+            "birth_date",
         ]
         widgets = {
-            "email": forms.EmailInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Enter Email here...",
-                }
-            ),
-            "username": forms.TextInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Enter Username here...",
-                }
-            ),
-            "password": forms.PasswordInput(
+            "image": forms.ClearableFileInput(
                 attrs={
                     "class": "form-control",
                 }
             ),
-            "first_name": forms.TextInput(
+            "phone": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Enter First Name here...",
+                    "placeholder": "Enter Phone Number here...",
                 }
             ),
-            "last_name": forms.TextInput(
+            "bio": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Enter Last Name here...",
+                    "placeholder": "Enter Bio here...",
+                    "rows": 5,
                 }
             ),
-            # "image": forms.ClearableFileInput(
-            #     attrs={
-            #         "class": "form-control",
-            #     }
-            # ),
-            "mobile": forms.TextInput(
+            "birth_date": forms.DateInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Enter Mobile Number here...",
+                    "placeholder": "Enter Birthday here...",
                 }
             ),
         }
 
-    # @todo Check for lower and upercase usernames
-    def clean_username(self):
-        uname = self.cleaned_data.get("username")
-        if AppUser.objects.filter(username=uname).exists():
-            raise forms.ValidationError("This username already exists.")
 
-        return uname
+class UserAddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        fields = [
+            "house_num",
+            "street",
+            "town",
+            "city",
+            "county",
+            "country",
+            "zipcode",
+        ]
+        widgets = {
+            "house_num": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "House Number...",
+                }
+            ),
+            "street": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Street...",
+                }
+            ),
+            "town": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Town...",
+                }
+            ),
+            "city": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "City...",
+                }
+            ),
+            "county": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "County...",
+                }
+            ),
+            "country": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Country...",
+                }
+            ),
+            "zipcode": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Zipcode...",
+                }
+            ),
+        }
 
 
-class AppUserLoginForm(forms.Form):
+class UserLoginForm(forms.Form):
     email = forms.CharField(widget=forms.EmailInput())
     password = forms.CharField(widget=forms.PasswordInput())
 
@@ -97,7 +179,7 @@ class PasswordForgotForm(forms.Form):
     # @todo Change the check below to the negative i.e if not etc.
     def clean_email(self):
         e = self.cleaned_data.get("email")
-        if AppUser.objects.filter(user__email=e).exists():
+        if User.objects.filter(user__email=e).exists():
             pass
         else:
             raise forms.ValidationError("User with this account does not exist..")

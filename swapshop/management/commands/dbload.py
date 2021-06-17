@@ -1,10 +1,11 @@
 from django.core.management.base import BaseCommand, CommandError
-from swapshop.models import Item, ItemImage, AppUser, Category
+from swapshop.models import Item, ItemImage, Profile, Category
 from faker import Faker
 from faker.providers import internet, phone_number, address
 from django.contrib.auth.models import User
 import random
 import itertools
+from django.utils import timezone
 
 fakeuser = Faker()
 fakeuser.add_provider(internet)
@@ -25,17 +26,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         susers = options["number_susers"][0]
-        for count in range(int(susers)):
+        for count in range(1, int(susers) + 1):
             try:
-                newuser = AppUser.objects.create_user(
+                newuser = User.objects.create_user(
                     username=fakeuser.user_name(),
                     password=fakeuser.password(),
-                    email=fakeuser.ascii_free_email(),
                     first_name=fakeuser.first_name(),
                     last_name=fakeuser.last_name(),
-                    mobile=fakeuser.phone_number(),
+                    email=fakeuser.ascii_free_email(),
                     is_staff=True,
                     is_superuser=True,
+                    last_login=timezone.now(),
                 )
 
             except newuser.AlreadyExists:
@@ -50,22 +51,22 @@ class Command(BaseCommand):
             )
 
         ausers = options["number_ausers"][0]
-        for count in range(int(ausers)):
+        for count in range(1, int(ausers) + 1):
             try:
-                newuser = AppUser.objects.create_user(
+                newuser = User.objects.create_user(
                     username=fakeuser.user_name(),
                     password=fakeuser.password(),
-                    email=fakeuser.ascii_free_email(),
                     first_name=fakeuser.first_name(),
                     last_name=fakeuser.last_name(),
-                    mobile=fakeuser.phone_number(),
+                    email=fakeuser.ascii_free_email(),
+                    last_login=timezone.now(),
                 )
 
             except newuser.AlreadyExists:
-                raise CommandError(f"AppUser { newuser.username } already exists")
+                raise CommandError(f"User { newuser.username } already exists")
 
             newuser.save()
 
             self.stdout.write(
-                self.style.SUCCESS(f"Successfully created AppUser { newuser.username }")
+                self.style.SUCCESS(f"Successfully created User { newuser.username }")
             )
