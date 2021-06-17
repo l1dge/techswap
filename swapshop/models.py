@@ -13,7 +13,8 @@ from location_field.models.plain import PlainLocationField
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
+from django.core.mail import send_mail
 
 # Item Management
 class Category(models.Model):
@@ -169,36 +170,29 @@ class ForSwap(models.Model):
 
 
 class CustomAccountManager(BaseUserManager):
-    def create_user(
-        self,
-        email,
-        username,
-        first_name,
-        last_name,
-        password,
-        mobile,
-        is_active,
-        **kwargs,
-    ):
+    use_in_migrations = True
+
+    def _create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError(_("You must provide an email address"))
 
         email = self.normalize_email(email)
-        user = self.model(
-            email=email,
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            mobile=mobile,
-            is_active=is_active,
-            **kwargs,
-        )
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
         return user
 
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("username", self.username)
+        extra_fields.setdefault("first_name", self.first_name)
+        extra_fields.setdefault("last_name", self.last_name)
+        extra_fields.setdefault("mobile", self.mobile)
+        extra_fields.setdefault("is_active", True)
+
+        return self._create_user(email, password, **extra_fields)
+
     def create_superuser(
-        self, email, username, first_name, last_name, password, **kwargs
+        self, email, username, first_name, last_name, password, **extra_fields
     ):
         email = self.normalize_email(email)
         suser = self.model(
@@ -206,7 +200,7 @@ class CustomAccountManager(BaseUserManager):
             username=username,
             first_name=first_name,
             last_name=last_name,
-            **kwargs,
+            **extra_fields,
         )
         suser.is_superuser = True
         suser.is_staff = True
@@ -214,9 +208,9 @@ class CustomAccountManager(BaseUserManager):
         suser.set_password(password)
         suser.save()
 
-        if not kwargs.get("is_staff") is not True:
+        if not extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser must be assigned to is_staff=True")
-        if not kwargs.get("is_superuser") is not True:
+        if not extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must be assigned to is_superuser=True")
 
         return suser
@@ -242,6 +236,29 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
         "last_name",
         "mobile",
     ]
+
+    class Meta:
+        verbose_name = _("appuser")
+        verbose_name_plural = _("appusers")
+
+    def get_full_name(self):
+        """
+        Returns the first_name plus the last_name, with a space in between.
+        """
+
+        return f"{self.first_name} {self.last_name}"
+
+    def get_short_name(self):
+        """
+        Returns the short name for the user.
+        """
+        return self.first_name
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        """
+        Sends an email to this User.
+        """
+        send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def __str__(self):
         return f"{self.username} {self.first_name} {self.last_name} {self.mobile}"

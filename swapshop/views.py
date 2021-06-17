@@ -163,10 +163,10 @@ class AppUserRegistrationView(CreateView):
         is_active = True
         user = AppUser.objects.create_user(
             email,
+            password,
             username,
             first_name,
             last_name,
-            password,
             mobile,
             is_active,
         )
