@@ -1,6 +1,7 @@
 from django import forms
 
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
+
 # from django.forms import fields
 from location_field.models.plain import PlainLocationField
 from .models import *
@@ -13,7 +14,7 @@ class UserRegistrationForm(SignupForm, forms.ModelForm):
         fields = [
             "username",
             "email",
-            "password",
+            # "password",
             "first_name",
             "last_name",
         ]
@@ -31,11 +32,11 @@ class UserRegistrationForm(SignupForm, forms.ModelForm):
                 "placeholder": "Enter Email here...",
             }
         ),
-        "password": forms.PasswordInput(
-            attrs={
-                "class": "form-control",
-            }
-        ),
+        # "password": forms.PasswordInput(
+        #     attrs={
+        #         "class": "form-control",
+        #     }
+        # ),
         "first_name": forms.TextInput(
             attrs={
                 "class": "form-control",
@@ -57,7 +58,7 @@ class UserRegistrationForm(SignupForm, forms.ModelForm):
         user.save()
         return user
 
-    # # @todo Check for lower and upercase usernames
+    # # @todo Check for lower and uppercase usernames
     # def clean_username(self):
     #     uname = self.cleaned_data.get("username")
     #     if User.objects.filter(username=uname).exists():

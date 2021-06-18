@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "storages",
     "location_field.apps.DefaultConfig",
     "debug_toolbar",
+    "django_truncate",
 ]
 
 MIDDLEWARE = [

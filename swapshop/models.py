@@ -154,7 +154,12 @@ class ForSwap(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone = models.CharField(max_length=200, null=True, blank=True)
-    image = models.FileField(upload_to="profile_images", null=True, blank=True)
+    image = models.FileField(
+        upload_to="profile_images",
+        null=True,
+        blank=True,
+        default="profile_images/dummy-avatar.png",
+    )
     rating = models.IntegerField(default=0, blank=True)
     feedback = models.ManyToManyField("Feedback", related_name="Feedback", blank=True)
     items = models.ManyToManyField(Item, related_name="Items", blank=True)

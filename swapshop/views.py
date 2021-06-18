@@ -163,7 +163,6 @@ class UserRegistrationView(CreateView):
             username, password, email, first_name=first_name, last_name=last_name
         )
         form.instance.user = user
-
         return super().form_valid(form)
 
     def get_success_url(self):
