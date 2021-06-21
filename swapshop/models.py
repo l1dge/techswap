@@ -1,9 +1,4 @@
-from django.contrib.auth.models import (
-    User,
-    AbstractBaseUser,
-    PermissionsMixin,
-    BaseUserManager,
-)
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.fields import TextField
 from django.db.models.signals import post_save
@@ -13,7 +8,8 @@ from location_field.models.plain import PlainLocationField
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
+from django.core.mail import send_mail
 
 # Item Management
 class Category(models.Model):
@@ -44,7 +40,7 @@ class Item(models.Model):
     archived = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
     swap_agrd = models.BooleanField(default=False)
-    created_by = models.ForeignKey("AppUser", on_delete=models.DO_NOTHING)
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     view_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -69,9 +65,7 @@ class ItemImage(models.Model):
 
 
 class Cart(models.Model):
-    client = models.ForeignKey(
-        "AppUser", on_delete=models.SET_NULL, null=True, blank=True
-    )
+    client = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     total = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -129,7 +123,7 @@ class Location(models.Model):
 
 class Wanted(models.Model):
     user_id = models.ManyToManyField(
-        "AppUser",
+        User,
     )
     location = models.ForeignKey(
         Location,
@@ -144,7 +138,7 @@ class Wanted(models.Model):
 
 class ForSwap(models.Model):
     user_id = models.ManyToManyField(
-        "AppUser",
+        User,
     )
     item_id = models.ForeignKey(Item, related_name="ItemID", on_delete=models.CASCADE)
     location = models.ForeignKey(
@@ -157,108 +151,19 @@ class ForSwap(models.Model):
         return f"{self.user_id} {self.location} {self.swap_avail}"
 
 
-# User stuff
-# class Admin(AbstractUser):
-#     first_name = models.CharField(max_length=200)
-#     last_name = models.CharField(max_length=200)
-#     image = models.FileField(upload_to="admins")
-#     mobile = models.CharField(max_length=20)
-
-#     def __str__(self):
-#         return self.full_name
-
-
-class CustomAccountManager(BaseUserManager):
-    def create_user(
-        self,
-        email,
-        username,
-        first_name,
-        last_name,
-        password,
-        image,
-        mobile,
-        **other_fields,
-    ):
-        if not email:
-            raise ValueError(_("You must provide an email address"))
-
-        email = self.normalize_email(email)
-        user = self.model(
-            email=email,
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            image=image,
-            mobile=mobile,
-            **other_fields,
-        )
-        user.set_password(password)
-        user.save()
-        return user
-
-    def create_superuser(
-        self, email, username, first_name, last_name, password, **other_fields
-    ):
-        email = self.normalize_email(email)
-        suser = self.model(
-            email=email,
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            **other_fields,
-        )
-        suser.is_superuser = True
-        suser.is_staff = True
-        suser.is_active = True
-        suser.set_password(password)
-        suser.save()
-
-        if not other_fields.get("is_staff") is not True:
-            raise ValueError("Superuser must be assigned to is_staff=True")
-        if not other_fields.get("is_superuser") is not True:
-            raise ValueError("Superuser must be assigned to is_superuser=True")
-
-        return suser
-
-
-class AppUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(_("email address"), max_length=50, unique=True)
-    username = models.CharField(unique=True, max_length=200)
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-    image = models.FileField(upload_to="profile_images", null=True)
-    mobile = models.CharField(max_length=20)
-    joined_on = models.DateTimeField(auto_now_add=True)
-    is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-
-    objects = CustomAccountManager()
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = [
-        "username",
-        "first_name",
-        "last_name",
-        "mobile",
-    ]
-
-    def __str__(self):
-        return f"{self.username} {self.first_name} {self.last_name} {self.mobile}"
-
-
 class Profile(models.Model):
-    user_id = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone = models.CharField(max_length=200, null=True, blank=True)
-    # image = models.FileField(upload_to="profile_images", default=None)
-    rating = models.IntegerField(default=0)
-    feedback = models.ManyToManyField("Feedback", related_name="Feedback")
-    items = models.ManyToManyField(Item, related_name="Items")
-    bio = models.TextField(_("bio"), max_length=500, blank=True)
-    address = models.ForeignKey(
-        "Address", on_delete=models.CASCADE, default=None, blank=True
+    image = models.FileField(
+        upload_to="profile_images",
+        null=True,
+        blank=True,
+        default="profile_images/dummy-avatar.png",
     )
+    rating = models.IntegerField(default=0, blank=True)
+    feedback = models.ManyToManyField("Feedback", related_name="Feedback", blank=True)
+    items = models.ManyToManyField(Item, related_name="Items", blank=True)
+    bio = models.TextField(_("bio"), max_length=500, blank=True)
     birth_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
@@ -277,6 +182,7 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 class Address(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     house_num = models.CharField(max_length=200, null=True, blank=True)
     street = models.CharField(max_length=200, null=True, blank=True)
     town = models.CharField(max_length=200, null=True, blank=True)
@@ -287,6 +193,17 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.street} {self.town} {self.country}"
+
+
+@receiver(post_save, sender=User)
+def create_user_address(sender, instance, created, **kwargs):
+    if created:
+        Address.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_address(sender, instance, **kwargs):
+    instance.address.save()
 
 
 class Feedback(models.Model):

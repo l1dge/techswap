@@ -16,7 +16,7 @@ from django.views.generic import (
 from django.utils.text import slugify
 
 from .forms import *
-from .models import Cart, Item, AppUser, CartProduct, User, Swap
+from .models import Cart, Item, User, CartProduct, User, Swap
 from .utils import password_reset_token
 from django.conf import settings
 import logging
@@ -27,8 +27,8 @@ class SwapMixin(object):
         cart_id = request.session.get("cart_id")
         if cart_id:
             cart_obj = Cart.objects.get(id=cart_id)
-            if request.user.is_authenticated and request.user.appuser:
-                cart_obj.appuser = request.user.appuser
+            if request.user.is_authenticated and request.user.User:
+                cart_obj.User = request.user.User
                 cart_obj.save()
         return super().dispatch(request, *args, **kwargs)
 
@@ -148,31 +148,21 @@ class MyCartView(SwapMixin, TemplateView):
         return context
 
 
-class AppUserRegistrationView(CreateView):
+class UserRegistrationView(CreateView):
     template_name = "userregistration.html"
-    form_class = AppUserRegistrationForm
-    success_url = reverse_lazy("swapshop:home")
+    form_class = UserRegistrationForm
+    success_url = reverse_lazy("swapshop:userlogin")
 
     def form_valid(self, form):
-        email = form.cleaned_data.get("email")
         username = form.cleaned_data.get("username")
         password = form.cleaned_data.get("password")
         first_name = form.cleaned_data.get("first_name")
         last_name = form.cleaned_data.get("last_name")
-        image = form.cleaned_data.get("image")
-        mobile = form.cleaned_data.get("mobile")
-        user = AppUser.objects.create_user(
-            email,
-            username,
-            first_name,
-            last_name,
-            password,
-            image,
-            mobile,
+        email = form.cleaned_data.get("email")
+        user = User.objects.create_user(
+            username, password, email, first_name=first_name, last_name=last_name
         )
         form.instance.user = user
-
-        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -183,40 +173,28 @@ class AppUserRegistrationView(CreateView):
             return self.success_url
 
 
-# class ItemCreateView(SwapMixin, CreateView):
-#     template_name = "itemcreate.html"
-#     form_class = ItemForm
-#     success_url = reverse_lazy("swapshop:itemcreate")
-
-#     def form_valid(self, form):
-#         userid = self.request.user.id
-#         p = form.save(commit=False)
-#         p.created_by = AppUser.objects.get(user_id=userid)
-#         p.save()
-#         images = self.request.FILES.getlist("more_images")
-#         for i in images:
-#             ItemImage.objects.create(item=p, image=i)
-#         return super().form_valid(form)
-
-
-class AppUserLogoutView(View):
+class UserLogoutView(View):
     def get(self, request):
         logout(request)
         return redirect("swapshop:home")
 
 
-class AppUserLoginView(FormView):
+class UserLoginView(FormView):
     template_name = "userlogin.html"
-    form_class = AppUserLoginForm
-    success_url = reverse_lazy("swapshop:home")
+    form_class = UserLoginForm
+    success_url = reverse_lazy("swapshop:userprofile")
 
     # form_valid method is a type of post method and is available in createview formview and updateview
     def form_valid(self, form):
         uname = form.cleaned_data.get("username")
         pword = form.cleaned_data["password"]
         usr = authenticate(username=uname, password=pword)
-        if usr is not None and AppUser.objects.filter(user=usr).exists():
-            login(self.request, usr)
+        if usr is not None and User.objects.filter(username=uname).exists():
+            login(
+                self.request,
+                usr,
+                backend="allauth.account.auth_backends.AuthenticationBackend",
+            )
         else:
             return render(
                 self.request,
@@ -234,6 +212,30 @@ class AppUserLoginView(FormView):
             return self.success_url
 
 
+class UserProfileView(TemplateView):
+    template_name = "userprofile.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not (
+            request.user.is_authenticated
+            and User.objects.filter(id=request.user.id).exists()
+        ):
+            return redirect("/accounts/login/?next=/profile/")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        User = self.request.user.id
+        context["User"] = User
+        if not (Swap.objects.filter(cart__client=User).order_by("-id").exists()):
+            items = None
+        else:
+            items = Swap.objects.filter(cart__client=User).order_by("-id")
+        context["items"] = items
+        return context
+
+
 class AboutView(SwapMixin, TemplateView):
     template_name = "about.html"
 
@@ -246,44 +248,22 @@ class SocialView(SwapMixin, TemplateView):
     template_name = "social.html"
 
 
-class AppUserProfileView(TemplateView):
-    template_name = "appuserprofile.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        if (
-            request.user.is_authenticated
-            and AppUser.objects.filter(user=request.user).exists()
-        ):
-            pass
-        else:
-            return redirect("/accounts/login/?next=/profile/")
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        appuser = self.request.user.appuser
-        context["appuser"] = appuser
-        items = Swap.objects.filter(cart__client=appuser).order_by("-id")
-        context["items"] = items
-        return context
-
-
-class AppUserItemDetailView(DetailView):
-    template_name = "appuseritemdetail.html"
+class UserItemDetailView(DetailView):
+    template_name = "useritemdetail.html"
     model = Item
     context_object_name = "itm_obj"
 
     def dispatch(self, request, *args, **kwargs):
         if (
             request.user.is_authenticated
-            and AppUser.objects.filter(user=request.user).exists()
+            and User.objects.filter(user=request.user).exists()
         ):
             item_id = self.kwargs["pk"]
             item = Item.objects.get(id=item_id)
-            if request.user.appuser != item.cart.appuser:
+            if request.user.User != item.cart.User:
                 return redirect("swapshop:userprofile")
-        else:
-            return redirect("/accounts/login/?next=/profile/")
+            else:
+                return redirect("/accounts/login/?next=/profile/")
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -311,9 +291,9 @@ class PasswordForgotView(FormView):
         email = form.cleaned_data.get("email")
         # get current host ip/domain
         url = self.request.META["HTTP_HOST"]
-        # get appuser and then user
-        appuser = AppUser.objects.get(user__email=email)
-        user = appuser.user
+        # get User and then user
+        User = User.objects.get(user__email=email)
+        user = User.user
         # send mail to the user with email
         text_content = "Please Click the link below to reset your password. "
         html_content = (
@@ -371,7 +351,7 @@ class AdminRequiredMixin(object):
 
 class AdminLoginView(FormView):
     template_name = "adminpages/adminlogin.html"
-    form_class = AppUserLoginForm
+    form_class = UserLoginForm
     success_url = reverse_lazy("swapshop:adminhome")
 
     def form_valid(self, form):
@@ -457,7 +437,7 @@ class ItemCreateView(SwapMixin, CreateView):
     def form_valid(self, form):
         userid = self.request.user.id
         p = form.save(commit=False)
-        p.created_by = AppUser.objects.get(user_id=userid)
+        p.created_by = User.objects.get(id=userid)
         p.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:

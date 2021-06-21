@@ -30,4 +30,4 @@ class ProfileAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register([AppUser, Profile], ProfileAdmin)
+admin.site.register([Profile, Address], ProfileAdmin)

@@ -7,12 +7,19 @@
     <div class="row">
         <div class="col-md-4">
             <h3>Detailed Information</h3><hr>
-            <p><span class="font-weight-bold">Name: </span> {{appuser.full_name}}</p>
-            <p><span class="font-weight-bold">Username: </span> {{appuser.user.username}}</p>
-            <p><span class="font-weight-bold">Email: </span> {{appuser.user.email}}</p>
-            <p><span class="font-weight-bold">Address: </span> {{appuser.address}}</p>
-            <p><span class="font-weight-bold">Joined on: </span> {{appuser.joined_on}}</p>
+            <div class="col-md-4 p-3">
+                <p><h3>{{user.username}}</h3></p>
+                <img src="{{user.profile.image.url}}" class="img-fluid" style="height:100px; object-fit: contain;" alt="{{user.username}}">
+            </div>
+            <p><span class="font-weight-bold">Name: </span> {{ user.first_name }} {{ user.last_name }}</p>
+            <p><span class="font-weight-bold">Username: </span> {{user.username}}</p>
+            <p><span class="font-weight-bold">Email: </span> {{user.email}}</p>
+            {% comment %} <p><span class="font-weight-bold">Address: </span> {{user.address.house_num}}</p> {% endcomment %}
+            <p><span class="font-weight-bold">Joined on: </span> {{user.date_joined}}</p>
+            
         </div>
+    </div>
+    {% if items is not None %}
         <div class="col-md-8">
             <h3>Previous Swaps</h3>
             <hr>
@@ -35,6 +42,13 @@
                 </tbody>
             </table>
         </div>
-    </div>
+    {% else %}
+        <div class="col-md-8">
+        <hr>
+            <h3>No Swaps made Yet</h3>
+        <hr>
+        </div>
+    {% endif %}
+
 </div>
 {% endblock %}
