@@ -20,6 +20,7 @@ django-shortcuts==1.6
 django-storages==1.11.1
 django-truncate==0.1
 Faker==8.6.0
+faker-vehicle==0.2.0
 flake8==3.9.2
 geographiclib==1.50
 geopy==2.1.0

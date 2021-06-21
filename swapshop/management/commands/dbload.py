@@ -8,6 +8,8 @@ import random
 import itertools
 from django.utils import timezone
 from django.utils.text import slugify
+from django.db.models import Max, Min
+from django.contrib.auth.hashers import make_password
 
 
 fakeuser = Faker()
@@ -78,110 +80,75 @@ class Command(BaseCommand):
         category = options["category"]
         items = options["items"]
 
+        def makeuser():
+            imgnum = random.choice(range(50))
+            user, created = User.objects.get_or_create(
+                username=fakeuser.user_name(),
+                password=make_password(fakeuser.password()),
+                first_name=fakeuser.first_name(),
+                last_name=fakeuser.last_name(),
+                email=fakeuser.ascii_free_email(),
+            )
+            user.last_login = timezone.now()
+            user.profile.bio = fakeuser.paragraph(nb_sentences=5)
+            user.profile.phone = fakeuser.phone_number()
+            user.profile.birth_date = fakeuser.date_of_birth()
+            user.profile.image = f"profile_images/dummy-avatar{imgnum}.jpg"
+            if admin:
+                user.is_staff = True
+                user.is_superuser = True
+                user.save()
+            else:
+                user.save()
+
+            if created:
+                return user
+            else:
+                raise CommandError(f"User { user.username } already exists")
+
+        def makeitem():
+            imgnum = random.choice(range(50))
+            itm = fakeitem.vehicle_make_model()
+            maxid = User.objects.all().aggregate(maxid=Max("id"))["maxid"]
+            minid = User.objects.all().aggregate(minid=Min("id"))["minid"]
+            pk = random.randint(minid, maxid)
+            categories = Category.objects.all()
+            uid = User.objects.filter(pk=pk).first()
+            item, created = Item.objects.get_or_create(
+                title=itm,
+                slug=str(random.randint(50000, 600000)) + " " + str(uid) + " " + itm,
+                description=fakeitem.paragraph(nb_sentences=5),
+                image=f"items/dummy-item{imgnum}.jpg",
+                condition=random.choice(ITEM_CONDITION),
+                created_by=uid,  # Pick and arbitrary number from your usersid's
+            )
+
+            if created:
+                item.category.add(random.choice(categories))
+                item.save()
+            else:
+                raise CommandError(f"Item { item.title } already exists")
+                pass
+
+        # Do the stuff
+
         if users:
-            for i in range(total):
-                if admin:
-                    try:
-                        newuser = User.objects.create_user(
-                            username=fakeuser.user_name(),
-                            password=fakeuser.password(),
-                            first_name=fakeuser.first_name(),
-                            last_name=fakeuser.last_name(),
-                            email=fakeuser.ascii_free_email(),
-                            is_staff=True,
-                            is_superuser=True,
-                            last_login=timezone.now(),
-                        )
-
-                    except newuser.AlreadyExists:
-                        raise CommandError(f"User { newuser.username } already exists")
-
-                    num = random.choice(range(50))
-                    newuser.profile.bio = fakeuser.paragraph(nb_sentences=5)
-                    newuser.profile.phone = fakeuser.phone_number()
-                    newuser.profile.birth_date = fakeuser.date_of_birth()
-                    newuser.profile.image = f"profile_images/dummy-avatar{num}.jpg"
-                    newuser.save()
-
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            f"Successfully created Superuser { newuser.username }"
-                        )
-                    )
-
-                else:
-                    try:
-                        newuser = User.objects.create_user(
-                            username=fakeuser.user_name(),
-                            password=fakeuser.password(),
-                            first_name=fakeuser.first_name(),
-                            last_name=fakeuser.last_name(),
-                            email=fakeuser.ascii_free_email(),
-                            last_login=timezone.now(),
-                        )
-
-                    except newuser.AlreadyExists:
-                        raise CommandError(f"User { newuser.username } already exists")
-
-                    num = random.choice(range(50))
-                    newuser.profile.bio = fakeuser.paragraph(nb_sentences=5)
-                    newuser.profile.phone = fakeuser.phone_number()
-                    newuser.profile.birth_date = fakeuser.date_of_birth()
-                    newuser.profile.image = f"profile_images/dummy-avatar{num}.jpg"
-
-                    newuser.save()
-
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            f"Successfully created User { newuser.username }"
-                        )
-                    )
+            for _ in range(total):
+                makeuser()
+            self.stdout.write(self.style.SUCCESS(f"Successfully created {total} Users"))
 
         if category:
             for cat in CATEGORIES:
-                try:
-                    if not Category.objects.filter(title=cat).exists():
-                        newcat = Category.objects.create(
-                            title=cat, slug=slugify(cat, allow_unicode=True)
-                        )
-                        newcat.save()
-                        self.stdout.write(
-                            self.style.SUCCESS(
-                                f"Successfully created Category { newcat.title }"
-                            )
-                        )
-                    elif Category.objects.filter(title=cat).exists():
-                        print(f"Category { cat } already exists")
+                category, created = Category.objects.get_or_create(
+                    title=cat, slug=slugify(cat, allow_unicode=True)
+                )
 
-                except newcat.category.AlreadyExists:
-                    raise CommandError(f"Category { newcat.category } already exists")
+                if created:
+                    return f"Successfully created Category { category.title }"
+                else:
+                    raise CommandError(f"Category { category.title } already exists")
 
         if items:
             for i in range(total):
-                try:
-                    num = random.choice(range(50))
-                    itm = fakeitem.vehicle_make_model()
-                    categories = Category.objects.all()
-                    if not Item.objects.filter(title=itm).exists():
-                        newitem = Item.objects.create(
-                            title=itm,
-                            slug=slugify(itm, allow_unicode=True),
-                            description=fakeitem.paragraph(nb_sentences=5),
-                            image=f"items/dummy-item{num}.jpg",
-                            condition=random.choice(ITEM_CONDITION),
-                            created_by=User.objects.get(
-                                id=603
-                            ),  # Pick and arbitrary number from your usersid's
-                        )
-                        newitem.category.add(random.choice(categories))
-                        newitem.save()
-                        self.stdout.write(
-                            self.style.SUCCESS(
-                                f"Successfully created New Item { newitem.title }"
-                            )
-                        )
-                    elif Item.objects.filter(title=itm).exists():
-                        print(f"Item { newitem.title } already exists")
-
-                except newitem.AlreadyExists:
-                    raise CommandError(f"Item { newcat.title } already exists")
+                makeitem()
+            self.stdout.write(self.style.SUCCESS(f"Successfully created {total} Items"))

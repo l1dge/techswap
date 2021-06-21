@@ -19,6 +19,17 @@ class Category(models.Model):
     def __str__(self):
         return self.title
 
+    # def get_absolute_url(self):
+    #     kwargs = {"pk": self.id, "slug": self.slug, "my_id": self.id}
+    #     return reverse("itemdetail", kwargs=kwargs)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        value = self.slug
+        self.slug = slugify(value, allow_unicode=True)
+        super().save(*args, **kwargs)
+
 
 ITEM_CONDITION = (
     (s, s)
@@ -51,7 +62,9 @@ class Item(models.Model):
         return reverse("itemdetail", kwargs=kwargs)
 
     def save(self, *args, **kwargs):
-        value = self.title
+        if not self.slug:
+            self.slug = slugify(self.title)
+        value = self.slug
         self.slug = slugify(value, allow_unicode=True)
         super().save(*args, **kwargs)
 
