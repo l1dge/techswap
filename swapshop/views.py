@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.shortcuts import *
+from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -437,7 +437,7 @@ class ItemCreateView(SwapMixin, CreateView):
     def form_valid(self, form):
         userid = self.request.user.id
         p = form.save(commit=False)
-        p.created_by = User.objects.get(id=userid)
+        p.created_by = self.request.user
         p.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:
