@@ -52,7 +52,6 @@ class UserRegistrationForm(SignupForm, forms.ModelForm):
     }
 
     def signup(self, request, user):
-
         user.first_name = self.cleaned_data["first_name"]
         user.last_name = self.cleaned_data["last_name"]
         user.save()
@@ -169,13 +168,12 @@ class PasswordForgotForm(forms.Form):
         )
     )
 
-    # @todo Change the check below to the negative i.e if not etc.
     def clean_email(self):
         e = self.cleaned_data.get("email")
-        if User.objects.filter(user__email=e).exists():
-            pass
-        else:
+        if not User.objects.filter(user__email=e).exists():
             raise forms.ValidationError("User with this account does not exist..")
+        else:
+            pass
         return e
 
 
