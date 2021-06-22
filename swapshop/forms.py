@@ -7,7 +7,7 @@ from location_field.models.plain import PlainLocationField
 from .models import *
 from allauth.account.forms import SignupForm
 
-# @todo Look into using allauth as suggested by Bob.
+
 class UserRegistrationForm(SignupForm, forms.ModelForm):
     class Meta:
         model = User
@@ -57,14 +57,6 @@ class UserRegistrationForm(SignupForm, forms.ModelForm):
         user.last_name = self.cleaned_data["last_name"]
         user.save()
         return user
-
-    # # @todo Check for lower and uppercase usernames
-    # def clean_username(self):
-    #     uname = self.cleaned_data.get("username")
-    #     if User.objects.filter(username=uname).exists():
-    #         raise forms.ValidationError("This username already exists.")
-
-    #     return uname
 
 
 class UserProfileForm(forms.ModelForm):

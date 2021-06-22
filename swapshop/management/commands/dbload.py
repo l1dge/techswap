@@ -82,29 +82,35 @@ class Command(BaseCommand):
 
         def makeuser():
             imgnum = random.choice(range(50))
-            user, created = User.objects.get_or_create(
-                username=fakeuser.user_name(),
-                password=make_password(fakeuser.password()),
-                first_name=fakeuser.first_name(),
-                last_name=fakeuser.last_name(),
-                email=fakeuser.ascii_free_email(),
-            )
-            user.last_login = timezone.now()
-            user.profile.bio = fakeuser.paragraph(nb_sentences=5)
-            user.profile.phone = fakeuser.phone_number()
-            user.profile.birth_date = fakeuser.date_of_birth()
-            user.profile.image = f"profile_images/dummy-avatar{imgnum}.jpg"
-            if admin:
-                user.is_staff = True
-                user.is_superuser = True
-                user.save()
-            else:
-                user.save()
+            uname = fakeuser.user_name()
+            password = fakeuser.password()
+            first_name = fakeuser.first_name()
+            last_name = fakeuser.last_name()
+            email = fakeuser.ascii_free_email()
 
-            if created:
-                return user
+            if not User.objects.filter(username=uname).exists():
+                user = User.objects.create_user(
+                    username=uname,
+                    password=password,
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                )
+
+                user.last_login = timezone.now()
+                user.profile.bio = fakeuser.paragraph(nb_sentences=5)
+                user.profile.phone = fakeuser.phone_number()
+                user.profile.birth_date = fakeuser.date_of_birth()
+                user.profile.image = f"profile_images/dummy-avatar{imgnum}.jpg"
+                if admin:
+                    user.is_staff = True
+                    user.is_superuser = True
+
+                user.save()
+                return 0
             else:
-                raise CommandError(f"User { user.username } already exists")
+                print(f"User { uname } already exists")
+                pass
 
         def makeitem():
             imgnum = random.choice(range(50))
