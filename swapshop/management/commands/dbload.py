@@ -150,7 +150,7 @@ class Command(BaseCommand):
                 )
 
                 if created:
-                    return f"Successfully created Category { category.title }"
+                    print(f"Successfully created Category { category.title }")
                 else:
                     raise CommandError(f"Category { category.title } already exists")
 
