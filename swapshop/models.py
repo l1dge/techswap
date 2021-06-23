@@ -77,24 +77,20 @@ class ItemImage(models.Model):
         return self.item.title
 
 
-class Cart(models.Model):
+class WishList(models.Model):
     client = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    total = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Cart: {self.id}"
+        return f"WishList: {self.id}"
 
 
-class CartProduct(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Item, on_delete=models.CASCADE)
-    rate = models.PositiveIntegerField()
-    quantity = models.PositiveIntegerField()
-    subtotal = models.PositiveIntegerField()
+class WishListItem(models.Model):
+    item_list = models.ForeignKey(WishList, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Cart: {self.cart.id} CartProduct: {self.id}"
+        return f"WishList: {self.WishList.id} WishlistItem: {self.id}"
 
 
 SWAP_STATUS = (
@@ -111,7 +107,7 @@ SWAP_STATUS = (
 
 
 class Swap(models.Model):
-    cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
+    wish_list = models.OneToOneField(WishList, on_delete=models.CASCADE)
     ordered_by = models.CharField(max_length=200)
     email = models.EmailField(null=True, blank=True)
     swap_status = models.CharField(max_length=50, choices=SWAP_STATUS)

@@ -21,7 +21,7 @@
         <div class="col-md-8">
             <h4>{{item.title}} (Viewed {{item.view_count}} times)</h4>
             <h5>Category: {{item.category}}</h5>
-            <a href="{% url 'swapshop:addtocart' item.slug %}" class="btn btn-info">Add To Cart</a>
+            <a href="{% url 'swapshop:addtolist' item.slug %}" class="btn btn-info">Add To WishList</a>
             <hr>
             <hr>
             <p>{{item.description}}</p>

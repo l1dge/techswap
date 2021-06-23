@@ -15,11 +15,11 @@ urlpatterns = [
     path(
         "guestitem/<slug:slug>/", GuestItemDetailView.as_view(), name="guestitemdetail"
     ),
-    path("add/", ItemCreateView.as_view(), name="itemcreate"),
-    path("add-to-cart-<int:itm_id>/", AddToCartView.as_view(), name="addtocart"),
-    path("my-cart/", MyCartView.as_view(), name="mycart"),
-    path("manage-cart/<int:cp_id>/", ManageCartView.as_view(), name="managecart"),
-    path("empty-cart/", EmptyCartView.as_view(), name="emptycart"),
+    path("additem/", ItemCreateView.as_view(), name="itemcreate"),
+    path("add-to-list-<int:itm_id>/", AddToWishListView.as_view(), name="addtolist"),
+    path("my-list/", MyWishListView.as_view(), name="mylist"),
+    path("manage-list/<int:cp_id>/", ManageWishListView.as_view(), name="managelist"),
+    path("empty-list/", EmptyWishListView.as_view(), name="emptylist"),
     path("accounts/profile/", UserProfileView.as_view(), name="userprofile"),
     path(
         "accounts/profile/item-<int:pk>/",
