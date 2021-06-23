@@ -7,9 +7,9 @@
 
     $( ".card" ).hover(
     function() {
-        $(this).addClass('shadow-lg').css('cursor', 'pointer'); 
+        $(this).addClass('shadow-lg p-2 rounded').css('cursor', 'pointer'); 
     }, function() {
-        $(this).removeClass('shadow-lg');
+        $(this).removeClass('shadow-lg p-2 rounded');
     }
     );
     
@@ -27,7 +27,7 @@
                         <!-- Give me the latest 10 items in each category -->
                         {% for p in cat.item_set.all|dictsortreversed:'created_at'|slice:':10' %}
                         <div class="col mb-5">
-                            <div class="card h-100 rounded-10">
+                            <div class="card h-100 rounded">
                                 <!-- Product image-->
                                 <a href="{% url 'swapshop:guestitemdetail' p.slug %}"><img class="card-img-top" src="{{p.image.url}}" alt="{{p.title}}" /></a>
                                 <!-- Product details-->
