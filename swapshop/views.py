@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -251,7 +252,7 @@ class SocialView(SwapMixin, TemplateView):
     template_name = "social.html"
 
 
-class UserItemDetailView(DetailView):
+class UserItemDetailView(LoginRequiredMixin, DetailView):
     template_name = "useritemdetail.html"
     model = Item
     context_object_name = "itm_obj"
@@ -432,7 +433,7 @@ class PasswordResetView(FormView):
 
 
 # User Items List
-class ItemCreateView(SwapMixin, CreateView):
+class ItemCreateView(LoginRequiredMixin, SwapMixin, CreateView):
     template_name = "itemcreate.html"
     form_class = ItemForm
     success_url = reverse_lazy("swapshop:itemcreate")
@@ -448,13 +449,13 @@ class ItemCreateView(SwapMixin, CreateView):
         return super().form_valid(form)
 
 
-class ItemListView(SwapMixin, ListView):
+class ItemListView(LoginRequiredMixin, SwapMixin, ListView):
     template_name = "itemlist.html"
     queryset = Item.objects.all().order_by("-id")
     context_object_name = "allitems"
 
 
-class ItemDetailView(SwapMixin, DetailView):
+class ItemDetailView(LoginRequiredMixin, SwapMixin, DetailView):
     template_name = "dynamicitemdetail.html"
     queryset = Item.objects.all()
     query_pk_and_slug = True
@@ -469,23 +470,25 @@ class ItemDetailView(SwapMixin, DetailView):
         return context
 
 
-class AllItemsView(SwapMixin, TemplateView):
+class GuestItemDetailView(SwapMixin, DetailView):
+    template_name = "guestdynamicitemdetail.html"
+    queryset = Item.objects.all()
+    query_pk_and_slug = True
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        url_slug = self.kwargs["slug"]
+        item = Item.objects.get(slug=url_slug)
+        item.view_count += 1
+        item.save()
+        context = {"item_obj": item}
+        return context
+
+
+class AllItemsView(LoginRequiredMixin, SwapMixin, TemplateView):
     template_name = "allitems.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["allcategories"] = Category.objects.all()
         return context
-
-
-# class ItemDetailView(SwapMixin, DetailView):
-#     template_name = "itemdetail.html"
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         url_slug = self.kwargs["slug"]
-#         item = Item.objects.get(slug=url_slug)
-#         item.view_count += 1
-#         item.save()
-#         context["item"] = item
-#         return context
