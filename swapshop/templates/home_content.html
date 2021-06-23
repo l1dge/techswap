@@ -14,13 +14,16 @@
                                 <!-- Product details-->
                                 <div class="card-body p-4">
                                     <div class="text-center">
-                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' p.slug %}">{{p.title}}</a></h5>
+                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' p.slug %}">{{p.title}}</a></h5>
                                     </div>
                                 </div>
                                 <!-- Product actions-->
+                                {% if user.is_authenticated %}
+    
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                     <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtolist' p.id %}" >Add To List</a></div>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}
