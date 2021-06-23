@@ -1,3 +1,22 @@
+<!-- Adds dropshadow on hover -->
+<script>
+    $(document).ready(function() {
+    // executes when HTML-Document is loaded and DOM is ready
+    console.log("document is ready");
+    
+
+    $( ".card" ).hover(
+    function() {
+        $(this).addClass('shadow-lg').css('cursor', 'pointer'); 
+    }, function() {
+        $(this).removeClass('shadow-lg');
+    }
+    );
+    
+    // document ready  
+    });
+</script>
+
 <section class="py-5">
 
 
@@ -8,9 +27,9 @@
                         <!-- Give me the latest 10 items in each category -->
                         {% for p in cat.item_set.all|dictsortreversed:'created_at'|slice:':10' %}
                         <div class="col mb-5">
-                            <div class="card h-100">
+                            <div class="card h-100 rounded-10">
                                 <!-- Product image-->
-                                <img class="card-img-top" src="{{p.image.url}}" alt="..." />
+                                <a href="{% url 'swapshop:guestitemdetail' p.slug %}"><img class="card-img-top" src="{{p.image.url}}" alt="{{p.title}}" /></a>
                                 <!-- Product details-->
                                 <div class="card-body p-4">
                                     <div class="text-center">
