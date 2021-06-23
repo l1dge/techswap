@@ -31,7 +31,8 @@ class SwapMixin(object):
         if list_id:
             list_obj = WishList.objects.get(id=list_id)
             if request.user.is_authenticated and request.user.id:
-                list_obj.User = request.user.id
+                uid = uid = User.objects.filter(pk=request.user.id).first()
+                list_obj.client = uid
                 list_obj.save()
         return super().dispatch(request, *args, **kwargs)
 
@@ -67,7 +68,7 @@ class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
         list_id = self.request.session.get("list_id", None)
         if list_id:
             list_obj = WishList.objects.get(id=list_id)
-            this_item_in_list = list_obj.listitem_set.filter(item=item_obj)
+            this_item_in_list = list_obj.wishlistitem_set.filter(item=item_obj)
 
             # item already exists in list
             if this_item_in_list.exists():
