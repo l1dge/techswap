@@ -5,8 +5,8 @@
                 {% for cat in allcategories %}
                     <h4>{{cat.title}}</h4><hr>
                     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
-                        <!-- Give me the latest 5 items in each category -->
-                        {% for p in cat.item_set.all|slice:':5' %}
+                        <!-- Give me the latest 10 items in each category -->
+                        {% for p in cat.item_set.all|dictsortreversed:'created_at'|slice:':10' %}
                         <div class="col mb-5">
                             <div class="card h-100">
                                 <!-- Product image-->
