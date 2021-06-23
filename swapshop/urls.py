@@ -28,5 +28,5 @@ urlpatterns = [
         name="useritemdetail",
     ),
     path("search/", SearchView.as_view(), name="search"),
-    
+
 ]

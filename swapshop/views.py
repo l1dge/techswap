@@ -14,6 +14,8 @@ from django.views.generic import (
     View,
 )
 from django.utils.text import slugify
+from django.utils.timezone import now
+
 
 from .forms import *
 from .models import WishList, Item, User, WishListItem, User, Swap
@@ -34,15 +36,15 @@ class SwapMixin(object):
         return super().dispatch(request, *args, **kwargs)
 
 
-class HomeView(SwapMixin, TemplateView):
+class HomeView(TemplateView):
     template_name = "home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["myname"] = "l1dge"
-        # num_visits = request.session.get("num_visits", 0)
-        # request.session["num_visits"] = num_visits + 1
-        # context["num_visits"] = num_visits
+        num_visits = self.request.session.get("num_visits", 0)
+        self.request.session["num_visits"] = num_visits + 1
+        context["num_visits"] = num_visits
         all_items = Item.objects.all().order_by("-id")
         latest_items = Item.objects.all().order_by("-id")
         paginator = Paginator(all_items, 8)
