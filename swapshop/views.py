@@ -31,7 +31,8 @@ class SwapMixin(object):
         if list_id:
             list_obj = WishList.objects.get(id=list_id)
             if request.user.is_authenticated and request.user.id:
-                list_obj.User = request.user.id
+                uid = uid = User.objects.filter(pk=request.user.id).first()
+                list_obj.client = uid
                 list_obj.save()
         return super().dispatch(request, *args, **kwargs)
 
