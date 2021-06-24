@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Max, Min
 
 
-from swapshop.models import Category, Item
+from swapshop.models import Category, Item, Location
 import random
 
 # Create your tests here.
@@ -16,23 +16,26 @@ class ModelTests(TestCase):
 
     def test_item_str(self):
         imgnum = random.choice(range(50))
-        all_users = User.objects.all()
-        maxid = all_users.aggregate(maxid=Max("id"))["maxid"]
-        minid = all_users.aggregate(minid=Min("id"))["minid"]
-        pk = random.randint(minid, maxid)
-        uid = User.objects.filter(pk=pk).first()
-        categories = Category.objects.all()
+        testuser = User.objects.create_user(username="testuser", password="12345")
+        cat = Category.objects.create(title="Django Testing")
+        uid = User.objects.filter(pk=testuser.pk).first()
         title, created = Item.objects.get_or_create(
             title="Django Testing",
             slug="Django Testing",
             description="Django Testing",
             image=f"items/dummy-item{imgnum}.jpg",
             condition="Like New",
-            created_by=uid,  # Pick and arbitrary number from your usersid's
+            created_by=uid,
         )
 
         if created:
-            title.category.add(random.choice(categories))
+            title.category.add(cat.pk)
             title.save()
 
         self.assertEqual(str(title), "Django Testing django-testing")
+
+    def test_location_str(self):
+        name = Location.objects.create(
+            name="Django Street", town="Django Town", country="Django"
+        )
+        self.assertEqual(str(name), "Django Street Django Town Django")
