@@ -36,6 +36,18 @@ CATEGORIES = [
     "Phones",
     "Spares or Repairs",
 ]
+CITIES = [
+    ("London", "51.509865,-0.118092"),
+    ("New York", "40.730610,-73.935242"),
+    ("Alicante", "38.34517,-0.48149"),
+    ("Barcelona", "41.3850639,2.1734035"),
+    ("Sydney", "-33.869061,151.209681"),
+    ("Glasgow", "55.860916,-4.251433"),
+    ("Perth", "-31.953512,115.857048"),
+    ("San Francisco", "37.773972,-122.431297"),
+    ("Paris", "48.864716,2.349014"),
+    ("Milan", "35.91979,-88.75895"),
+]
 
 ITEM_CONDITION = ["Like New", "Excelllent", "Good", "Used", "Poor", "Spares or Repair"]
 
@@ -119,6 +131,8 @@ class Command(BaseCommand):
             minid = all_users.aggregate(minid=Min("id"))["minid"]
             pk = random.randint(minid, maxid)
             categories = Category.objects.all()
+            place, lat = random.choice(CITIES)
+
             uid = User.objects.filter(pk=pk).first()
             item, created = Item.objects.get_or_create(
                 title=itm,
@@ -126,6 +140,8 @@ class Command(BaseCommand):
                 description=fakeitem.paragraph(nb_sentences=5),
                 image=f"items/dummy-item{imgnum}.jpg",
                 condition=random.choice(ITEM_CONDITION),
+                city=place,
+                location=lat,
                 created_by=uid,  # Pick and arbitrary number from your usersid's
             )
 
