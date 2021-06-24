@@ -13,17 +13,10 @@
                 <div class="col-md-3">
                     <img src="{{result.image.url}}" class="img-fluid" alt="">
                 </div>
-                {% if user.is_authenticated %}
-                    <div class="col-md-9">
-                        <h4><a href="{% url 'swapshop:itemdetail' result.slug %}">{{result.title}}</a></h4>
-                        <p>{{result.description|truncatewords:50}}</p>
-                    </div>
-                {% else %}
-                    <div class="col-md-9">
-                        <h4><a href="{% url 'swapshop:guestitemdetail' result.slug %}">{{result.title}}</a></h4>
-                        <p>{{result.description|truncatewords:50}}</p>
-                    </div>
-                {% endif %}
+                <div class="col-md-9">
+                    <h4><a href="{% url 'swapshop:itemdetail' result.id %}">{{result.title}}</a></h4>
+                    <p>{{result.description|truncatewords:50}}</p>
+                </div>
             </div>
             {% endfor %}
         </div>

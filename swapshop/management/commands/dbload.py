@@ -36,18 +36,6 @@ CATEGORIES = [
     "Phones",
     "Spares or Repairs",
 ]
-CITIES = [
-    ("London", "51.509865,-0.118092"),
-    ("New York", "40.730610,-73.935242"),
-    ("Alicante", "38.34517,-0.48149"),
-    ("Barcelona", "41.3850639,2.1734035"),
-    ("Sydney", "-33.869061,151.209681"),
-    ("Glasgow", "55.860916,-4.251433"),
-    ("Perth", "-31.953512,115.857048"),
-    ("San Francisco", "37.773972,-122.431297"),
-    ("Paris", "48.864716,2.349014"),
-    ("Milan", "35.91979,-88.75895"),
-]
 
 ITEM_CONDITION = ["Like New", "Excelllent", "Good", "Used", "Poor", "Spares or Repair"]
 
@@ -92,7 +80,7 @@ class Command(BaseCommand):
         category = options["category"]
         items = options["items"]
 
-        def make_user():
+        def makeuser():
             imgnum = random.choice(range(50))
             uname = fakeuser.user_name()
             password = fakeuser.password()
@@ -119,20 +107,18 @@ class Command(BaseCommand):
                     user.is_superuser = True
 
                 user.save()
-                return user
+                return 0
             else:
                 print(f"User { uname } already exists")
+                pass
 
-        def make_item():
+        def makeitem():
             imgnum = random.choice(range(50))
             itm = fakeitem.vehicle_make_model()
-            all_users = User.objects.all()
-            maxid = all_users.aggregate(maxid=Max("id"))["maxid"]
-            minid = all_users.aggregate(minid=Min("id"))["minid"]
+            maxid = User.objects.all().aggregate(maxid=Max("id"))["maxid"]
+            minid = User.objects.all().aggregate(minid=Min("id"))["minid"]
             pk = random.randint(minid, maxid)
             categories = Category.objects.all()
-            place, lat = random.choice(CITIES)
-
             uid = User.objects.filter(pk=pk).first()
             item, created = Item.objects.get_or_create(
                 title=itm,
@@ -140,22 +126,21 @@ class Command(BaseCommand):
                 description=fakeitem.paragraph(nb_sentences=5),
                 image=f"items/dummy-item{imgnum}.jpg",
                 condition=random.choice(ITEM_CONDITION),
-                city=place,
-                location=lat,
                 created_by=uid,  # Pick and arbitrary number from your usersid's
             )
 
-            if not created:
-                print(f"Item { item.title } already exists")
-            else:
+            if created:
                 item.category.add(random.choice(categories))
                 item.save()
+            else:
+                raise CommandError(f"Item { item.title } already exists")
+                pass
 
         # Do the stuff
 
         if users:
             for _ in range(total):
-                make_user()
+                makeuser()
             self.stdout.write(self.style.SUCCESS(f"Successfully created {total} Users"))
 
         if category:
@@ -164,12 +149,12 @@ class Command(BaseCommand):
                     title=cat, slug=slugify(cat, allow_unicode=True)
                 )
 
-                if not created:
-                    print(f"Category { category.title } already exists")
-                else:
+                if created:
                     print(f"Successfully created Category { category.title }")
+                else:
+                    raise CommandError(f"Category { category.title } already exists")
 
         if items:
             for i in range(total):
-                make_item()
+                makeitem()
             self.stdout.write(self.style.SUCCESS(f"Successfully created {total} Items"))
