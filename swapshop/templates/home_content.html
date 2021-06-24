@@ -1,22 +1,3 @@
-<!-- Adds dropshadow on hover -->
-<script>
-    $(document).ready(function() {
-    // executes when HTML-Document is loaded and DOM is ready
-    console.log("document is ready");
-    
-
-    $( ".card" ).hover(
-    function() {
-        $(this).addClass('shadow-lg p-2 rounded').css('cursor', 'pointer'); 
-    }, function() {
-        $(this).removeClass('shadow-lg p-2 rounded');
-    }
-    );
-    
-    // document ready  
-    });
-</script>
-
 <section class="py-5">
 
 
@@ -24,25 +5,22 @@
                 {% for cat in allcategories %}
                     <h4>{{cat.title}}</h4><hr>
                     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
-                        <!-- Give me the latest 10 items in each category -->
-                        {% for p in cat.item_set.all|dictsortreversed:'created_at'|slice:':10' %}
+                        <!-- Give me the latest 5 items in each category -->
+                        {% for p in cat.item_set.all|slice:':5' %}
                         <div class="col mb-5">
-                            <div class="card h-100 rounded">
+                            <div class="card h-100">
                                 <!-- Product image-->
-                                <a href="{% url 'swapshop:guestitemdetail' p.slug %}"><img class="card-img-top" src="{{p.image.url}}" alt="{{p.title}}" /></a>
+                                <img class="card-img-top" src="{{p.image.url}}" alt="..." />
                                 <!-- Product details-->
                                 <div class="card-body p-4">
                                     <div class="text-center">
-                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' p.slug %}">{{p.title}}</a></h5>
+                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' p.slug %}">{{p.title}}</a></h5>
                                     </div>
                                 </div>
                                 <!-- Product actions-->
-                                {% if user.is_authenticated %}
-    
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                     <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtolist' p.id %}" >Add To List</a></div>
                                 </div>
-                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}

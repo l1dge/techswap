@@ -17,7 +17,7 @@ class Category(models.Model):
     slug = models.SlugField(unique=True)
 
     def __str__(self):
-        return f"{self.title} {self.slug}"
+        return self.title
 
     # def get_absolute_url(self):
     #     kwargs = {"pk": self.id, "slug": self.slug, "my_id": self.id}
@@ -55,7 +55,7 @@ class Item(models.Model):
     view_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"{self.title} {self.slug}"
+        return self.title
 
     def get_absolute_url(self):
         kwargs = {"pk": self.id, "slug": self.slug, "my_id": self.id}
