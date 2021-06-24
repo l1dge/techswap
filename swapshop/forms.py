@@ -171,7 +171,6 @@ class PasswordForgotForm(forms.Form):
 
     # @todo Change the check below to the negative i.e if not etc.
     def clean_email(self):
-
         email = self.cleaned_data.get("email")
         if not User.objects.filter(user__email=email).exists():
             raise forms.ValidationError("User with this account does not exist..")
