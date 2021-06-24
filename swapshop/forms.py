@@ -169,12 +169,11 @@ class PasswordForgotForm(forms.Form):
     )
 
     def clean_email(self):
-        e = self.cleaned_data.get("email")
-        if not User.objects.filter(user__email=e).exists():
+        email = self.cleaned_data.get("email")
+        if not User.objects.filter(user__email=email).exists():
             raise forms.ValidationError("User with this account does not exist..")
-        else:
-            pass
-        return e
+
+        return email
 
 
 class PasswordResetForm(forms.Form):
