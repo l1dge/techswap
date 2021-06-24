@@ -1,12 +1,10 @@
+import random
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db.models import Max, Min
 
-
 from swapshop.models import Category, Item, Location
-import random
-
-# Create your tests here.
 
 
 class ModelTests(TestCase):
