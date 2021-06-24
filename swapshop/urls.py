@@ -40,21 +40,21 @@ urlpatterns = [
     #     name="passwordreset",
     # ),
     # Admin Side pages
-    path("admin-login/", AdminLoginView.as_view(), name="adminlogin"),
-    path("admin-home/", AdminHomeView.as_view(), name="adminhome"),
-    path(
-        "admin-order/<int:pk>/", AdminSwapDetailView.as_view(), name="adminswapdetail"
-    ),
-    path("admin-all-orders/", AdminSwapListView.as_view(), name="adminswaplist"),
-    path(
-        "admin-swap-<int:pk>-change/",
-        AdminSwapStatusChangeView.as_view(),
-        name="adminswapstatuschange",
-    ),
-    path("admin-item/list/", AdminItemListView.as_view(), name="adminitemlist"),
-    path(
-        "admin-item/add/",
-        AdminItemCreateView.as_view(),
-        name="adminitemcreate",
-    ),
+    # path("admin-login/", AdminLoginView.as_view(), name="adminlogin"),
+    # path("admin-home/", AdminHomeView.as_view(), name="adminhome"),
+    # path(
+    #     "admin-order/<int:pk>/", AdminSwapDetailView.as_view(), name="adminswapdetail"
+    # ),
+    # path("admin-all-orders/", AdminSwapListView.as_view(), name="adminswaplist"),
+    # path(
+    #     "admin-swap-<int:pk>-change/",
+    #     AdminSwapStatusChangeView.as_view(),
+    #     name="adminswapstatuschange",
+    # ),
+    # path("admin-item/list/", AdminItemListView.as_view(), name="adminitemlist"),
+    # path(
+    #     "admin-item/add/",
+    #     AdminItemCreateView.as_view(),
+    #     name="adminitemcreate",
+    # ),
 ]
