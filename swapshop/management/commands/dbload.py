@@ -80,7 +80,7 @@ class Command(BaseCommand):
         category = options["category"]
         items = options["items"]
 
-        def makeuser():
+        def make_user():
             imgnum = random.choice(range(50))
             uname = fakeuser.user_name()
             password = fakeuser.password()
@@ -107,16 +107,16 @@ class Command(BaseCommand):
                     user.is_superuser = True
 
                 user.save()
-                return 0
+                return user
             else:
                 print(f"User { uname } already exists")
-                pass
 
-        def makeitem():
+        def make_item():
             imgnum = random.choice(range(50))
             itm = fakeitem.vehicle_make_model()
-            maxid = User.objects.all().aggregate(maxid=Max("id"))["maxid"]
-            minid = User.objects.all().aggregate(minid=Min("id"))["minid"]
+            all_users = User.objects.all()
+            maxid = all_users.aggregate(maxid=Max("id"))["maxid"]
+            minid = all_users.aggregate(minid=Min("id"))["minid"]
             pk = random.randint(minid, maxid)
             categories = Category.objects.all()
             uid = User.objects.filter(pk=pk).first()
@@ -129,18 +129,17 @@ class Command(BaseCommand):
                 created_by=uid,  # Pick and arbitrary number from your usersid's
             )
 
-            if created:
+            if not created:
+                print(f"Item { item.title } already exists")
+            else:
                 item.category.add(random.choice(categories))
                 item.save()
-            else:
-                raise CommandError(f"Item { item.title } already exists")
-                pass
 
         # Do the stuff
 
         if users:
             for _ in range(total):
-                makeuser()
+                make_user()
             self.stdout.write(self.style.SUCCESS(f"Successfully created {total} Users"))
 
         if category:
@@ -149,12 +148,12 @@ class Command(BaseCommand):
                     title=cat, slug=slugify(cat, allow_unicode=True)
                 )
 
-                if created:
-                    return f"Successfully created Category { category.title }"
+                if not created:
+                    print(f"Category { category.title } already exists")
                 else:
-                    raise CommandError(f"Category { category.title } already exists")
+                    print(f"Successfully created Category { category.title }")
 
         if items:
             for i in range(total):
-                makeitem()
+                make_item()
             self.stdout.write(self.style.SUCCESS(f"Successfully created {total} Items"))
