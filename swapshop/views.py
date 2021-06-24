@@ -16,7 +16,7 @@ from django.views.generic import (
 from django.utils.text import slugify
 
 from .forms import *
-from .models import Cart, Item, User, CartProduct, User, Swap
+from .models import WishList, Item, User, WishListItem, User, Swap
 from .utils import password_reset_token
 from django.conf import settings
 import logging
@@ -24,12 +24,13 @@ import logging
 
 class SwapMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        cart_id = request.session.get("cart_id")
-        if cart_id:
-            cart_obj = Cart.objects.get(id=cart_id)
-            if request.user.is_authenticated and request.user.User:
-                cart_obj.User = request.user.User
-                cart_obj.save()
+        list_id = request.session.get("list_id")
+        if list_id:
+            list_obj = WishList.objects.get(id=list_id)
+            if request.user.is_authenticated and request.user.id:
+                uid = uid = User.objects.filter(pk=request.user.id).first()
+                list_obj.client = uid
+                list_obj.save()
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -54,100 +55,79 @@ class HomeView(SwapMixin, TemplateView):
         return context
 
 
-class AddToCartView(SwapMixin, TemplateView):
-    template_name = "addtocart.html"
+class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
+    template_name = "addtowishlist.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         item_id = self.kwargs["itm_id"]
         item_obj = Item.objects.get(id=item_id)
 
-        # check if cart exists
-        cart_id = self.request.session.get("cart_id", None)
-        if cart_id:
-            cart_obj = Cart.objects.get(id=cart_id)
-            this_item_in_cart = cart_obj.cartitem_set.filter(item=item_obj)
+        # check if list exists
+        list_id = self.request.session.get("list_id", None)
+        if list_id:
+            list_obj = WishList.objects.get(id=list_id)
+            this_item_in_list = list_obj.wishlistitem_set.filter(item=item_obj)
 
-            # item already exists in cart
-            if this_item_in_cart.exists():
-                cartitem = this_item_in_cart.last()
-                cartitem.quantity += 1
-                cart_obj.save()
-            # new item is added in cart
+            # item already exists in list
+            if this_item_in_list.exists():
+                listitem = this_item_in_list.last()
+                list_obj.save()
+            # new item is added in list
             else:
-                cartitem = CartProduct.objects.create(
-                    cart=cart_obj,
+                listitem = WishListItem.objects.create(
+                    item_list=list_obj,
                     item=item_obj,
-                    quantity=1,
                 )
-                cart_obj.save()
+                list_obj.save()
 
         else:
-            cart_obj = Cart.objects.create(total=0)
-            self.request.session["cart_id"] = cart_obj.id
-            cartitem = CartProduct.objects.create(
-                cart=cart_obj,
+            list_obj = WishList.objects.create()
+            self.request.session["list_id"] = list_obj.id
+            listitem = WishListItem.objects.create(
+                item_list=list_obj,
                 item=item_obj,
-                quantity=1,
             )
-            cart_obj.save()
+            list_obj.save()
 
         return context
 
 
-class ManageCartView(SwapMixin, View):
+class ManageWishListView(LoginRequiredMixin, SwapMixin, View):
     def get(self, request, *args, **kwargs):
         cp_id = self.kwargs["cp_id"]
         action = request.GET.get("action")
-        cp_obj = CartProduct.objects.get(id=cp_id)
-        cart_obj = cp_obj.cart
+        cp_obj = WishListItem.objects.get(id=cp_id)
+        list_obj = cp_obj.list
 
-        if action == "inc":
-            cp_obj.quantity += 1
-            cp_obj.subtotal += cp_obj.rate
-            cp_obj.save()
-            cart_obj.total += cp_obj.rate
-            cart_obj.save()
-        elif action == "dcr":
-            cp_obj.quantity -= 1
-            cp_obj.subtotal -= cp_obj.rate
-            cp_obj.save()
-            cart_obj.total -= cp_obj.rate
-            cart_obj.save()
-            if cp_obj.quantity == 0:
-                cp_obj.delete()
-
-        elif action == "rmv":
-            cart_obj.total -= cp_obj.subtotal
-            cart_obj.save()
+        if action == "rmv":
             cp_obj.delete()
         else:
             pass
-        return redirect("swapshop:mycart")
+        return redirect("swapshop:mylist")
 
 
-class EmptyCartView(SwapMixin, View):
+class EmptyWishListView(LoginRequiredMixin, SwapMixin, View):
     def get(self, request, *args, **kwargs):
-        cart_id = request.session.get("cart_id", None)
-        if cart_id:
-            cart = Cart.objects.get(id=cart_id)
-            cart.cartitem_set.all().delete()
-            cart.total = 0
-            cart.save()
-        return redirect("swapshop:mycart")
+        list_id = request.session.get("list_id", None)
+        if list_id:
+            item_list = WishList.objects.get(id=list_id)
+            item_list.listitem_set.all().delete()
+            item_list.save()
+        return redirect("swapshop:mylist")
 
 
-class MyCartView(SwapMixin, TemplateView):
-    template_name = "mycart.html"
+class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
+    template_name = "mylist.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart_id = self.request.session.get("cart_id", None)
-        if cart_id:
-            cart = Cart.objects.get(id=cart_id)
+        list_id = self.request.session.get("list_id", None)
+        if list_id:
+            item_list = WishList.objects.get(id=list_id)
         else:
-            cart = None
-        context["cart"] = cart
+            item_list = None
+        context["item_list"] = item_list
         return context
 
 
@@ -231,10 +211,10 @@ class UserProfileView(TemplateView):
         context = super().get_context_data(**kwargs)
         User = self.request.user.id
         context["User"] = User
-        if not (Swap.objects.filter(cart__client=User).order_by("-id").exists()):
+        if not (Swap.objects.filter(wish_list__client=User).order_by("-id").exists()):
             items = None
         else:
-            items = Swap.objects.filter(cart__client=User).order_by("-id")
+            items = Swap.objects.filter(wish_list__client=User).order_by("-id")
         context["items"] = items
         return context
 
@@ -263,7 +243,7 @@ class UserItemDetailView(DetailView):
         ):
             item_id = self.kwargs["pk"]
             item = Item.objects.get(id=item_id)
-            if request.user.User != item.cart.User:
+            if request.user.User != item.item_list.User:
                 return redirect("swapshop:userprofile")
             else:
                 return redirect("/accounts/login/?next=/profile/")
