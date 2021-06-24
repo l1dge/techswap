@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -46,12 +45,14 @@ class HomeView(TemplateView):
         self.request.session["num_visits"] = num_visits + 1
         context["num_visits"] = num_visits
         all_items = Item.objects.all().order_by("-id")
+        latest_items = Item.objects.all().order_by("-id")
         paginator = Paginator(all_items, 8)
         page_number = self.request.GET.get("page")
+        print(page_number)
         item_list = paginator.get_page(page_number)
         context["item_list"] = item_list
-        context["latest_items"] = all_items
-        context["allcategories"] = Category.objects.all().order_by("title")
+        context["latest_items"] = latest_items
+        context["allcategories"] = Category.objects.all()
         return context
 
 
@@ -252,7 +253,7 @@ class SocialView(SwapMixin, TemplateView):
     template_name = "social.html"
 
 
-class UserItemDetailView(LoginRequiredMixin, DetailView):
+class UserItemDetailView(DetailView):
     template_name = "useritemdetail.html"
     model = Item
     context_object_name = "itm_obj"
@@ -343,8 +344,97 @@ class PasswordResetView(FormView):
         return super().form_valid(form)
 
 
+# Admin Pages
+
+
+# class AdminRequiredMixin(object):
+#     def dispatch(self, request, *args, **kwargs):
+#         if not request.user.is_authenticated:
+#             return redirect("/")
+#         return super().dispatch(request, *args, **kwargs)
+
+
+# class AdminLoginView(FormView):
+#     template_name = "adminpages/adminlogin.html"
+#     form_class = UserLoginForm
+#     success_url = reverse_lazy("swapshop:adminhome")
+
+#     def form_valid(self, form):
+#         uname = form.cleaned_data.get("username")
+#         pword = form.cleaned_data["password"]
+#         usr = authenticate(username=uname, password=pword)
+#         if usr is not None and Admin.objects.filter(user=usr).exists():
+#             login(self.request, usr)
+#         else:
+#             return render(
+#                 self.request,
+#                 self.template_name,
+#                 {"form": self.form_class, "error": "Invalid credentials"},
+#             )
+#         return super().form_valid(form)
+
+
+# class AdminHomeView(AdminRequiredMixin, TemplateView):
+#     template_name = "adminpages/adminhome.html"
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["pendingorders"] = Order.objects.filter(
+#             order_status="Order Received"
+#         ).order_by("-id")
+#         return context
+
+
+# class AdminSwapDetailView(AdminRequiredMixin, DetailView):
+#     template_name = "adminpages/adminswapdetail.html"
+#     model = Swap
+#     context_object_name = "swp_obj"
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context["allstatus"] = SWAP_STATUS
+#         return context
+
+
+# class AdminSwapListView(AdminRequiredMixin, ListView):
+#     template_name = "adminpages/adminswaplist.html"
+#     queryset = Swap.objects.all().order_by("-id")
+#     context_object_name = "allswaps"
+
+
+# class AdminSwapStatusChangeView(AdminRequiredMixin, View):
+#     def post(self, request, *args, **kwargs):
+#         swap_id = self.kwargs["pk"]
+#         swap_obj = Swap.objects.get(id=swap_id)
+#         new_status = request.POST.get("status")
+#         swap_obj.swap_status = new_status
+#         swap_obj.save()
+#         return redirect(
+#             reverse_lazy("swapshop:adminswapdetail", kwargs={"pk": swap_id})
+#         )
+
+
+# class AdminItemListView(AdminRequiredMixin, ListView):
+#     template_name = "adminpages/adminitemlist.html"
+#     queryset = Item.objects.all().order_by("-id")
+#     context_object_name = "allitems"
+
+
+# class AdminItemCreateView(AdminRequiredMixin, CreateView):
+#     template_name = "adminpages/adminitemcreate.html"
+#     form_class = ItemForm
+#     success_url = reverse_lazy("swapshop:adminitemlist")
+
+#     def form_valid(self, form):
+#         p = form.save()
+#         images = self.request.FILES.getlist("more_images")
+#         for i in images:
+#             ItemImage.objects.create(item=p, image=i)
+#         return super().form_valid(form)
+
+
 # User Items List
-class ItemCreateView(LoginRequiredMixin, SwapMixin, CreateView):
+class ItemCreateView(SwapMixin, CreateView):
     template_name = "itemcreate.html"
     form_class = ItemForm
     success_url = reverse_lazy("swapshop:itemcreate")
@@ -360,13 +450,13 @@ class ItemCreateView(LoginRequiredMixin, SwapMixin, CreateView):
         return super().form_valid(form)
 
 
-class ItemListView(LoginRequiredMixin, SwapMixin, ListView):
+class ItemListView(SwapMixin, ListView):
     template_name = "itemlist.html"
     queryset = Item.objects.all().order_by("-id")
     context_object_name = "allitems"
 
 
-class ItemDetailView(LoginRequiredMixin, SwapMixin, DetailView):
+class ItemDetailView(SwapMixin, DetailView):
     template_name = "dynamicitemdetail.html"
     queryset = Item.objects.all()
     query_pk_and_slug = True
@@ -381,25 +471,23 @@ class ItemDetailView(LoginRequiredMixin, SwapMixin, DetailView):
         return context
 
 
-class GuestItemDetailView(SwapMixin, DetailView):
-    template_name = "guestdynamicitemdetail.html"
-    queryset = Item.objects.all()
-    query_pk_and_slug = True
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        url_slug = self.kwargs["slug"]
-        item = Item.objects.get(slug=url_slug)
-        item.view_count += 1
-        item.save()
-        context = {"item_obj": item}
-        return context
-
-
-class AllItemsView(LoginRequiredMixin, SwapMixin, TemplateView):
+class AllItemsView(SwapMixin, TemplateView):
     template_name = "allitems.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["allcategories"] = Category.objects.all()
         return context
+
+
+# class ItemDetailView(SwapMixin, DetailView):
+#     template_name = "itemdetail.html"
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         url_slug = self.kwargs["slug"]
+#         item = Item.objects.get(slug=url_slug)
+#         item.view_count += 1
+#         item.save()
+#         context["item"] = item
+#         return context
