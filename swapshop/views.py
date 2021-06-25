@@ -63,20 +63,24 @@ class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         item_id = self.kwargs["itm_id"]
         item_obj = Item.objects.get(id=item_id)
+        context["item_exists"] = False
+        context["item_obj"] = item_obj
 
         # check if list exists
         list_id = self.request.session.get("list_id", None)
         if list_id:
             list_obj = WishList.objects.get(id=list_id)
-            this_item_in_list = list_obj.wishlistitem_set.filter(item=item_obj)
-
             # item already exists in list
-            if this_item_in_list.exists():
-                listitem = this_item_in_list.last()
-                list_obj.save()
+            if item_id == list_obj.wishlistitem_set.filter(item_id=item_obj.id):
+
+                # list_item = this_item_in_list.last()
+                # list_obj.save()
+                context["item_exists"] = True
+                # context["list_item"] = list_item
+
             # new item is added in list
             else:
-                listitem = WishListItem.objects.create(
+                list_item = WishListItem.objects.create(
                     item_list=list_obj,
                     item=item_obj,
                 )
@@ -85,7 +89,7 @@ class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
         else:
             list_obj = WishList.objects.create()
             self.request.session["list_id"] = list_obj.id
-            listitem = WishListItem.objects.create(
+            list_item = WishListItem.objects.create(
                 item_list=list_obj,
                 item=item_obj,
             )
