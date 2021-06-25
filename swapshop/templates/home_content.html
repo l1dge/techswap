@@ -28,6 +28,7 @@
                         {% for p in cat.item_set.all|dictsortreversed:'created_at'|slice:':10' %}
                         <div class="col mb-5">
                             <div class="card h-100 rounded">
+                                {% if not user.is_authenticated %}
                                 <!-- Product image-->
                                 <a href="{% url 'swapshop:guestitemdetail' p.slug %}"><img class="card-img-top" src="{{p.image.url}}" alt="{{p.title}}" /></a>
                                 <!-- Product details-->
@@ -36,9 +37,16 @@
                                         <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' p.slug %}">{{p.title}}</a></h5>
                                     </div>
                                 </div>
+                                {% else %}
+                                <!-- Product image-->
+                                <a href="{% url 'swapshop:itemdetail' p.slug %}"><img class="card-img-top" src="{{p.image.url}}" alt="{{p.title}}" /></a>
+                                <!-- Product details-->
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' p.slug %}">{{p.title}}</a></h5>
+                                    </div>
+                                </div>
                                 <!-- Product actions-->
-                                {% if user.is_authenticated %}
-    
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                     <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtolist' p.id %}" >Add To List</a></div>
                                 </div>
