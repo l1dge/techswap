@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% include 'itemhead.html' %}
-{% for objects in object %}
-<p></p>
-    <h2> <a href="{{ objects.get_absolute_url }}">{{ objects.name }}</a>  </h2>
-<p></p>
-{% endfor %}
+{% include 'useritemhead.html' %}
+<div class="container">
+    <div class="row">
+    {% for item in items %}
+    <div class="col-md-3">
+            <div class="m-4">
+        <a href="{% url 'swapshop:itemdetail' item.item.slug %}"><img src="{{item.item.image.url}}" style="height:60px; object-fit: contain;" alt="{{ item.title }} Image" class="img-fluid"></a>
+            <h3> <a href="{% url 'swapshop:itemdetail' item.item.slug %}">{{ item.item.title }}</a>  </h3>
+            </div>
+    </div>
+    {% endfor %}
+    </div>
+</div>
 {% endblock %}

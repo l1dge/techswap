@@ -31,10 +31,13 @@ class SwapMixin(object):
         if list_id:
             list_obj = WishList.objects.get(id=list_id)
             if request.user.is_authenticated and request.user.id:
-                uid = uid = User.objects.filter(pk=request.user.id).first()
+                uid = User.objects.filter(pk=request.user.id).first()
                 list_obj.client = uid
                 list_obj.save()
         return super().dispatch(request, *args, **kwargs)
+
+    def __str__(self):
+        return f"WishList: {self.id}"
 
 
 class HomeView(TemplateView):
@@ -123,16 +126,18 @@ class EmptyWishListView(LoginRequiredMixin, SwapMixin, View):
 
 
 class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
-    template_name = "mylist.html"
+    template_name = "useritemlist.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         list_id = self.request.session.get("list_id", None)
         if list_id:
             item_list = WishList.objects.get(id=list_id)
+            items = WishListItem.objects.filter(item_list_id=item_list)
         else:
             item_list = None
         context["item_list"] = item_list
+        context["items"] = items
         return context
 
 

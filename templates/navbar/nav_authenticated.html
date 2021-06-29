@@ -22,7 +22,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/mylist">My Swaps</a>
                         <a class="dropdown-item" href="/addswap">New Swap</a>
-                        <a class="dropdown-item" href="/wishlist">Wish List</a>
+                        <a class="dropdown-item" href="{% url 'swapshop:mylist' %}">Wish List</a>
                     </div>
                     <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
                     {% else %}
@@ -38,16 +38,6 @@
                     <hr class="dropdown-divider" />
                     <a class="dropdown-item" href="{% url 'swapshop:allitems' %}">Item List</a>
                     <a class="dropdown-item" href="{% url 'swapshop:itemcreate' %}">Create Item</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Swaps</a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/swaplist">Swaps</a>
-                    <hr class="dropdown-divider" />
-                    <a class="dropdown-item" href="/swaplist">My Swaps</a>
-                    <a class="dropdown-item" href="/swaplist/addswap">New Swap</a>
-                    <a class="dropdown-item" href="/swaplist/wantedlist">Wanted List</a>
                 </div>
             </li>
             </ul>
