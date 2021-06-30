@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'userswaphead.html' %}
+<div class="container">
+    <div class="row">
+    {% for item in items %}
+    <div class="col-md-3">
+            <div class="m-4">
+        <a href="{% url 'swapshop:itemdetail' item.slug %}"><img src="{{item.image.url}}" style="height:60px; object-fit: contain;" alt="{{ item.title }} Image" class="img-fluid"></a>
+            <h3> <a href="{% url 'swapshop:itemdetail' item.slug %}">{{ item.title }}</a>  </h3>
+            </div>
+    </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

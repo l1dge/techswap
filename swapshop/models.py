@@ -10,6 +10,7 @@ from django.utils.timezone import now
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
+import random
 
 # Item Management
 class Category(models.Model):
@@ -65,7 +66,10 @@ class Item(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         value = self.slug
-        self.slug = slugify(value, allow_unicode=True)
+        self.slug = slugify(
+            value,
+            allow_unicode=True,
+        )
         super().save(*args, **kwargs)
 
 

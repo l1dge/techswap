@@ -141,6 +141,19 @@ class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
         return context
 
 
+class MySwapListView(LoginRequiredMixin, SwapMixin, TemplateView):
+    template_name = "userswaplist.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_id = self.request.user.id
+        if user_id:
+            items = Item.objects.filter(created_by=user_id)
+
+        context["items"] = items
+        return context
+
+
 class UserRegistrationView(CreateView):
     template_name = "userregistration.html"
     form_class = UserRegistrationForm
@@ -342,6 +355,9 @@ class ItemCreateView(LoginRequiredMixin, SwapMixin, CreateView):
         userid = self.request.user.id
         p = form.save(commit=False)
         p.created_by = self.request.user
+        p.slug = (
+            str(random.randint(50000, 600000)) + " " + str(p.created_by) + " " + p.title
+        )
         p.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:
@@ -392,3 +408,19 @@ class AllItemsView(LoginRequiredMixin, SwapMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["allcategories"] = Category.objects.all()
         return context
+
+
+class SwapCreateView(LoginRequiredMixin, SwapMixin, CreateView):
+    template_name = "swapcreate.html"
+    form_class = ItemForm
+    success_url = reverse_lazy("swapshop:myswaplist")
+
+    def form_valid(self, form):
+        userid = self.request.user.id
+        p = form.save(commit=False)
+        p.created_by = self.request.user
+        p.save()
+        images = self.request.FILES.getlist("more_images")
+        for i in images:
+            ItemImage.objects.create(item=p, image=i)
+        return super().form_valid(form)
