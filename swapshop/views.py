@@ -64,41 +64,39 @@ class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        item_id = self.kwargs["itm_id"]
-        item_obj = Item.objects.get(id=item_id)
-        context["item_exists"] = False
+        myitem_id = self.kwargs["itm_id"]
+        item_obj = Item.objects.get(id=myitem_id)
         context["item_obj"] = item_obj
 
         # check if list exists
         list_id = self.request.session.get("list_id", None)
-        if list_id:
-            list_obj = WishList.objects.get(id=list_id)
-            # item already exists in list
-            if item_id == list_obj.wishlistitem_set.filter(item_id=item_obj.id):
-
-                # list_item = this_item_in_list.last()
-                # list_obj.save()
-                context["item_exists"] = True
-                # context["list_item"] = list_item
-
-            # new item is added in list
-            else:
-                list_item = WishListItem.objects.create(
-                    item_list=list_obj,
-                    item=item_obj,
-                )
-                list_obj.save()
-
-        else:
+        if not list_id:
             list_obj = WishList.objects.create()
             self.request.session["list_id"] = list_obj.id
-            list_item = WishListItem.objects.create(
+            WishListItem.objects.create(
                 item_list=list_obj,
                 item=item_obj,
             )
-            list_obj.save()
+            # list_obj.save()
+            context["item_exists"] = False
+            return context
 
-        return context
+        else:
+            list_obj = WishList.objects.get(id=list_id)
+            # item doesn't already exist in list
+            list_item = list_obj.wishlistitem_set.filter(item_id=myitem_id)
+            if list_item:
+
+                context["item_exists"] = True
+                return context
+            else:
+                WishListItem.objects.create(
+                    item_list=list_obj,
+                    item=item_obj,
+                )
+
+                context["item_exists"] = False
+                return context
 
 
 class ManageWishListView(LoginRequiredMixin, SwapMixin, View):
@@ -282,7 +280,6 @@ class SearchView(TemplateView):
         results = Item.objects.filter(
             Q(title__icontains=kw) | Q(description__icontains=kw)
         )
-        print(results)
         context["results"] = results
         return context
 
