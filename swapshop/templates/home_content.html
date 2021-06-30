@@ -1,21 +1,6 @@
 <!-- Adds dropshadow on hover -->
-<script>
-    $(document).ready(function() {
-    // executes when HTML-Document is loaded and DOM is ready
-    console.log("document is ready");
-    
-
-    $( ".card" ).hover(
-    function() {
-        $(this).addClass('shadow-lg p-2 rounded').css('cursor', 'pointer'); 
-    }, function() {
-        $(this).removeClass('shadow-lg p-2 rounded');
-    }
-    );
-    
-    // document ready  
-    });
-</script>
+{% load static %}
+<script src="{% static "/js/shadow.js"  %}"></script>
 
 <section class="py-5">
 

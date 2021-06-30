@@ -2,15 +2,22 @@
 
 {% block content %}
 {% include 'useritemhead.html' %}
-<div class="container">
-    <div class="row">
+<section class="py-5">
+<div class="container px-4 px-lg-5 mt-5">
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
     {% for item in items %}
-    <div class="col-md-3">
-            <div class="m-4">
-        <a href="{% url 'swapshop:itemdetail' item.item.slug %}"><img src="{{item.item.image.url}}" style="height:60px; object-fit: contain;" alt="{{ item.title }} Image" class="img-fluid"></a>
-            <h3> <a href="{% url 'swapshop:itemdetail' item.item.slug %}">{{ item.item.title }}</a>  </h3>
+        <div class="col mb-5">
+            <div class="card h-100 rounded">
+                <!-- Product image-->
+                <a href="{% url 'swapshop:itemdetail' item.item.slug %}"><img class="card-img-top" src="{{item.item.image.url}}" alt="{{item.item.title}}" /></a>
+                <!-- Product details-->
+                <div class="card-body p-4">
+                <div class="text-center">
+                    <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.item.slug %}">{{item.item.title}}</a></h5>
+                </div>
+                </div>
             </div>
-    </div>
+        </div>
     {% endfor %}
     </div>
 </div>
