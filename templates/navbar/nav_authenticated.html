@@ -20,34 +20,16 @@
                     <a class="dropdown-item" href="{% url 'swapshop:userprofile' %}">My Profile</a>
                     <a class="dropdown-item dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Swaps</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/mylist">My Swaps</a>
-                        <a class="dropdown-item" href="/addswap">New Swap</a>
-                        <a class="dropdown-item" href="/wishlist">Wish List</a>
+                        <a class="dropdown-item" href="{% url 'swapshop:myswaplist' %}">My Swaps</a>
+                        <a class="dropdown-item" href="{% url 'swapshop:mywishlist' %}">My Wish List</a>
+                        <a class="dropdown-item" href="{% url 'swapshop:swapcreate' %}">New Swap</a>
+                        <a class="dropdown-item" href="{% url 'swapshop:itemcreate' %}">Create Item</a>
                     </div>
                     <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
                     {% else %}
                     <a class="dropdown-item" href="{% url 'account_signup' %}">Register</a>
                     <a class="dropdown-item" href="{% url 'account_login' %}">Login</a>
                     {% endif %}
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Items</a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'swapshop:allitems' %}">Items</a>
-                    <hr class="dropdown-divider" />
-                    <a class="dropdown-item" href="{% url 'swapshop:allitems' %}">Item List</a>
-                    <a class="dropdown-item" href="{% url 'swapshop:itemcreate' %}">Create Item</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Swaps</a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/swaplist">Swaps</a>
-                    <hr class="dropdown-divider" />
-                    <a class="dropdown-item" href="/swaplist">My Swaps</a>
-                    <a class="dropdown-item" href="/swaplist/addswap">New Swap</a>
-                    <a class="dropdown-item" href="/swaplist/wantedlist">Wanted List</a>
                 </div>
             </li>
             </ul>

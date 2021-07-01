@@ -30,11 +30,15 @@ class SwapMixin(object):
         list_id = request.session.get("list_id")
         if list_id:
             list_obj = WishList.objects.get(id=list_id)
-            if request.user.is_authenticated and request.user.id:
-                uid = uid = User.objects.filter(pk=request.user.id).first()
+            # if request.user.is_authenticated and request.user.id:
+            if request.user.is_authenticated:
+                uid = User.objects.filter(pk=request.user.id).first()
                 list_obj.client = uid
                 list_obj.save()
         return super().dispatch(request, *args, **kwargs)
+
+    def __str__(self):
+        return f"WishList: {self.id}"
 
 
 class HomeView(TemplateView):
@@ -61,41 +65,38 @@ class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        item_id = self.kwargs["itm_id"]
-        item_obj = Item.objects.get(id=item_id)
-        context["item_exists"] = False
+        myitem_id = self.kwargs["itm_id"]
+        item_obj = Item.objects.get(id=myitem_id)
         context["item_obj"] = item_obj
 
         # check if list exists
         list_id = self.request.session.get("list_id", None)
-        if list_id:
-            list_obj = WishList.objects.get(id=list_id)
-            # item already exists in list
-            if item_id == list_obj.wishlistitem_set.filter(item_id=item_obj.id):
-
-                # list_item = this_item_in_list.last()
-                # list_obj.save()
-                context["item_exists"] = True
-                # context["list_item"] = list_item
-
-            # new item is added in list
-            else:
-                list_item = WishListItem.objects.create(
-                    item_list=list_obj,
-                    item=item_obj,
-                )
-                list_obj.save()
-
-        else:
+        if not list_id:
             list_obj = WishList.objects.create()
             self.request.session["list_id"] = list_obj.id
-            list_item = WishListItem.objects.create(
+            WishListItem.objects.create(
                 item_list=list_obj,
                 item=item_obj,
             )
-            list_obj.save()
+            context["item_exists"] = False
+            return context
 
-        return context
+        else:
+            list_obj = WishList.objects.get(id=list_id)
+            # item doesn't already exist in list
+            list_item = list_obj.wishlistitem_set.filter(item_id=myitem_id)
+            if list_item:
+
+                context["item_exists"] = True
+                return context
+            else:
+                WishListItem.objects.create(
+                    item_list=list_obj,
+                    item=item_obj,
+                )
+
+                context["item_exists"] = False
+                return context
 
 
 class ManageWishListView(LoginRequiredMixin, SwapMixin, View):
@@ -123,16 +124,31 @@ class EmptyWishListView(LoginRequiredMixin, SwapMixin, View):
 
 
 class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
-    template_name = "mylist.html"
+    template_name = "useritemlist.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         list_id = self.request.session.get("list_id", None)
         if list_id:
             item_list = WishList.objects.get(id=list_id)
+            items = WishListItem.objects.filter(item_list_id=item_list)
         else:
             item_list = None
         context["item_list"] = item_list
+        context["items"] = items
+        return context
+
+
+class MySwapListView(LoginRequiredMixin, SwapMixin, TemplateView):
+    template_name = "userswaplist.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_id = self.request.user.id
+        if user_id:
+            items = Item.objects.filter(created_by=user_id)
+
+        context["items"] = items
         return context
 
 
@@ -216,10 +232,8 @@ class UserProfileView(TemplateView):
         context = super().get_context_data(**kwargs)
         User = self.request.user.id
         context["User"] = User
-        if not (Swap.objects.filter(wish_list__client=User).order_by("-id").exists()):
-            items = None
-        else:
-            items = Swap.objects.filter(wish_list__client=User).order_by("-id")
+        swaps = Swap.objects.filter(wish_list__client=User).order_by("-id")
+        items = swaps if swaps else None
         context["items"] = items
         return context
 
@@ -264,7 +278,6 @@ class SearchView(TemplateView):
         results = Item.objects.filter(
             Q(title__icontains=kw) | Q(description__icontains=kw)
         )
-        print(results)
         context["results"] = results
         return context
 
@@ -328,19 +341,25 @@ class PasswordResetView(FormView):
 
 
 # User Items List
+
+
 class ItemCreateView(LoginRequiredMixin, SwapMixin, CreateView):
     template_name = "itemcreate.html"
     form_class = ItemForm
     success_url = reverse_lazy("swapshop:itemcreate")
+    MINITEMID = 50000
+    MAXITEMID = 600000
+    RNDITMNO = str(random.randint(MINITEMID, MAXITEMID))
 
     def form_valid(self, form):
-        userid = self.request.user.id
-        p = form.save(commit=False)
-        p.created_by = self.request.user
-        p.save()
+        # userid = self.request.user.id
+        itm = form.save(commit=False)
+        itm.created_by = self.request.user
+        itm.slug = f"{self.RNDITMNO} {itm.created_by} {itm.title}"
+        itm.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:
-            ItemImage.objects.create(item=p, image=i)
+            ItemImage.objects.create(item=itm, image=i)
         return super().form_valid(form)
 
 
@@ -387,3 +406,19 @@ class AllItemsView(LoginRequiredMixin, SwapMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["allcategories"] = Category.objects.all()
         return context
+
+
+class SwapCreateView(LoginRequiredMixin, SwapMixin, CreateView):
+    template_name = "swapcreate.html"
+    form_class = ItemForm
+    success_url = reverse_lazy("swapshop:myswaplist")
+
+    def form_valid(self, form):
+        userid = self.request.user.id
+        p = form.save(commit=False)
+        p.created_by = self.request.user
+        p.save()
+        images = self.request.FILES.getlist("more_images")
+        for i in images:
+            ItemImage.objects.create(item=p, image=i)
+        return super().form_valid(form)
