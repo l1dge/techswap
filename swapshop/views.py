@@ -77,7 +77,6 @@ class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
                 item_list=list_obj,
                 item=item_obj,
             )
-            # list_obj.save()
             context["item_exists"] = False
             return context
 
