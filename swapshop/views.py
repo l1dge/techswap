@@ -30,7 +30,8 @@ class SwapMixin(object):
         list_id = request.session.get("list_id")
         if list_id:
             list_obj = WishList.objects.get(id=list_id)
-            if request.user.is_authenticated and request.user.id:
+            # if request.user.is_authenticated and request.user.id:
+            if request.user.is_authenticated:
                 uid = User.objects.filter(pk=request.user.id).first()
                 list_obj.client = uid
                 list_obj.save()
@@ -231,10 +232,8 @@ class UserProfileView(TemplateView):
         context = super().get_context_data(**kwargs)
         User = self.request.user.id
         context["User"] = User
-        if not (Swap.objects.filter(wish_list__client=User).order_by("-id").exists()):
-            items = None
-        else:
-            items = Swap.objects.filter(wish_list__client=User).order_by("-id")
+        swaps = Swap.objects.filter(wish_list__client=User).order_by("-id")
+        items = swaps if swaps else None
         context["items"] = items
         return context
 
@@ -342,22 +341,25 @@ class PasswordResetView(FormView):
 
 
 # User Items List
+
+
 class ItemCreateView(LoginRequiredMixin, SwapMixin, CreateView):
     template_name = "itemcreate.html"
     form_class = ItemForm
     success_url = reverse_lazy("swapshop:itemcreate")
+    MINITEMID = 50000
+    MAXITEMID = 600000
+    RNDITMNO = str(random.randint(MINITEMID, MAXITEMID))
 
     def form_valid(self, form):
-        userid = self.request.user.id
-        p = form.save(commit=False)
-        p.created_by = self.request.user
-        p.slug = (
-            str(random.randint(50000, 600000)) + " " + str(p.created_by) + " " + p.title
-        )
-        p.save()
+        # userid = self.request.user.id
+        itm = form.save(commit=False)
+        itm.created_by = self.request.user
+        itm.slug = f"{self.RNDITMNO} {itm.created_by} {itm.title}"
+        itm.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:
-            ItemImage.objects.create(item=p, image=i)
+            ItemImage.objects.create(item=itm, image=i)
         return super().form_valid(form)
 
 
