@@ -14,7 +14,7 @@ from django.views.generic import (
 )
 
 from .forms import UserRegistrationForm, UserProfileForm, UserAddressForm, ItemForm
-from .models import WishList, Item, User, WishListItem, User, Swap
+from .models import WishList, Item, User, WishListItem, User, Swap, Category, ItemImage
 from django.conf import settings
 import random
 
