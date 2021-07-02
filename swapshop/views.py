@@ -13,9 +13,10 @@ from django.views.generic import (
     View,
 )
 
-from .forms import UserRegistrationForm, UserProfileForm, UserAddressForm,ItemForm, 
+from .forms import UserRegistrationForm, UserProfileForm, UserAddressForm, ItemForm
 from .models import WishList, Item, User, WishListItem, User, Swap
 from django.conf import settings
+import random
 
 
 class SwapMixin(object):
