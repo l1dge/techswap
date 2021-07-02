@@ -1,41 +1,34 @@
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.shortcuts import render, redirect
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
     DetailView,
-    FormView,
-    ListView,
     TemplateView,
     View,
 )
-from django.utils.text import slugify
-from django.utils.timezone import now
 
-
-from .forms import *
-from .models import WishList, Item, User, WishListItem, User, Swap
-from .utils import password_reset_token
+from .forms import UserRegistrationForm, UserProfileForm, UserAddressForm, ItemForm
+from .models import WishList, Item, User, WishListItem, User, Swap, Category, ItemImage
 from django.conf import settings
-import logging
+import random
 
 
 class SwapMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        list_id = request.session.get("list_id")
-        if list_id:
-            list_obj = WishList.objects.get(id=list_id)
-            # if request.user.is_authenticated and request.user.id:
-            if request.user.is_authenticated:
-                uid = User.objects.filter(pk=request.user.id).first()
+        if request.user.is_authenticated:
+            uid = User.objects.filter(pk=request.user.id).first()
+            list_id = WishList.objects.get(client_id=uid)
+            if list_id:
+                list_obj = WishList.objects.get(client_id=uid)
                 list_obj.client = uid
                 list_obj.save()
-        return super().dispatch(request, *args, **kwargs)
+            return super().dispatch(request, *args, **kwargs)
 
     def __str__(self):
         return f"WishList: {self.id}"
@@ -70,7 +63,8 @@ class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
         context["item_obj"] = item_obj
 
         # check if list exists
-        list_id = self.request.session.get("list_id", None)
+        user_id = self.request.user.id
+        list_id = WishList.objects.filter(client_id=user_id).first()
         if not list_id:
             list_obj = WishList.objects.create()
             self.request.session["list_id"] = list_obj.id
@@ -82,7 +76,7 @@ class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
             return context
 
         else:
-            list_obj = WishList.objects.get(id=list_id)
+            list_obj = WishList.objects.get(id=list_id.id)
             # item doesn't already exist in list
             list_item = list_obj.wishlistitem_set.filter(item_id=myitem_id)
             if list_item:
@@ -115,12 +109,13 @@ class ManageWishListView(LoginRequiredMixin, SwapMixin, View):
 
 class EmptyWishListView(LoginRequiredMixin, SwapMixin, View):
     def get(self, request, *args, **kwargs):
-        list_id = request.session.get("list_id", None)
+        user_id = self.request.user.id
+        list_id = WishList.objects.filter(client_id=user_id).first()
         if list_id:
-            item_list = WishList.objects.get(id=list_id)
-            item_list.listitem_set.all().delete()
+            item_list = WishList.objects.get(id=list_id.id)
+            item_list.wishlistitem_set.all().delete()
             item_list.save()
-        return redirect("swapshop:mylist")
+        return redirect("swapshop:mywishlist")
 
 
 class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
@@ -128,9 +123,12 @@ class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        list_id = self.request.session.get("list_id", None)
+        user_id = self.request.user.id
+        # breakpoint()
+        list_id = WishList.objects.filter(client_id=user_id).first()
+        # list_id = self.list_id
         if list_id:
-            item_list = WishList.objects.get(id=list_id)
+            item_list = WishList.objects.get(id=list_id.id)
             items = WishListItem.objects.filter(item_list_id=item_list)
         else:
             item_list = None
@@ -150,70 +148,6 @@ class MySwapListView(LoginRequiredMixin, SwapMixin, TemplateView):
 
         context["items"] = items
         return context
-
-
-class UserRegistrationView(CreateView):
-    template_name = "userregistration.html"
-    form_class = UserRegistrationForm
-    success_url = reverse_lazy("swapshop:userlogin")
-
-    def form_valid(self, form):
-        username = form.cleaned_data.get("username")
-        password = form.cleaned_data.get("password")
-        first_name = form.cleaned_data.get("first_name")
-        last_name = form.cleaned_data.get("last_name")
-        email = form.cleaned_data.get("email")
-        user = User.objects.create_user(
-            username, password, email, first_name=first_name, last_name=last_name
-        )
-        form.instance.user = user
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        if "next" in self.request.GET:
-            next_url = self.request.GET.get("next")
-            return next_url
-        else:
-            return self.success_url
-
-
-class UserLogoutView(View):
-    def get(self, request):
-        logout(request)
-        return redirect("swapshop:home")
-
-
-class UserLoginView(FormView):
-    template_name = "userlogin.html"
-    form_class = UserLoginForm
-    success_url = reverse_lazy("swapshop:userprofile")
-
-    # form_valid method is a type of post method and is available in createview formview and updateview
-    def form_valid(self, form):
-        uname = form.cleaned_data.get("username")
-        pword = form.cleaned_data["password"]
-        usr = authenticate(username=uname, password=pword)
-        if usr is not None and User.objects.filter(username=uname).exists():
-            login(
-                self.request,
-                usr,
-                backend="allauth.account.auth_backends.AuthenticationBackend",
-            )
-        else:
-            return render(
-                self.request,
-                self.template_name,
-                {"form": self.form_class, "error": "Invalid credentials"},
-            )
-
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        if "next" in self.request.GET:
-            next_url = self.request.GET.get("next")
-            return next_url
-        else:
-            return self.success_url
 
 
 class UserProfileView(TemplateView):
@@ -282,67 +216,7 @@ class SearchView(TemplateView):
         return context
 
 
-class PasswordForgotView(FormView):
-    template_name = "forgotpassword.html"
-    form_class = PasswordForgotForm
-    success_url = "/accounts/forgot-password/?m=s"
-
-    def form_valid(self, form):
-        # get email from user
-        email = form.cleaned_data.get("email")
-        # get current host ip/domain
-        url = self.request.META["HTTP_HOST"]
-        # get User and then user
-        User = User.objects.get(user__email=email)
-        user = User.user
-        # send mail to the user with email
-        text_content = "Please Click the link below to reset your password. "
-        html_content = (
-            url
-            + "/accounts/password-reset/"
-            + email
-            + "/"
-            + password_reset_token.make_token(user)
-            + "/"
-        )
-        send_mail(
-            "Password Reset Link | TechSwap",
-            text_content + html_content,
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=False,
-        )
-        return super().form_valid(form)
-
-
-class PasswordResetView(FormView):
-    template_name = "passwordreset.html"
-    form_class = PasswordResetForm
-    success_url = "/accounts/login/"
-
-    def dispatch(self, request, *args, **kwargs):
-        email = self.kwargs.get("email")
-        user = User.objects.get(email=email)
-        token = self.kwargs.get("token")
-        if user is not None and password_reset_token.check_token(user, token):
-            pass
-        else:
-            return redirect(reverse("swapshop:passwordforgot") + "?m=e")
-
-        return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        password = form.cleaned_data["new_password"]
-        email = self.kwargs.get("email")
-        user = User.objects.get(email=email)
-        user.set_password(password)
-        user.save()
-        return super().form_valid(form)
-
-
 # User Items List
-
-
 class ItemCreateView(LoginRequiredMixin, SwapMixin, CreateView):
     template_name = "itemcreate.html"
     form_class = ItemForm
@@ -361,12 +235,6 @@ class ItemCreateView(LoginRequiredMixin, SwapMixin, CreateView):
         for i in images:
             ItemImage.objects.create(item=itm, image=i)
         return super().form_valid(form)
-
-
-class ItemListView(LoginRequiredMixin, SwapMixin, ListView):
-    template_name = "itemlist.html"
-    queryset = Item.objects.all().order_by("-id")
-    context_object_name = "allitems"
 
 
 class ItemDetailView(LoginRequiredMixin, SwapMixin, DetailView):

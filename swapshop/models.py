@@ -6,10 +6,10 @@ from django.dispatch import receiver
 from django.urls import reverse
 from location_field.models.plain import PlainLocationField
 from django.utils.text import slugify
-from django.utils.timezone import now
+
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from django.core.mail import send_mail
+
 import random
 
 # Item Management
@@ -19,10 +19,6 @@ class Category(models.Model):
 
     def __str__(self):
         return f"{self.title} {self.slug}"
-
-    # def get_absolute_url(self):
-    #     kwargs = {"pk": self.id, "slug": self.slug, "my_id": self.id}
-    #     return reverse("itemdetail", kwargs=kwargs)
 
     def save(self, *args, **kwargs):
         if not self.slug:

@@ -2,9 +2,8 @@ from django import forms
 
 from django.contrib.auth.models import User
 
-# from django.forms import fields
 from location_field.models.plain import PlainLocationField
-from .models import *
+from .models import Profile, Address, Item
 from allauth.account.forms import SignupForm
 
 
@@ -14,7 +13,6 @@ class UserRegistrationForm(SignupForm, forms.ModelForm):
         fields = [
             "username",
             "email",
-            # "password",
             "first_name",
             "last_name",
         ]
@@ -32,11 +30,6 @@ class UserRegistrationForm(SignupForm, forms.ModelForm):
                 "placeholder": "Enter Email here...",
             }
         ),
-        # "password": forms.PasswordInput(
-        #     attrs={
-        #         "class": "form-control",
-        #     }
-        # ),
         "first_name": forms.TextInput(
             attrs={
                 "class": "form-control",
@@ -151,59 +144,6 @@ class UserAddressForm(forms.ModelForm):
                 }
             ),
         }
-
-
-class UserLoginForm(forms.Form):
-    email = forms.CharField(widget=forms.EmailInput())
-    password = forms.CharField(widget=forms.PasswordInput())
-
-
-class PasswordForgotForm(forms.Form):
-    email = forms.CharField(
-        widget=forms.EmailInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": "Enter the email used for your user account...",
-            }
-        )
-    )
-
-    def clean_email(self):
-        email = self.cleaned_data.get("email")
-        if not User.objects.filter(user__email=email).exists():
-            raise forms.ValidationError("User with this account does not exist..")
-
-        return email
-
-
-class PasswordResetForm(forms.Form):
-    new_password = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                "class": "form-control",
-                "autocomplete": "new-password",
-                "placeholder": "Enter New Password",
-            }
-        ),
-        label="New Password",
-    )
-    confirm_new_password = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                "class": "form-control",
-                "autocomplete": "new-password",
-                "placeholder": "Confirm New Password",
-            }
-        ),
-        label="Confirm New Password",
-    )
-
-    def clean_confirm_new_password(self):
-        new_password = self.cleaned_data.get("new_password")
-        confirm_new_password = self.cleaned_data.get("confirm_new_password")
-        if new_password != confirm_new_password:
-            raise forms.ValidationError("New Passwords did not match!")
-        return confirm_new_password
 
 
 class ItemForm(forms.ModelForm):
