@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class SwapshopConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'swapshop'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "swapshop"
