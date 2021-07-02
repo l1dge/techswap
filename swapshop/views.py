@@ -20,15 +20,14 @@ from django.conf import settings
 
 class SwapMixin(object):
     def dispatch(self, request, *args, **kwargs):
-        list_id = request.session.get("list_id")
-        if list_id:
-            list_obj = WishList.objects.get(id=list_id)
-            # if request.user.is_authenticated and request.user.id:
-            if request.user.is_authenticated:
-                uid = User.objects.filter(pk=request.user.id).first()
+        if request.user.is_authenticated:
+            uid = User.objects.filter(pk=request.user.id).first()
+            list_id = WishList.objects.get(client_id=uid)
+            if list_id:
+                list_obj = WishList.objects.get(client_id=uid)
                 list_obj.client = uid
                 list_obj.save()
-        return super().dispatch(request, *args, **kwargs)
+            return super().dispatch(request, *args, **kwargs)
 
     def __str__(self):
         return f"WishList: {self.id}"
@@ -63,7 +62,8 @@ class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
         context["item_obj"] = item_obj
 
         # check if list exists
-        list_id = self.request.session.get("list_id", None)
+        user_id = self.request.user.id
+        list_id = WishList.objects.filter(client_id=user_id).first()
         if not list_id:
             list_obj = WishList.objects.create()
             self.request.session["list_id"] = list_obj.id
@@ -75,7 +75,7 @@ class AddToWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
             return context
 
         else:
-            list_obj = WishList.objects.get(id=list_id)
+            list_obj = WishList.objects.get(id=list_id.id)
             # item doesn't already exist in list
             list_item = list_obj.wishlistitem_set.filter(item_id=myitem_id)
             if list_item:
@@ -121,9 +121,12 @@ class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        list_id = self.request.session.get("list_id", None)
+        user_id = self.request.user.id
+        # breakpoint()
+        list_id = WishList.objects.filter(client_id=user_id).first()
+        # list_id = self.list_id
         if list_id:
-            item_list = WishList.objects.get(id=list_id)
+            item_list = WishList.objects.get(id=list_id.id)
             items = WishListItem.objects.filter(item_list_id=item_list)
         else:
             item_list = None
