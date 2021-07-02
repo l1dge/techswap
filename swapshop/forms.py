@@ -2,7 +2,6 @@ from django import forms
 
 from django.contrib.auth.models import User
 
-# from django.forms import fields
 from location_field.models.plain import PlainLocationField
 from .models import *
 from allauth.account.forms import SignupForm
@@ -14,7 +13,6 @@ class UserRegistrationForm(SignupForm, forms.ModelForm):
         fields = [
             "username",
             "email",
-            # "password",
             "first_name",
             "last_name",
         ]
@@ -32,11 +30,6 @@ class UserRegistrationForm(SignupForm, forms.ModelForm):
                 "placeholder": "Enter Email here...",
             }
         ),
-        # "password": forms.PasswordInput(
-        #     attrs={
-        #         "class": "form-control",
-        #     }
-        # ),
         "first_name": forms.TextInput(
             attrs={
                 "class": "form-control",
