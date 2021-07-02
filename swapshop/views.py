@@ -13,7 +13,7 @@ from django.views.generic import (
     View,
 )
 
-from .forms import *
+from .forms import UserRegistrationForm, UserProfileForm, UserAddressForm,ItemForm, 
 from .models import WishList, Item, User, WishListItem, User, Swap
 from django.conf import settings
 
@@ -108,12 +108,13 @@ class ManageWishListView(LoginRequiredMixin, SwapMixin, View):
 
 class EmptyWishListView(LoginRequiredMixin, SwapMixin, View):
     def get(self, request, *args, **kwargs):
-        list_id = request.session.get("list_id", None)
+        user_id = self.request.user.id
+        list_id = WishList.objects.filter(client_id=user_id).first()
         if list_id:
-            item_list = WishList.objects.get(id=list_id)
-            item_list.listitem_set.all().delete()
+            item_list = WishList.objects.get(id=list_id.id)
+            item_list.wishlistitem_set.all().delete()
             item_list.save()
-        return redirect("swapshop:mylist")
+        return redirect("swapshop:mywishlist")
 
 
 class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
