@@ -118,7 +118,7 @@ class EmptyWishListView(LoginRequiredMixin, SwapMixin, View):
         return redirect("swapshop:mywishlist")
 
 
-class RemItemView(LoginRequiredMixin, SwapMixin, View):
+class RemWishListItemView(LoginRequiredMixin, SwapMixin, View):
     def get(self, request, *args, **kwargs):
         user_id = self.request.user.id
         list_id = WishList.objects.filter(client_id=user_id).first()
@@ -126,14 +126,34 @@ class RemItemView(LoginRequiredMixin, SwapMixin, View):
             item_list = WishList.objects.get(id=list_id.id)
             url_slug = self.kwargs["slug"]
             item = Item.objects.get(slug=url_slug)
-            # breakpoint()
             item_list.wishlistitem_set.filter(item_id=item).delete()
             item_list.save()
         return redirect("swapshop:mywishlist")
 
 
+class RemMyItemView(LoginRequiredMixin, SwapMixin, View):
+    def get(self, request, *args, **kwargs):
+        user_id = self.request.user.id
+        if user_id:
+            url_slug = self.kwargs["slug"]
+            item = Item.objects.filter(slug=url_slug)
+            item.delete()
+        return redirect("swapshop:myitemlist")
+
+
+class ArcMyItemView(LoginRequiredMixin, SwapMixin, View):
+    def get(self, request, *args, **kwargs):
+        user_id = self.request.user.id
+        if user_id:
+            url_slug = self.kwargs["slug"]
+            item = Item.objects.get(slug=url_slug)
+            item.archived = True
+            item.save()
+        return redirect("swapshop:myitemlist")
+
+
 class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
-    template_name = "useritemlist.html"
+    template_name = "useritemwishlist.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -151,8 +171,8 @@ class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
         return context
 
 
-class MySwapListView(LoginRequiredMixin, SwapMixin, TemplateView):
-    template_name = "userswaplist.html"
+class MyItemListView(LoginRequiredMixin, SwapMixin, TemplateView):
+    template_name = "useritemlist.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
