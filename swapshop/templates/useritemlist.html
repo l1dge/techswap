@@ -16,7 +16,9 @@
                     <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.item.slug %}">{{item.item.title}}</a></h5>
                 </div>
                 </div>
-                
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:remitem' item.item.slug %}" >Remove Item</a></div>
+                </div>
             </div>
         </div>
     {% endfor %}

@@ -20,6 +20,7 @@ from .views import (
     UserItemDetailView,
     SearchView,
     SwapCreateView,
+    RemItemView,
 )
 
 app_name = "swapshop"
@@ -41,6 +42,7 @@ urlpatterns = [
     path("my-wish-list/", MyWishListView.as_view(), name="mywishlist"),
     path("manage-list/<int:cp_id>/", ManageWishListView.as_view(), name="managelist"),
     path("empty-list/", EmptyWishListView.as_view(), name="emptylist"),
+    path("rem-item/<slug:slug>/", RemItemView.as_view(), name="remitem"),
     path("accounts/profile/", UserProfileView.as_view(), name="userprofile"),
     path(
         "accounts/profile/item-<int:pk>/",

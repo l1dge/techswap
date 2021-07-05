@@ -118,6 +118,20 @@ class EmptyWishListView(LoginRequiredMixin, SwapMixin, View):
         return redirect("swapshop:mywishlist")
 
 
+class RemItemView(LoginRequiredMixin, SwapMixin, View):
+    def get(self, request, *args, **kwargs):
+        user_id = self.request.user.id
+        list_id = WishList.objects.filter(client_id=user_id).first()
+        if list_id:
+            item_list = WishList.objects.get(id=list_id.id)
+            url_slug = self.kwargs["slug"]
+            item = Item.objects.get(slug=url_slug)
+            # breakpoint()
+            item_list.wishlistitem_set.filter(item_id=item).delete()
+            item_list.save()
+        return redirect("swapshop:mywishlist")
+
+
 class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
     template_name = "useritemlist.html"
 
