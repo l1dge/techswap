@@ -44,11 +44,13 @@ class HomeView(TemplateView):
         self.request.session["num_visits"] = num_visits + 1
         context["num_visits"] = num_visits
         all_items = Item.objects.all().order_by("-id")
+        popular_items = all_items.order_by("view_count")
         paginator = Paginator(all_items, 8)
         page_number = self.request.GET.get("page")
         item_list = paginator.get_page(page_number)
         context["item_list"] = item_list
         context["latest_items"] = all_items
+        context["popular_items"] = popular_items
         context["allcategories"] = Category.objects.all().order_by("title")
         return context
 
