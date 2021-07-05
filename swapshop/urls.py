@@ -23,6 +23,7 @@ from .views import (
     RemWishListItemView,
     RemMyItemView,
     ArcMyItemView,
+    NotYourItemView,
 )
 
 app_name = "swapshop"
@@ -47,6 +48,7 @@ urlpatterns = [
     path("rem-wlitem/<slug:slug>/", RemWishListItemView.as_view(), name="remwlitem"),
     path("rem-myitem/<slug:slug>/", RemMyItemView.as_view(), name="remmyitem"),
     path("arc-myitem/<slug:slug>/", ArcMyItemView.as_view(), name="arcmyitem"),
+    path("notyouritem/", NotYourItemView.as_view(), name="notyouritem"),
     path("accounts/profile/", UserProfileView.as_view(), name="userprofile"),
     path(
         "accounts/profile/item-<int:pk>/",

@@ -137,8 +137,11 @@ class RemMyItemView(LoginRequiredMixin, SwapMixin, View):
         if user_id:
             url_slug = self.kwargs["slug"]
             item = Item.objects.filter(slug=url_slug)
-            item.delete()
-        return redirect("swapshop:myitemlist")
+            if user_id == item.created_by_id:
+                item.delete()
+                return redirect("swapshop:myitemlist")
+            else:
+                return redirect("swapshop:notyouritem")
 
 
 class ArcMyItemView(LoginRequiredMixin, SwapMixin, View):
@@ -147,9 +150,12 @@ class ArcMyItemView(LoginRequiredMixin, SwapMixin, View):
         if user_id:
             url_slug = self.kwargs["slug"]
             item = Item.objects.get(slug=url_slug)
-            item.archived = True
-            item.save()
-        return redirect("swapshop:myitemlist")
+            if user_id == item.created_by_id:
+                item.archived = True
+                item.save()
+                return redirect("swapshop:myitemlist")
+            else:
+                return redirect("swapshop:notyouritem")
 
 
 class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
@@ -204,6 +210,10 @@ class UserProfileView(TemplateView):
         items = swaps if swaps else None
         context["items"] = items
         return context
+
+
+class NotYourItemView(SwapMixin, TemplateView):
+    template_name = "notyours.html"
 
 
 class AboutView(SwapMixin, TemplateView):

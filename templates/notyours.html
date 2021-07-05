@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% include 'notyourshead.html' %}
+
+    <p>
+        {{ my_text }}
+    </p>
+
+    <script>
+    setTimeout(function(){
+        window.location.href = "{% url 'swapshop:home' %}"
+    }, 2000);
+</script>
+
+{% endblock %}
