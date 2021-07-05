@@ -93,6 +93,22 @@ class WishListItem(models.Model):
         return f"WishList: {self.WishList.id} WishlistItem: {self.id}"
 
 
+class SwapList(models.Model):
+    client = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"SwapList: {self.id}"
+
+
+class SwapListItem(models.Model):
+    item_list = models.ForeignKey(SwapList, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"SwapList: {self.SwapList.id} SwaplistItem: {self.id}"
+
+
 SWAP_STATUS = (
     (s, s)
     for s in (

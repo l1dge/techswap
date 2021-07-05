@@ -162,7 +162,7 @@ class ItemForm(forms.ModelForm):
             "image",
             "condition",
             "city",
-            "location",
+            # "location",
         ]
         widgets = {
             "title": forms.TextInput(
@@ -200,5 +200,5 @@ class ItemForm(forms.ModelForm):
                     "placeholder": "Enter City location here...",
                 }
             ),
-            "location": PlainLocationField(based_fields=["city"]),
+            # "location": PlainLocationField(based_fields=["city"]),
         }
