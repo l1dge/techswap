@@ -158,12 +158,12 @@ class RemWishListItemView(LoginRequiredMixin, SwapWLMixin, View):
         return redirect("swapshop:mywishlist")
 
 
-class RemMyItemView(LoginRequiredMixin, SwapWLMixin, View):
+class RemMyItemView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         user_id = self.request.user.id
         if user_id:
             url_slug = self.kwargs["slug"]
-            item = Item.objects.filter(slug=url_slug)
+            item = Item.objects.get(slug=url_slug)
             if user_id == item.created_by_id:
                 item.delete()
                 return redirect("swapshop:myitemlist")
