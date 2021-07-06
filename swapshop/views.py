@@ -44,11 +44,13 @@ class HomeView(TemplateView):
         self.request.session["num_visits"] = num_visits + 1
         context["num_visits"] = num_visits
         all_items = Item.objects.all().order_by("-id")
+        popular_items = all_items.order_by("view_count")
         paginator = Paginator(all_items, 8)
         page_number = self.request.GET.get("page")
         item_list = paginator.get_page(page_number)
         context["item_list"] = item_list
         context["latest_items"] = all_items
+        context["popular_items"] = popular_items
         context["allcategories"] = Category.objects.all().order_by("title")
         return context
 
@@ -118,7 +120,7 @@ class EmptyWishListView(LoginRequiredMixin, SwapMixin, View):
         return redirect("swapshop:mywishlist")
 
 
-class RemItemView(LoginRequiredMixin, SwapMixin, View):
+class RemWishListItemView(LoginRequiredMixin, SwapMixin, View):
     def get(self, request, *args, **kwargs):
         user_id = self.request.user.id
         list_id = WishList.objects.filter(client_id=user_id).first()
@@ -126,14 +128,40 @@ class RemItemView(LoginRequiredMixin, SwapMixin, View):
             item_list = WishList.objects.get(id=list_id.id)
             url_slug = self.kwargs["slug"]
             item = Item.objects.get(slug=url_slug)
-            # breakpoint()
             item_list.wishlistitem_set.filter(item_id=item).delete()
             item_list.save()
         return redirect("swapshop:mywishlist")
 
 
+class RemMyItemView(LoginRequiredMixin, SwapMixin, View):
+    def get(self, request, *args, **kwargs):
+        user_id = self.request.user.id
+        if user_id:
+            url_slug = self.kwargs["slug"]
+            item = Item.objects.filter(slug=url_slug)
+            if user_id == item.created_by_id:
+                item.delete()
+                return redirect("swapshop:myitemlist")
+            else:
+                return redirect("swapshop:notyouritem")
+
+
+class ArcMyItemView(LoginRequiredMixin, SwapMixin, View):
+    def get(self, request, *args, **kwargs):
+        user_id = self.request.user.id
+        if user_id:
+            url_slug = self.kwargs["slug"]
+            item = Item.objects.get(slug=url_slug)
+            if user_id == item.created_by_id:
+                item.archived = True
+                item.save()
+                return redirect("swapshop:myitemlist")
+            else:
+                return redirect("swapshop:notyouritem")
+
+
 class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
-    template_name = "useritemlist.html"
+    template_name = "useritemwishlist.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -151,8 +179,8 @@ class MyWishListView(LoginRequiredMixin, SwapMixin, TemplateView):
         return context
 
 
-class MySwapListView(LoginRequiredMixin, SwapMixin, TemplateView):
-    template_name = "userswaplist.html"
+class MyItemListView(LoginRequiredMixin, SwapMixin, TemplateView):
+    template_name = "useritemlist.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -184,6 +212,10 @@ class UserProfileView(TemplateView):
         items = swaps if swaps else None
         context["items"] = items
         return context
+
+
+class NotYourItemView(SwapMixin, TemplateView):
+    template_name = "notyours.html"
 
 
 class AboutView(SwapMixin, TemplateView):

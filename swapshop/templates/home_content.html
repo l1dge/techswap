@@ -1,11 +1,26 @@
 <!-- Adds dropshadow on hover -->
 {% load static %}
-<script src="{% static "/js/shadow.js"  %}"></script>
+<script src="{% static "/js/shadow.js" %}"></script>
 
-<section class="py-5">
+<button
+        type="btn"
+        class="btn btn-danger btn-floating btn-lg"
+        id="btn-back-to-top"
+        >
+  <i class="fa fa-arrow-up"></i>
+</button>
 
-
+<section class="py-5">            
+           
             <div class="container px-4 px-lg-5 mt-5">
+                    
+                    <div class="btn-group d-grid mb-3 d-md-flex justify-content-md-end" role="group" aria-label="Sort By">
+                        <button type="button" onclick = "displayShowCat()" class="btn btn-primary">Category</button>
+                        <button type="button" onclick = "displayShowLatest()" class="btn btn-primary">Latest</button>
+                        <button type="button" onclick = "displayShowPop()" class="btn btn-primary">Popular</button>
+                    </div>
+
+            <section class="" id="category" data-spy="category" data-target="#category">        
                 {% for cat in allcategories %}
                     <h4>{{cat.title}}</h4><hr>
                     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
@@ -41,5 +56,81 @@
                         {% endfor %}
                     </div>
                 {% endfor %}
+                </section>
+                <section class="" id="latest" data-spy="latest" data-target="#latest">        
+                    <h4>Latest Items</h4><hr>
+                    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
+                        <!-- Give me the latest 10 items in each category -->
+                        {% for item in latest_items|dictsortreversed:'created_at'|slice:':40' %}
+                        <div class="col mb-5">
+                            <div class="card h-100 rounded">
+                                {% if not user.is_authenticated %}
+                                <!-- Product image-->
+                                <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                                <!-- Product details-->
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' item.slug %}">{{item.title}}</a></h5>
+                                        
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Product image-->
+                                <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                                <!-- Product details-->
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.slug %}">{{item.title}}</a></h5>
+                                        
+                                    </div>
+                                </div>
+                                <!-- Product actions-->
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtolist' item.id %}" >Add To List</a></div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                <section class="" id="popular" data-spy="popular" data-target="#popular">        
+                <h4>Most Popular Items</h4><hr>
+                    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
+                        <!-- Give me the latest 10 items in each category -->
+                        {% for item in popular_items|dictsortreversed:'view_count'|slice:':20' %}
+                        <div class="col mb-5">
+                            <div class="card h-100 rounded">
+                                {% if not user.is_authenticated %}
+                                <!-- Product image-->
+                                <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                                <!-- Product details-->
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' item.slug %}">{{item.title}}</a></h5>
+                                        
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Product image-->
+                                <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                                <!-- Product details-->
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.slug %}">{{item.title}}</a></h5>
+                                        
+                                    </div>
+                                </div>
+                                <!-- Product actions-->
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtolist' item.id %}" >Add To List</a></div>
+                                    <h6 class="text-muted text-center">Views: {{item.view_count}}</h6>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
             </div>
         </section>
