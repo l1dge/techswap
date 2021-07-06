@@ -26,7 +26,6 @@ from .models import (
     SwapList,
     SwapListItem,
 )
-from django.conf import settings
 import random
 
 
@@ -317,7 +316,7 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
     RNDITMNO = str(random.randint(MINITEMID, MAXITEMID))
 
     def form_valid(self, form):
-        # userid = self.request.user.id
+
         itm = form.save(commit=False)
         itm.created_by = self.request.user
         itm.slug = f"{self.RNDITMNO} {itm.created_by} {itm.title}"
@@ -325,7 +324,14 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
         images = self.request.FILES.getlist("more_images")
         for i in images:
             ItemImage.objects.create(item=itm, image=i)
+
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["API_KEY"] = settings.LOCATION_API_KEY
+        return context
 
 
 class ItemDetailView(LoginRequiredMixin, DetailView):

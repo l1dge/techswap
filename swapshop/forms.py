@@ -198,6 +198,7 @@ class ItemForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter City location here...",
+                    "id": "citysearch",
                 }
             ),
             # "location": PlainLocationField(based_fields=["city"]),
