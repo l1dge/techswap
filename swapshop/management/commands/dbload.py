@@ -49,7 +49,7 @@ CITIES = [
     ("Milan", "35.91979,-88.75895"),
 ]
 
-ITEM_CONDITION = ["Like New", "Excelllent", "Good", "Used", "Poor", "Spares or Repair"]
+ITEM_CONDITION = ["Like New", "Excellent", "Good", "Used", "Poor", "Spares or Repair"]
 
 
 class Command(BaseCommand):

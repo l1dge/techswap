@@ -30,7 +30,7 @@ class Category(models.Model):
 
 ITEM_CONDITION = (
     (s, s)
-    for s in ("Like New", "Excelllent", "Good", "Used", "Poor", "Spares or Repair")
+    for s in ("Like New", "Excellent", "Good", "Used", "Poor", "Spares or Repair")
 )
 
 
