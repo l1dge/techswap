@@ -13,6 +13,8 @@
         <meta name="description" content="From me to you to me" />
         <meta name="author" content="l1dge" />
         {% load static %}
+        
+        
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="{% static "assets/favicon.ico" %}" />
         <!-- Bootstrap icons-->
@@ -24,20 +26,18 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" type="text/css"/>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-        <link href="{% static "/css/sticky-footer.css"  %}" rel="stylesheet">
-        <link href="{% static "/css/starter.css"  %}" rel="stylesheet">
-        
         <script src="{% static "/js/contenttoggle.js" %}"></script>
-        
-        
-
+        <link rel="stylesheet" href="{% static "/css/starter.css"  %}" type="text/css"/>
+        <link rel="stylesheet" href="{% static "/css/sticky-footer.css"  %}" type="text/css"/>
         {{ form.media  }}
     </head>
     <body>
+    
         {% include 'nav.html' %}
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
+    
         {% block content %}
         
                        

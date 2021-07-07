@@ -36,7 +36,9 @@
             <p>Description: {{ item_obj.description }}</p>
             <p>Created by: {{ item_obj.created_by }}
             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+            <div class="btn-group">
                 <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtolist' item_obj.id %}" >Add To List</a></div>
+                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:reqswap' item_obj.id %}" >Request Swap</a></div>
             </div>
         </div>
     </div>

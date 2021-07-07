@@ -25,6 +25,7 @@ from .views import (
     ArcMyItemView,
     NotYourItemView,
     MySwapListView,
+    RequestSwapView,
 )
 
 app_name = "swapshop"
@@ -50,6 +51,7 @@ urlpatterns = [
     path("rem-wlitem/<slug:slug>/", RemWishListItemView.as_view(), name="remwlitem"),
     path("rem-myitem/<slug:slug>/", RemMyItemView.as_view(), name="remmyitem"),
     path("arc-myitem/<slug:slug>/", ArcMyItemView.as_view(), name="arcmyitem"),
+    path("reqswap-<int:itm_id>/", RequestSwapView.as_view(), name="reqswap"),
     path("notyouritem/", NotYourItemView.as_view(), name="notyouritem"),
     path("accounts/profile/", UserProfileView.as_view(), name="userprofile"),
     path(

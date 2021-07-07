@@ -12,6 +12,7 @@ from django.views.generic import (
     TemplateView,
     View,
 )
+from django.core.mail import send_mail
 
 from .forms import UserRegistrationForm, UserProfileForm, UserAddressForm, ItemForm
 from .models import (
@@ -83,6 +84,46 @@ class HomeView(TemplateView):
 
 class AddToWishListView(LoginRequiredMixin, SwapWLMixin, TemplateView):
     template_name = "addtowishlist.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        myitem_id = self.kwargs["itm_id"]
+        item_obj = Item.objects.get(id=myitem_id)
+        context["item_obj"] = item_obj
+
+        # check if list exists
+        user_id = self.request.user.id
+        list_id = WishList.objects.filter(client_id=user_id).first()
+        if not list_id:
+            list_obj = WishList.objects.create()
+            self.request.session["list_id"] = list_obj.id
+            WishListItem.objects.create(
+                item_list=list_obj,
+                item=item_obj,
+            )
+            context["item_exists"] = False
+            return context
+
+        else:
+            list_obj = WishList.objects.get(id=list_id.id)
+            # item doesn't already exist in list
+            list_item = list_obj.wishlistitem_set.filter(item_id=myitem_id)
+            if list_item:
+
+                context["item_exists"] = True
+                return context
+            else:
+                WishListItem.objects.create(
+                    item_list=list_obj,
+                    item=item_obj,
+                )
+
+                context["item_exists"] = False
+                return context
+
+
+class RequestSwapView(LoginRequiredMixin, SwapSLMixin, TemplateView):
+    template_name = "reqswap.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -301,7 +342,9 @@ class SearchView(TemplateView):
         context = super().get_context_data(**kwargs)
         kw = self.request.GET.get("keyword")
         results = Item.objects.filter(
-            Q(title__icontains=kw) | Q(description__icontains=kw)
+            Q(title__icontains=kw)
+            | Q(description__icontains=kw)
+            | Q(city__icontains=kw)
         )
         context["results"] = results
         return context

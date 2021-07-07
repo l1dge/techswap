@@ -1,54 +1,60 @@
 {% extends 'base.html' %}
 
+
+
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
+{% include 'profilehead.html' %}
 <div class="container">
-    <div class="row">
-        <div class="col-md-4">
-            <h3>Detailed Information</h3><hr>
-            <div class="col-md-4 p-3">
-                <p><h3>{{user.username}}</h3></p>
-                <img src="{{user.profile.image.url}}" class="img-fluid" style="height:100px; object-fit: contain;" alt="{{user.username}}">
-            </div>
-            <p><span class="font-weight-bold">Name: </span> {{ user.first_name }} {{ user.last_name }}</p>
-            <p><span class="font-weight-bold">Username: </span> {{user.username}}</p>
-            <p><span class="font-weight-bold">Email: </span> {{user.email}}</p>
-            {% comment %} <p><span class="font-weight-bold">Address: </span> {{user.address.house_num}}</p> {% endcomment %}
-            <p><span class="font-weight-bold">Joined on: </span> {{user.date_joined}}</p>
-            
-        </div>
-    </div>
-    {% if items is not None %}
-        <div class="col-md-8">
-            <h3>Previous Swaps</h3>
-            <hr>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Item ID</th>
-                        <th>Description</th>
-                        <th>Swapped</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for itm in items %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td>{{itm.created_at|timesince}} ago</td>
-                        <td>{{itm.swap_agrd|timesince}} ago</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <div class="col-md-8">
-        <hr>
-            <h3>No Swaps made Yet</h3>
-        <hr>
-        </div>
-    {% endif %}
 
+    <div class="row mb-3 mt-3 justify-content-md-center">
+        <div class="col col-md-auto">
+            <div class="card h-100 rounded shadow p-3">  
+                <h3>Detailed Information</h3><hr>
+                    <p><h3>{{user.username}}</h3></p>
+                    <img src="{{user.profile.image.url}}" class="img-fluid" style="height:100px; object-fit: contain;" alt="{{user.username}}">
+                
+                <p><span class="font-weight-bold">Name: </span> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><span class="font-weight-bold">Username: </span> {{user.username}}</p>
+                <p><span class="font-weight-bold">Email: </span> {{user.email}}</p>
+                {% comment %} <p><span class="font-weight-bold">Address: </span> {{user.address.house_num}}</p> {% endcomment %}
+                <p><span class="font-weight-bold">Joined on: </span> {{user.date_joined}}</p>
+            </div>
+        </div>
+        {% if items is not None %}
+        <div class="col col-md-auto">
+            <div class="card h-100 rounded shadow p-3">
+                <h3>Previous Swaps</h3>
+                <hr>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Description</th>
+                            <th>Swapped</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for itm in items %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{itm.created_at|timesince}} ago</td>
+                            <td>{{itm.swap_agrd|timesince}} ago</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="col col-md-auto">
+            <div class="card h-100 rounded shadow p-3">
+                <h3>No Swaps Made Yet</h3>
+            <hr>
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

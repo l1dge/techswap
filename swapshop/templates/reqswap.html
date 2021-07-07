@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Add to wishlist{% endblock %}
+
+{% block content %}
+{% if item_exists == True %}
+<div class="container">
+    <h3>Item already in wishlist.</h3>
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
+                        <!-- Give me the latest 10 items in each category -->
+                        <!-- Product image-->
+                                <img class="card-img-top p-5" src="{{item_obj.image.url}}" alt="{{it_obj.title}}"  />
+                                <!-- Product details-->
+                                <div class="card-body p-5">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder">{{item_obj.title}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    </div>
+</div>
+{% else %}
+<div class="container">
+    
+    <h3>Item added to wishlist successfully.</h3>
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
+                        <!-- Give me the latest 10 items in each category -->
+                        <!-- Product image-->
+                                <img class="card-img-top p-5" src="{{item_obj.image.url}}" alt="{{it_obj.title}}"  />
+                                <!-- Product details-->
+                                <div class="card-body p-5">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder">{{item_obj.title}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    </div> 
+    
+</div>
+{% endif %}
+<script>
+    setTimeout(function(){
+        window.location.href = "{% url 'swapshop:home' %}"
+    }, 3000);
+</script>
+{% endblock %}
