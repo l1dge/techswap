@@ -1,7 +1,9 @@
 import requests
-from django.conf import settings
 from configobj import ConfigObj
 import sys
+from django.conf import settings
+import os
+
 
 config = ConfigObj(r".env")
 city = str(sys.argv[1])
@@ -9,7 +11,7 @@ city = str(sys.argv[1])
 API_KEY = config.get("LOCATION_API_KEY")
 
 
-def latlng(city):
+def retrieve_location(city):
     response = requests.get(
         "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="
         + city
@@ -30,4 +32,4 @@ if __name__ == "__main__":
     except IndexError:
         arg = None
 
-    return_val = latlng(arg)
+    return_val = retrieve_location(arg)

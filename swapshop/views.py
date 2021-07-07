@@ -27,6 +27,7 @@ from .models import (
     SwapListItem,
 )
 import random
+from .latlong import retrieve_location
 
 
 class SwapWLMixin(object):
@@ -314,12 +315,16 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
     MINITEMID = 50000
     MAXITEMID = 600000
     RNDITMNO = str(random.randint(MINITEMID, MAXITEMID))
+    delimiter = ","
 
     def form_valid(self, form):
 
         itm = form.save(commit=False)
         itm.created_by = self.request.user
         itm.slug = f"{self.RNDITMNO} {itm.created_by} {itm.title}"
+        itm.location = self.delimiter.join(
+            [str(value) for value in retrieve_location(itm.city)]
+        )
         itm.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:
