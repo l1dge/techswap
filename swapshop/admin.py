@@ -12,18 +12,18 @@ admin.site.register(
 )
 
 
-class WantedAdmin(admin.ModelAdmin):
-    pass
+# class WantedAdmin(admin.ModelAdmin):
+#     pass
 
 
-admin.site.register(Wanted, WantedAdmin)
+# admin.site.register(Wanted, WantedAdmin)
 
 
-class ForSwapAdmin(admin.ModelAdmin):
-    pass
+# class ForSwapAdmin(admin.ModelAdmin):
+#     pass
 
 
-admin.site.register(ForSwap, ForSwapAdmin)
+# admin.site.register(ForSwap, ForSwapAdmin)
 
 
 class ProfileAdmin(admin.ModelAdmin):

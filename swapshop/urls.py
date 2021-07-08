@@ -5,8 +5,6 @@ from django.urls import path
 from .views import (
     HomeView,
     AboutView,
-    ContactView,
-    SocialView,
     AllItemsView,
     ItemDetailView,
     GuestItemDetailView,
@@ -31,15 +29,15 @@ from .views import (
     AddToSwapListView,
     WLItemDetailView,
     AlreadyRequestedView,
+    SuccessView,
 )
 
 app_name = "swapshop"
 urlpatterns = [
     # Client side pages
     path("", HomeView.as_view(), name="home"),
-    path("about/", AboutView.as_view(), name="about"),
-    path("contact-us/", ContactView.as_view(), name="contact"),
-    path("social/", SocialView.as_view(), name="social"),
+    path("about/", AboutView, name="about"),
+    path("success/", SuccessView, name="success"),
     path("all-items/", AllItemsView.as_view(), name="allitems"),
     path("item/<slug:slug>/", ItemDetailView.as_view(), name="itemdetail"),
     path("wlitem/<slug:slug>/", WLItemDetailView.as_view(), name="wlitemdetail"),

@@ -118,6 +118,7 @@ ACCOUNT_FORMS = {"signup": "swapshop.forms.UserRegistrationForm"}
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 # Used for testing email, logs to console.
+DEFAULT_FROM_EMAIL = "lee@cullipcreativedesign.co.uk"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 EMAIL_HOST = config("EMAIL_HOST")

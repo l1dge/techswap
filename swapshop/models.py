@@ -151,34 +151,34 @@ class Location(models.Model):
         return f"{self.name} {self.town} {self.country}"
 
 
-class Wanted(models.Model):
-    user_id = models.ManyToManyField(
-        User,
-    )
-    location = models.ForeignKey(
-        Location,
-        on_delete=models.CASCADE,
-    )
-    condition_req = models.CharField(max_length=200)
-    item_id = models.ForeignKey(Item, on_delete=models.CASCADE)
+# class Wanted(models.Model):
+#     user_id = models.ManyToManyField(
+#         User,
+#     )
+#     location = models.ForeignKey(
+#         Location,
+#         on_delete=models.CASCADE,
+#     )
+#     condition_req = models.CharField(max_length=200)
+#     item_id = models.ForeignKey(Item, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f"{self.user_id} {self.location} {self.item_id}"
+#     def __str__(self):
+#         return f"{self.user_id} {self.location} {self.item_id}"
 
 
-class ForSwap(models.Model):
-    user_id = models.ManyToManyField(
-        User,
-    )
-    item_id = models.ForeignKey(Item, related_name="ItemID", on_delete=models.CASCADE)
-    location = models.ForeignKey(
-        Location,
-        on_delete=models.CASCADE,
-    )
-    swap_avail = models.BooleanField(default=False)
+# class ForSwap(models.Model):
+#     user_id = models.ManyToManyField(
+#         User,
+#     )
+#     item_id = models.ForeignKey(Item, related_name="ItemID", on_delete=models.CASCADE)
+#     location = models.ForeignKey(
+#         Location,
+#         on_delete=models.CASCADE,
+#     )
+#     swap_avail = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"{self.user_id} {self.location} {self.swap_avail}"
+#     def __str__(self):
+#         return f"{self.user_id} {self.location} {self.swap_avail}"
 
 
 class Profile(models.Model):
