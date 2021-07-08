@@ -16,6 +16,7 @@
                 {% if user.is_authenticated %}
                     <div class="col-md-9">
                         <h4><a href="{% url 'swapshop:itemdetail' result.slug %}">{{result.title}}</a></h4>
+                        <h5>City: {{result.city}}</h5>
                         <p>{{result.description|truncatewords:50}}</p>
                     </div>
                 {% else %}

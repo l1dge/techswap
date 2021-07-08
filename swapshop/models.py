@@ -30,7 +30,7 @@ class Category(models.Model):
 
 ITEM_CONDITION = (
     (s, s)
-    for s in ("Like New", "Excelllent", "Good", "Used", "Poor", "Spares or Repair")
+    for s in ("Like New", "Excellent", "Good", "Used", "Poor", "Spares or Repair")
 )
 
 
@@ -93,6 +93,22 @@ class WishListItem(models.Model):
         return f"WishList: {self.WishList.id} WishlistItem: {self.id}"
 
 
+class SwapList(models.Model):
+    client = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"SwapList: {self.id}"
+
+
+class SwapListItem(models.Model):
+    item_list = models.ForeignKey(SwapList, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"SwapList: {self.SwapList.id} SwaplistItem: {self.id}"
+
+
 SWAP_STATUS = (
     (s, s)
     for s in (
@@ -107,12 +123,17 @@ SWAP_STATUS = (
 
 
 class Swap(models.Model):
-    wish_list = models.OneToOneField(WishList, on_delete=models.CASCADE)
-    ordered_by = models.CharField(max_length=200)
-    email = models.EmailField(null=True, blank=True)
+    swap_list = models.ForeignKey(SwapList, on_delete=models.CASCADE)
+    requested_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    email_from = models.EmailField(null=True, blank=True)
+    email_to = models.EmailField(null=True, blank=True)
     swap_status = models.CharField(max_length=50, choices=SWAP_STATUS)
+    message_sent = models.TextField(max_length=2000, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     swap_completed = models.BooleanField(default=False, null=True, blank=True)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Swap: {self.id}"

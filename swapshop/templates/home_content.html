@@ -1,6 +1,7 @@
 <!-- Adds dropshadow on hover -->
 {% load static %}
 <script src="{% static "/js/shadow.js" %}"></script>
+<script src="{% static "/js/btt.js" %}"></script>
 
 <button
         type="btn"
@@ -48,7 +49,7 @@
                                 </div>
                                 <!-- Product actions-->
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtolist' item.id %}" >Add To List</a></div>
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item.id %}" >Add To List</a></div>
                                 </div>
                                 {% endif %}
                             </div>
@@ -57,7 +58,7 @@
                     </div>
                 {% endfor %}
                 </section>
-                <section class="" id="latest" data-spy="latest" data-target="#latest">        
+                <section class="" style="display:none;" id="latest" data-spy="latest" data-target="#latest">        
                     <h4>Latest Items</h4><hr>
                     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
                         <!-- Give me the latest 10 items in each category -->
@@ -86,7 +87,7 @@
                                 </div>
                                 <!-- Product actions-->
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtolist' item.id %}" >Add To List</a></div>
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item.id %}" >Add To List</a></div>
                                 </div>
                                 {% endif %}
                             </div>
@@ -94,7 +95,7 @@
                         {% endfor %}
                     </div>
                 </section>
-                <section class="" id="popular" data-spy="popular" data-target="#popular">        
+                <section class="" style="display:none;" id="popular" data-spy="popular" data-target="#popular">        
                 <h4>Most Popular Items</h4><hr>
                     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
                         <!-- Give me the latest 10 items in each category -->
@@ -123,7 +124,7 @@
                                 </div>
                                 <!-- Product actions-->
                                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtolist' item.id %}" >Add To List</a></div>
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item.id %}" >Add To List</a></div>
                                     <h6 class="text-muted text-center">Views: {{item.view_count}}</h6>
                                 </div>
                                 {% endif %}

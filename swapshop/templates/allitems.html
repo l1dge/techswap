@@ -13,7 +13,7 @@
             <div class="m-4">
                 <h4><a href="{% url 'swapshop:itemdetail' p.slug %}">{{p.title}}</a></h4>
                 <img src="{{p.image.url}}" alt="" class="img-fluid" style="height: 2500; object-fit: cover;">
-                <a href="{% url 'swapshop:addtolist' p.id %}" class="btn btn-primary">Add To List</a>
+                <a href="{% url 'swapshop:addtowlist' p.id %}" class="btn btn-primary">Add To Wish List</a>
             </div>
         </div>
         {% endfor %}

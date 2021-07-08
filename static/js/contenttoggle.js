@@ -18,10 +18,10 @@ function displayShowLatest() {
 }
 
 function displayShowCat() {
-document.getElementById("category").style.visibility = "visible";
-document.getElementById("category").style.display = "block";
-document.getElementById("latest").style.visibility = "hidden";
-document.getElementById("popular").style.visibility = "hidden";
-document.getElementById("latest").style.display = "none";
-document.getElementById("popular").style.display = "none";
+    document.getElementById("category").style.visibility = "visible";
+    document.getElementById("category").style.display = "block";
+    document.getElementById("latest").style.visibility = "hidden";
+    document.getElementById("popular").style.visibility = "hidden";
+    document.getElementById("latest").style.display = "none";
+    document.getElementById("popular").style.display = "none";
 }

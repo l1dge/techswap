@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% include 'useritemhead.html' %}
+{% include 'userswaplisthead.html' %}
 <section class="py-5">
 <div class="container px-4 px-lg-5 mt-5">
     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
@@ -9,15 +9,15 @@
         <div class="col mb-5">
             <div class="card h-100 rounded">
                 <!-- Product image-->
-                <a href="{% url 'swapshop:wlitemdetail' item.item.slug %}"><img class="card-img-top" src="{{item.item.image.url}}" alt="{{item.item.title}}" /></a>
+                <a href="{% url 'swapshop:swapdetail' item.item.slug %}"><img class="card-img-top" src="{{item.item.image.url}}" alt="{{item.item.title}}" /></a>
                 <!-- Product details-->
                 <div class="card-body p-4">
                 <div class="text-center">
-                    <h5 class="fw-bolder"><a href="{% url 'swapshop:wlitemdetail' item.item.slug %}">{{item.item.title}}</a></h5>
+                    <h5 class="fw-bolder"><a href="{% url 'swapshop:swapdetail' item.item.slug %}">{{item.item.title}}</a></h5>
                 </div>
                 </div>
                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:remwlitem' item.item.slug %}" >Remove Item</a></div>
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:remslitem' item.item.slug %}" >Remove Item</a></div>
                 </div>
             </div>
         </div>
@@ -25,12 +25,12 @@
     </div>
     {% if items.count > 0 %}
     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:emptywishlist' %}" >Empty Wish List</a></div>
+        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:emptyswaplist' %}" >Empty Swap List</a></div>
     </div>
     {% else %}
     <div class="col mb-5">
         <div class="text-center">
-            <h5 class="fw-bolder">Oooh. Lots of empty! Go add something now!</h5>
+            <h5 class="fw-bolder">Oooh. Lots of empty! Go make some swaps!</h5>
         </div>
     </div>
     <script>
