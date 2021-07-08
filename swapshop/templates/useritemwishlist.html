@@ -9,11 +9,11 @@
         <div class="col mb-5">
             <div class="card h-100 rounded">
                 <!-- Product image-->
-                <a href="{% url 'swapshop:itemdetail' item.item.slug %}"><img class="card-img-top" src="{{item.item.image.url}}" alt="{{item.item.title}}" /></a>
+                <a href="{% url 'swapshop:wlitemdetail' item.item.slug %}"><img class="card-img-top" src="{{item.item.image.url}}" alt="{{item.item.title}}" /></a>
                 <!-- Product details-->
                 <div class="card-body p-4">
                 <div class="text-center">
-                    <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.item.slug %}">{{item.item.title}}</a></h5>
+                    <h5 class="fw-bolder"><a href="{% url 'swapshop:wlitemdetail' item.item.slug %}">{{item.item.title}}</a></h5>
                 </div>
                 </div>
                 <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">

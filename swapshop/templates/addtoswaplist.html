@@ -5,7 +5,7 @@
 {% block content %}
 {% if item_exists == True %}
 <div class="container">
-    <h3>Item already in wishlist.</h3>
+    <h3>Item already in swaplist.</h3>
     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
                         <!-- Give me the latest 10 items in each category -->
                         <!-- Product image-->
@@ -23,7 +23,7 @@
 {% else %}
 <div class="container">
     
-    <h3>Item added to wishlist successfully.</h3>
+    <h3>Item added to swaplist successfully.</h3>
     <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
                         <!-- Give me the latest 10 items in each category -->
                         <!-- Product image-->
@@ -42,7 +42,7 @@
 {% endif %}
 <script>
     setTimeout(function(){
-        window.location.href = "{% url 'swapshop:home' %}"
+        window.location.href = "{% url 'swapshop:myswaplist' %}"
     }, 3000);
 </script>
 {% endblock %}

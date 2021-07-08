@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 from location_field.models.plain import PlainLocationField
-from .models import Profile, Address, Item
+from .models import Profile, Address, Item, Swap
 from allauth.account.forms import SignupForm
 
 
@@ -202,4 +202,21 @@ class ItemForm(forms.ModelForm):
                 }
             ),
             # "location": PlainLocationField(based_fields=["city"]),
+        }
+
+
+class SwapForm(forms.ModelForm):
+    class Meta:
+        model = Swap
+        fields = [
+            "message_sent",
+        ]
+        widgets = {
+            "message_sent": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Item message here...",
+                    "rows": "5",
+                }
+            ),
         }

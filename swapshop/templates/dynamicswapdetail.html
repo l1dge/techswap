@@ -2,7 +2,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% include 'itemhead.html' %}
+{% if not swap%}
+    {% include 'dynamicswaphead.html' %}
+{% else %}
+    {% include 'swapinitiatedhead.html' %}
+{% endif %}
 
 <div class="container">
     <h3>Item: {{ item_obj.title }} </h3><hr>
@@ -34,12 +38,13 @@
             <hr>
             <p>Description: {{ item_obj.description }}</p>
             <p>Created by: {{ item_obj.created_by }}
+            {% if not swap%}
             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                 <div class="btn-group">
-                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item_obj.id %}" >Add To Wish List</a></div>
-                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtoslist' item_obj.id %}" >Add To Swap List</a></div>
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:reqswap' item_obj.id %}" >Request Swap</a></div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
    

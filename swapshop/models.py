@@ -123,12 +123,17 @@ SWAP_STATUS = (
 
 
 class Swap(models.Model):
-    wish_list = models.OneToOneField(WishList, on_delete=models.CASCADE)
-    ordered_by = models.CharField(max_length=200)
-    email = models.EmailField(null=True, blank=True)
+    swap_list = models.ForeignKey(SwapList, on_delete=models.CASCADE)
+    requested_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    email_from = models.EmailField(null=True, blank=True)
+    email_to = models.EmailField(null=True, blank=True)
     swap_status = models.CharField(max_length=50, choices=SWAP_STATUS)
+    message_sent = models.TextField(max_length=2000, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     swap_completed = models.BooleanField(default=False, null=True, blank=True)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Swap: {self.id}"
