@@ -5,7 +5,7 @@ from django.conf import settings
 import os
 
 
-config = ConfigObj(r".env")
+config = ConfigObj(r"../.env")
 city = str(sys.argv[1])
 
 API_KEY = config.get("LOCATION_API_KEY")
