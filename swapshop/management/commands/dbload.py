@@ -71,7 +71,6 @@ CATEGORIES = [
     "Office Equipment & Supplies",
     "PC",
     "Pet Supplies",
-    "Pet Supplies",
     "Phones",
     "Retro",
     "Sound & Vision",
@@ -191,13 +190,13 @@ class Command(BaseCommand):
                 condition=random.choice(ITEM_CONDITION),
                 city=place,
                 location=lat,
+                category=(random.choice(categories)),
                 created_by=uid,  # Pick and arbitrary number from your usersid's
             )
 
             if not created:
                 print(f"Item { item.title } already exists")
             else:
-                item.category.add(random.choice(categories))
                 item.save()
 
         # Do the stuff
