@@ -14,6 +14,7 @@ from django.views.generic import (
     TemplateView,
     View,
     FormView,
+    ListView,
 )
 from django.core.mail import send_mail
 
@@ -64,8 +65,11 @@ class SwapSLMixin(object):
         return f"SwapList: {self.id}"
 
 
-class HomeView(TemplateView):
+class HomeView(ListView):
     template_name = "home.html"
+    paginate_by = 10
+    queryset = Item.objects.all().order_by("-id")
+    context_object_name = "all_items"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -73,14 +77,7 @@ class HomeView(TemplateView):
         num_visits = self.request.session.get("num_visits", 0)
         self.request.session["num_visits"] = num_visits + 1
         context["num_visits"] = num_visits
-        all_items = Item.objects.all().order_by("-id")
-        popular_items = all_items.order_by("view_count")
-        paginator = Paginator(all_items, 8)
-        page_number = self.request.GET.get("page")
-        item_list = paginator.get_page(page_number)
-        context["item_list"] = item_list
-        context["latest_items"] = all_items
-        context["popular_items"] = popular_items
+        context["other_items"] = Item.objects.all().order_by("-id")
         context["allcategories"] = Category.objects.all().order_by("title")
         return context
 

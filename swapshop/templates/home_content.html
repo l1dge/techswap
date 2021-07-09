@@ -8,130 +8,199 @@
 
 <section class="py-5">            
            
-            <div class="container px-4 px-lg-5 mt-5">
-                <div class="btn-toolbar justify-content-md-center" role="toolbar" aria-label="Toolbar with button groups">
-                    <div class="btn-group1 d-grid m-3 d-md-flex justify-content-md-end" role="group" aria-label="Sort By Category">
-                        <button type="button" onclick = "displayShowCat()" class="btn btn-primary">Category</button>
-                    </div>
-                    <div class="btn-group2 d-grid m-3 d-md-flex justify-content-md-end" role="group" aria-label="Sort By Latest">
-                        <button type="button" onclick = "displayShowLatest()" class="btn btn-primary">Latest</button>
-                    </div>
-                    <div class="btn-group3 d-grid m-3 d-md-flex justify-content-md-end" role="group" aria-label="Sort By Most Popular">
-                        <button type="button" onclick = "displayShowPop()" class="btn btn-primary">Popular</button>
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="btn-toolbar justify-content-md-center" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group1 d-grid m-3 d-md-flex justify-content-md-end" role="group" aria-label="All Items">
+                <button type="button" onclick = "displayShowAll()" class="btn btn-primary">All Items</button>
+            </div>
+            <div class="btn-group2 d-grid m-3 d-md-flex justify-content-md-end" role="group" aria-label="Sort By Latest">
+                <button type="button" onclick = "displayShowLatest()" class="btn btn-primary">Latest</button>
+            </div>
+            <div class="btn-group3 d-grid m-3 d-md-flex justify-content-md-end" role="group" aria-label="Sort By Most Popular">
+                <button type="button" onclick = "displayShowPop()" class="btn btn-primary">Popular</button>
+            </div>
+            <div class="btn-group4 d-grid m-3 d-md-flex justify-content-md-end" role="group" aria-label="Sort By Category">
+                <button type="button" onclick = "displayShowCat()" class="btn btn-primary">Category</button>
+            </div>
+        </div>
+        
+        <section class="" style="display:block;" id="allitems" data-spy="allitems" data-target="#allitems">        
+            <h4>All Items</h4><hr>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
+                {% for item in all_items %}
+                <div class="col mb-5">
+                    <div class="card h-100 rounded">
+                        {% if not user.is_authenticated %}
+                        <!-- Product image-->
+                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' item.slug %}">{{item.title}}</a></h5>
+                            </div>
+                        </div>
+                        
+                        {% else %}
+                        <!-- Product image-->
+                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.slug %}">{{item.title}}</a></h5>
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item.id %}" >Add To List</a></div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
-
-            <section class="" id="category" data-spy="category" data-target="#category">        
-                {% for cat in allcategories %}
-                    <h4>{{cat.title}}</h4><hr>
-                    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
-                        <!-- Give me the latest 10 items in each category -->
-                        {% for item in cat.item_set.all|dictsortreversed:'created_at'|slice:':10' %}
-                        <div class="col mb-5">
-                            <div class="card h-100 rounded">
-                                {% if not user.is_authenticated %}
-                                <!-- Product image-->
-                                <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
-                                <!-- Product details-->
-                                <div class="card-body p-4">
-                                    <div class="text-center">
-                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' item.slug %}">{{item.title}}</a></h5>
-                                    </div>
-                                </div>
-                                {% else %}
-                                <!-- Product image-->
-                                <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
-                                <!-- Product details-->
-                                <div class="card-body p-4">
-                                    <div class="text-center">
-                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.slug %}">{{item.title}}</a></h5>
-                                    </div>
-                                </div>
-                                <!-- Product actions-->
-                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item.id %}" >Add To List</a></div>
-                                </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
                 {% endfor %}
-                </section>
-                <section class="" style="display:none;" id="latest" data-spy="latest" data-target="#latest">        
-                    <h4>Latest Items</h4><hr>
-                    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
-                        <!-- Give me the latest 10 items in each category -->
-                        {% for item in latest_items|dictsortreversed:'created_at'|slice:':40' %}
-                        <div class="col mb-5">
-                            <div class="card h-100 rounded">
-                                {% if not user.is_authenticated %}
-                                <!-- Product image-->
-                                <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
-                                <!-- Product details-->
-                                <div class="card-body p-4">
-                                    <div class="text-center">
-                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' item.slug %}">{{item.title}}</a></h5>
-                                        
-                                    </div>
-                                </div>
+               </div>
+               {% if is_paginated %}
+                <nav aria-label="Page navigation conatiner"></nav>
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link">&laquo; PREV </a></li>
+                        {% endif %}
+                        {% for i in page_range|default_if_none:page_obj.paginator.get_elided_page_range %}</li>
+                            {% if page_obj.number == i %}
+                                <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                            {% else %}
+                                {% if i == page_obj.paginator.ELLIPSIS %}
+                                    <li class="page-item"><span class="page-link">{{ i }}</span></li>
                                 {% else %}
-                                <!-- Product image-->
-                                <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
-                                <!-- Product details-->
-                                <div class="card-body p-4">
-                                    <div class="text-center">
-                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.slug %}">{{item.title}}</a></h5>
-                                        
-                                    </div>
-                                </div>
-                                <!-- Product actions-->
-                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item.id %}" >Add To List</a></div>
-                                </div>
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                                 {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li><a href="?page={{ page_obj.next_page_number }}" class="page-link"> NEXT &raquo;</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+        </section>
+
+        <section class="" style="display:none;" id="latest" data-spy="latest" data-target="#latest">        
+            <h4>Latest 50 Items</h4><hr>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
+                <!-- Give me the latest 10 items in each category -->
+                {% for item in other_items|dictsortreversed:'created_at'|slice:':50' %}
+                <div class="col mb-5">
+                    <div class="card h-100 rounded">
+                        {% if not user.is_authenticated %}
+                        <!-- Product image-->
+                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' item.slug %}">{{item.title}}</a></h5>
+                                
                             </div>
                         </div>
-                        {% endfor %}
-                    </div>
-                </section>
-                <section class="" style="display:none;" id="popular" data-spy="popular" data-target="#popular">        
-                <h4>Most Popular Items</h4><hr>
-                    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
-                        <!-- Give me the latest 10 items in each category -->
-                        {% for item in popular_items|dictsortreversed:'view_count'|slice:':20' %}
-                        <div class="col mb-5">
-                            <div class="card h-100 rounded">
-                                {% if not user.is_authenticated %}
-                                <!-- Product image-->
-                                <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
-                                <!-- Product details-->
-                                <div class="card-body p-4">
-                                    <div class="text-center">
-                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' item.slug %}">{{item.title}}</a></h5>
-                                        
-                                    </div>
-                                </div>
-                                {% else %}
-                                <!-- Product image-->
-                                <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
-                                <!-- Product details-->
-                                <div class="card-body p-4">
-                                    <div class="text-center">
-                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.slug %}">{{item.title}}</a></h5>
-                                        
-                                    </div>
-                                </div>
-                                <!-- Product actions-->
-                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item.id %}" >Add To List</a></div>
-                                    <h6 class="text-muted text-center">Views: {{item.view_count}}</h6>
-                                </div>
-                                {% endif %}
+                        {% else %}
+                        <!-- Product image-->
+                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.slug %}">{{item.title}}</a></h5>
+                                
                             </div>
                         </div>
-                        {% endfor %}
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item.id %}" >Add To List</a></div>
+                        </div>
+                        {% endif %}
                     </div>
-                </section>
+                </div>
+                {% endfor %}
             </div>
         </section>
+
+        <section class="" style="display:none;" id="popular" data-spy="popular" data-target="#popular">        
+            <h4>Top 50 Items</h4><hr>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
+                <!-- Give me the latest 10 items in each category -->
+                {% for item in other_items|dictsortreversed:'view_count'|slice:':50' %}
+                <div class="col mb-5">
+                    <div class="card h-100 rounded">
+                        {% if not user.is_authenticated %}
+                        <!-- Product image-->
+                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' item.slug %}">{{item.title}}</a></h5>
+                                
+                            </div>
+                        </div>
+                        {% else %}
+                        <!-- Product image-->
+                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.slug %}">{{item.title}}</a></h5>
+                                
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item.id %}" >Add To List</a></div>
+                            <h6 class="text-muted text-center">Views: {{item.view_count}}</h6>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="" style="display:none;" id="category" data-spy="category" data-target="#category">
+            {% for cat in allcategories %}
+                <h4>{{cat.title}}</h4><hr>
+                    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
+                        <!-- Give me the latest 10 items in each category -->
+                        {% for item in cat.item_set.all|dictsortreversed:'created_at' %}
+                        <div class="col mb-5">
+                            <div class="card h-100 rounded">
+                                {% if not user.is_authenticated %}
+                                <!-- Product image-->
+                                <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                                <!-- Product details-->
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' item.slug %}">{{item.title}}</a></h5>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <!-- Product image-->
+                                <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                                <!-- Product details-->
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <h5 class="fw-bolder"><a href="{% url 'swapshop:itemdetail' item.slug %}">{{item.title}}</a></h5>
+                                    </div>
+                                </div>
+                                <!-- Product actions-->
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                    <div class="text-center">
+                                        <a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item.id %}" >Add To List</a>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+            {% endfor %}
+        </section>
+    </div>
+</section>
+
+{% comment %} <p class="text-muted text-center">You have visited this page {{ num_visits }} time{{ num_visits|pluralize }}.</p> {% endcomment %}
+
