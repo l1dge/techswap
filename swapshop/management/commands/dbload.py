@@ -1,16 +1,16 @@
-from django.core.management.base import BaseCommand, CommandError
-from swapshop.models import Item, ItemImage, Profile, Category
-from faker import Faker
-from faker.providers import internet, phone_number, address, lorem
-from faker_vehicle import VehicleProvider
-from django.contrib.auth.models import User
-import random
 import itertools
+import random
+
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
+from django.core.management.base import BaseCommand, CommandError
+from django.db.models import Max, Min
 from django.utils import timezone
 from django.utils.text import slugify
-from django.db.models import Max, Min
-from django.contrib.auth.hashers import make_password
-
+from faker import Faker
+from faker.providers import address, internet, lorem, phone_number
+from faker_vehicle import VehicleProvider
+from swapshop.models import Category, Item, ItemImage, Profile
 
 fakeuser = Faker()
 fakeuser.add_provider(internet)
@@ -25,17 +25,66 @@ fakeuser.add_provider(internet)
 
 
 CATEGORIES = [
-    "Networking",
+    "Antiques",
+    "Art",
     "Audio Visual",
+    "Bath & Body Products",
+    "Bathroom Fixtures, Accessories & Supplies",
+    "Bikes",
     "Books",
+    "Books, Comics & Magazines",
+    "Building Materials & Supplies",
+    "Cameras & Photography Equipment",
+    "Cars, Motorcycles & Vehicles",
+    "Coins- Coins, Banknotes & Bullion",
+    "Collectables",
+    "Computer Components & Parts",
+    "Computers, Tablets & Network Hardware",
+    "Costume Jewellery",
+    "Cycling Equipment",
+    "DIY Tools & Workshop Equipment",
+    "DVDs & Blu-rays",
+    "DVDs, Films & TV",
+    "Electrical Equipment & Supplies",
+    "Electronics",
+    "Everything Else",
+    "Fashion",
+    "Fragrances & Aftershaves",
+    "Furniture",
+    "Garden & Patio",
     "Hardware",
-    "Retro",
-    "PC",
-    "Mac",
+    "Home Bedding",
+    "Home Garden",
+    "Home Office Furniture",
+    "Household Accessories & Supplies",
+    "Jewellery & Watches",
     "Linux",
+    "Mac",
+    "Make-Up Products",
+    "Media",
+    "Militaria",
+    "Model Railways & Trains",
+    "Motors",
+    "Music",
+    "Musical Instruments",
+    "Networking",
+    "Office Equipment & Supplies",
+    "PC",
+    "Pet Supplies",
+    "Pet Supplies",
     "Phones",
+    "Retro",
+    "Sound & Vision",
     "Spares or Repairs",
+    "Sporting Goods",
+    "Sports Memorabilia",
+    "Sports, Hobbies & Leisure",
+    "Stamps",
+    "Toys & Games",
+    "Vehicle Parts & Accessories",
+    "Video Games & Consoles",
 ]
+
 CITIES = [
     ("London", "51.509865,-0.118092"),
     ("New York", "40.730610,-73.935242"),

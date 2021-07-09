@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-<!-- Adds dropshadow on hover -->
-{% load static %}
-<script src="{% static "/js/shadow.js"  %}"></script>
+
 
 
 {% block content %}
@@ -22,10 +20,10 @@
                     </div>
                     </div>
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark btn-warning mt-auto" href="{% url 'swapshop:arcmyitem' item.slug %}" >Archive Item</a></div>
+                        <div class="text-center"><a class="btn btn-outline-dark btn-warning mt-auto" href="{% url 'swapshop:arcmyitem' item.slug %}"  Onclick="return WarningUndoItemArc();">Archive Item</a></div>
                     </div>
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark btn-danger mt-auto" href="{% url 'swapshop:remmyitem' item.slug %}" >Delete Item</a></div>
+                        <div class="text-center"><a class="btn btn-outline-dark btn-danger mt-auto"  href="{% url 'swapshop:remmyitem' item.slug %}"  Onclick="return WarningUndoItemDel();">Delete Item</a></div>
                     </div>
                     
                 </div>
@@ -42,7 +40,7 @@
                     </div>
                     </div>
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark btn-danger mt-auto" href="{% url 'swapshop:remmyitem' item.slug %}" >Delete Item</a></div>
+                        <div class="text-center"><a class="btn btn-outline-dark btn-danger mt-auto" href="{% url 'swapshop:remmyitem' item.slug %}" Onclick="return WarningUndoItemDel();" >Delete Item</a></div>
                     </div>
                 </div>
             </div>

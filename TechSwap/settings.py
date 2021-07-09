@@ -101,12 +101,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
-STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn")
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 1
@@ -118,6 +112,7 @@ ACCOUNT_FORMS = {"signup": "swapshop.forms.UserRegistrationForm"}
 ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 # Used for testing email, logs to console.
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 EMAIL_HOST = config("EMAIL_HOST")
@@ -129,12 +124,20 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 # Amazon S3 credentials
 FILE_URL = config("FILE_URL")
-AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
-AWS_QUERYSTRING_AUTH = False
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
+AWS_DEFAULT_ACL = "public-read"
+AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+AWS_QUERYSTRING_AUTH = False
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
+
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn")
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 # Google Map Settings
 LOCATION_FIELD_PATH = STATIC_URL + "location_field"

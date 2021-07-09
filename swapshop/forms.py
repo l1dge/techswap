@@ -2,7 +2,6 @@ from django import forms
 
 from django.contrib.auth.models import User
 
-from location_field.models.plain import PlainLocationField
 from .models import Profile, Address, Item, Swap
 from allauth.account.forms import SignupForm
 
@@ -171,7 +170,7 @@ class ItemForm(forms.ModelForm):
                     "placeholder": "Enter Item title here...",
                 }
             ),
-            "category": forms.SelectMultiple(
+            "category": forms.Select(
                 attrs={
                     "class": "form-control",
                 }
@@ -191,7 +190,6 @@ class ItemForm(forms.ModelForm):
             "condition": forms.Select(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Enter Item condition here...",
                 }
             ),
             "city": forms.TextInput(
@@ -220,3 +218,27 @@ class SwapForm(forms.ModelForm):
                 }
             ),
         }
+
+
+class ContactForm(forms.Form):
+
+    subject = forms.CharField(
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter message subject here...",
+                "rows": "5",
+            }
+        ),
+    )
+    message = forms.CharField(
+        required=True,
+        widget=forms.Textarea(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter Item message here...",
+                "rows": "5",
+            }
+        ),
+    )

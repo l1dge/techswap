@@ -2,9 +2,43 @@
 
 {% block content %}
     {% include 'abouthead.html' %}
+    {% load static %}
 
-    <p>
-        lorem ipsum dolor sit amet, consectet
-    </p>
+    <div class="container">
+        <p class="lead m-3">
+            <img class="rounded float-start mr-2 mt-2" height="100px" width="100px" src="{% static "/assets/images/Black-and-White-Modern-Icons-Fil.gif" %}" alt="Animated Logo" /> Welcome to the TechSwap pre-alpha preview. 
+            The idea of TechSwap is to provide a marketplace for people to swap (no cash involved) tech items that they may have lying around but no longer need. <br>
+            Techswap are just a facilitator to allow you to list items and put you in contact with other people who may have something you would like to swap something for.<br>
+            Negotiations are purely down to the swaper and swapee, we are just here to provide a platform for you to list your items on.<br>
+            As the old saying goes... 
+            <figure>
+                <blockquote class="blockquote">
+                    <p>One Persons's Junk is another Person's Treasure!!</p>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                    Anonymous
+                </figcaption>
+            </figure>
+        </p>
+        <br>
+        <hr>
+        <br>
+        {% if user.is_authenticated %}
+        <p class="lead m-3">
+            <i class="fa fa-paper-plane" aria-hidden="true"></i> If you'd need to send us a message please fill out the form below and we'll aim to get back to you within 48 hours.<br>
+            Messages will be sent on your behalf using the email address you signed up with.
+        </p>
+        <form method="POST" enctype="multipart/form-data"> 
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-info">Submit Item</button>
+                {{ form.media }}
+        </form>
+        <br>
+        {% else %}
+            <p class="lead m-3">If you'd like to get in touch about something please feel free to send us an email. We try to respond to all emails within 48 hours.</p>
+            <p class="lead m-3"><a href="mailto:info@techswap.uk">Send Us an Email</a></p>
+        {% endif %}
+    </div>
 
 {% endblock %}

@@ -4,17 +4,20 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.shortcuts import redirect
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
     DetailView,
     TemplateView,
     View,
+    FormView,
 )
 from django.core.mail import send_mail
 
-from .forms import ItemForm, SwapForm
+from .forms import ItemForm, SwapForm, ContactForm
 from .models import (
     WishList,
     Item,
@@ -342,12 +345,27 @@ class NotYourItemView(SwapWLMixin, TemplateView):
     template_name = "notyours.html"
 
 
-class AboutView(TemplateView):
-    template_name = "about.html"
+def AboutView(request):
+    if request.method == "GET":
+        form = ContactForm()
+    else:
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data["subject"]
+            from_email = User.objects.get(id=request.user.id).email
+            message = form.cleaned_data["message"]
+            try:
+                # TODO: Change admin@example.com to proper email address
+                send_mail(subject, message, from_email, ["admin@example.com"])
+            except BadHeaderError:
+                # return HttpResponse("Invalid header found.")
+                return redirect("swapshop:about")
+            return redirect("swapshop:success")
+    return render(request, "about.html", {"form": form})
 
 
-class ContactView(TemplateView):
-    template_name = "contactus.html"
+def SuccessView(request):
+    return render(request, "success.html")
 
 
 class SocialView(TemplateView):
