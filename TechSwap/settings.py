@@ -1,6 +1,7 @@
 from decouple import config, Csv
 import dj_database_url
 from pathlib import Path
+from django.conf import settings
 import os
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -117,7 +118,7 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 # Used for testing email, logs to console.
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
-if DEBUG == True:
+if settings.DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 else:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
