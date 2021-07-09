@@ -170,7 +170,7 @@ class ItemForm(forms.ModelForm):
                     "placeholder": "Enter Item title here...",
                 }
             ),
-            "category": forms.SelectMultiple(
+            "category": forms.Select(
                 attrs={
                     "class": "form-control",
                 }
@@ -190,7 +190,6 @@ class ItemForm(forms.ModelForm):
             "condition": forms.Select(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Enter Item condition here...",
                 }
             ),
             "city": forms.TextInput(

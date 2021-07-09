@@ -18,7 +18,7 @@ class Category(models.Model):
     slug = models.SlugField(unique=True)
 
     def __str__(self):
-        return f"{self.title} {self.slug}"
+        return f"{self.title}"
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -37,7 +37,7 @@ ITEM_CONDITION = (
 class Item(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, default="", editable=False, max_length=255)
-    category = models.ManyToManyField(Category)
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
     description = models.TextField(max_length=500, default=None)
     image = models.FileField(upload_to="items")
     condition = models.CharField(max_length=50, choices=ITEM_CONDITION)
@@ -149,36 +149,6 @@ class Location(models.Model):
 
     def __str__(self):
         return f"{self.name} {self.town} {self.country}"
-
-
-# class Wanted(models.Model):
-#     user_id = models.ManyToManyField(
-#         User,
-#     )
-#     location = models.ForeignKey(
-#         Location,
-#         on_delete=models.CASCADE,
-#     )
-#     condition_req = models.CharField(max_length=200)
-#     item_id = models.ForeignKey(Item, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         return f"{self.user_id} {self.location} {self.item_id}"
-
-
-# class ForSwap(models.Model):
-#     user_id = models.ManyToManyField(
-#         User,
-#     )
-#     item_id = models.ForeignKey(Item, related_name="ItemID", on_delete=models.CASCADE)
-#     location = models.ForeignKey(
-#         Location,
-#         on_delete=models.CASCADE,
-#     )
-#     swap_avail = models.BooleanField(default=False)
-
-#     def __str__(self):
-#         return f"{self.user_id} {self.location} {self.swap_avail}"
 
 
 class Profile(models.Model):
