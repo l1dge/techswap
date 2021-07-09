@@ -13,11 +13,11 @@ SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = (
+ALLOWED_HOSTS = [
     "127.0.0.1",
     ".herokuapp.com",
     "glacial-sierra-78162.herokuapp.com",
-)
+]
 
 
 INSTALLED_APPS = [
