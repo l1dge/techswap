@@ -352,7 +352,7 @@ def AboutView(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             subject = form.cleaned_data["subject"]
-            from_email = form.cleaned_data["from_email"]
+            from_email = User.objects.get(id=request.user.id).email
             message = form.cleaned_data["message"]
             try:
                 send_mail(subject, message, from_email, ["admin@example.com"])

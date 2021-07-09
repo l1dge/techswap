@@ -223,16 +223,6 @@ class SwapForm(forms.ModelForm):
 
 class ContactForm(forms.Form):
 
-    from_email = forms.EmailField(
-        required=True,
-        widget=forms.EmailInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": "Enter your email here...",
-                "rows": "5",
-            }
-        ),
-    )
     subject = forms.CharField(
         required=True,
         widget=forms.TextInput(

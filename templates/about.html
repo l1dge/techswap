@@ -20,9 +20,13 @@
                 </figcaption>
             </figure>
         </p>
+        <br>
         <hr>
+        <br>
+        {% if user.is_authenticated %}
         <p class="lead m-3">
-            <i class="fa fa-paper-plane" aria-hidden="true"></i> If you'd need to send us a message please fill out the form below and we'll aim to get back to you within 48 hours.
+            <i class="fa fa-paper-plane" aria-hidden="true"></i> If you'd need to send us a message please fill out the form below and we'll aim to get back to you within 48 hours.<br>
+            Messages will be sent on your behalf using the email address you signed up with.
         </p>
         <form method="POST" enctype="multipart/form-data"> 
                 {% csrf_token %}
@@ -30,6 +34,11 @@
                 <button class="btn btn-info">Submit Item</button>
                 {{ form.media }}
         </form>
+        <br>
+        {% else %}
+            <p class="lead m-3">If you'd like to get in touch about something please feel free to send us an email. We try to respond to all emails within 48 hours.</p>
+            <p class="lead m-3"><a href="mailto:info@techswap.uk">Send Us an Email</a></p>
+        {% endif %}
     </div>
 
 {% endblock %}
