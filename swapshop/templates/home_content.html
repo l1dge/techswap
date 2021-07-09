@@ -39,7 +39,6 @@
                                 <h5 class="fw-bolder"><a href="{% url 'swapshop:guestitemdetail' item.slug %}">{{item.title}}</a></h5>
                             </div>
                         </div>
-                        
                         {% else %}
                         <!-- Product image-->
                         <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>

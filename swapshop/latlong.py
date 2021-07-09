@@ -1,14 +1,16 @@
 import requests
-from configobj import ConfigObj
+
 import sys
 from django.conf import settings
 import os
+import sys
 
+sys.path.append("/home/l1dge/Dev/pybites/TechSwap/")
 
-config = ConfigObj(r"../.env")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "TechSwap.settings")
 city = str(sys.argv[1])
 
-API_KEY = config.get("LOCATION_API_KEY")
+API_KEY = settings.LOCATION_API_KEY
 
 
 def retrieve_location(city):
