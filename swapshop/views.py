@@ -355,9 +355,11 @@ def AboutView(request):
             from_email = User.objects.get(id=request.user.id).email
             message = form.cleaned_data["message"]
             try:
+                # TODO: Change admin@example.com to proper email address
                 send_mail(subject, message, from_email, ["admin@example.com"])
             except BadHeaderError:
-                return HttpResponse("Invalid header found.")
+                # return HttpResponse("Invalid header found.")
+                return redirect("swapshop:about")
             return redirect("swapshop:success")
     return render(request, "about.html", {"form": form})
 
