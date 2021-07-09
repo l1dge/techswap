@@ -117,7 +117,10 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 # Used for testing email, logs to console.
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+if DEBUG == True:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_HOST = config("EMAIL_HOST")
 EMAIL_USE_TLS = config("EMAIL_USE_TLS")
