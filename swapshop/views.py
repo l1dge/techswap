@@ -41,7 +41,7 @@ class SwapWLMixin(object):
             uid = User.objects.filter(pk=request.user.id).first()
             list_id = WishList.objects.get(client_id=uid.id)
             if list_id:
-                list_obj = WishList.objects.get(client_id=uid)
+                list_obj = WishList.objects.get(client_id=uid.id)
                 list_obj.client = uid
                 list_obj.save()
             return super().dispatch(request, *args, **kwargs)
@@ -56,7 +56,7 @@ class SwapSLMixin(object):
             uid = User.objects.filter(pk=request.user.id).first()
             list_id = SwapList.objects.get_or_create(client_id=uid.id)
             if list_id:
-                list_obj = SwapList.objects.get(client_id=uid)
+                list_obj = SwapList.objects.get(client_id=uid.id)
                 list_obj.client = uid
                 list_obj.save()
             return super().dispatch(request, *args, **kwargs)
