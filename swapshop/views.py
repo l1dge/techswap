@@ -39,7 +39,7 @@ class SwapWLMixin(object):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             uid = User.objects.filter(pk=request.user.id).first()
-            list_id = WishList.objects.get(client_id=uid)
+            list_id = WishList.objects.get(client_id=uid.id)
             if list_id:
                 list_obj = WishList.objects.get(client_id=uid)
                 list_obj.client = uid
