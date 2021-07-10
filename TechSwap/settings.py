@@ -189,3 +189,5 @@ DEBUG_TOOLBAR_PANELS = [
 
 
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+
+SESSION_COOKIE_AGE = 3600
