@@ -18,6 +18,8 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     ".herokuapp.com",
     "glacial-sierra-78162.herokuapp.com",
+    "www.techswap.uk",
+    ".techswap.uk",
 ]
 
 
