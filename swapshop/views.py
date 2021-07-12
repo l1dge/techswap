@@ -406,7 +406,7 @@ class SearchView(TemplateView):
 class ItemCreateView(LoginRequiredMixin, CreateView):
     template_name = "itemcreate.html"
     form_class = ItemForm
-    success_url = reverse_lazy("swapshop:itemcreate")
+    success_url = reverse_lazy("swapshop:myitemlist")
     MINITEMID = 50000
     MAXITEMID = 600000
     RNDITMNO = str(random.randint(MINITEMID, MAXITEMID))

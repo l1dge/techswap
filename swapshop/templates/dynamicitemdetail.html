@@ -34,12 +34,20 @@
             <hr>
             <p>Description: {{ item_obj.description }}</p>
             <p>Created by: {{ item_obj.created_by }}
+            {% if not item_obj.created_by.id == user.id %}
             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                 <div class="btn-group">
                     <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtowlist' item_obj.id %}" >Add To Wish List</a></div>
                     <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtoslist' item_obj.id %}" >Add To Swap List</a></div>
                 </div>
             </div>
+            {% else %}
+            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                <div class="btn-group">
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:myitemlist' %}" >Back To Item List</a></div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
    
