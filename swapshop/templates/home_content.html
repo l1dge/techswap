@@ -32,7 +32,7 @@
                     <div class="card h-100 rounded" >
                         {% if not user.is_authenticated %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
+                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -41,7 +41,7 @@
                         </div>
                         {% else %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow " style="width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
+                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -91,7 +91,7 @@
                     <div class="card h-100 rounded" >
                         {% if not user.is_authenticated %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -101,7 +101,7 @@
                         </div>
                         {% else %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -129,7 +129,7 @@
                     <div class="card h-100 rounded" >
                         {% if not user.is_authenticated %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -139,7 +139,7 @@
                         </div>
                         {% else %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -169,7 +169,7 @@
                             <div class="card h-100 rounded" >
                                 {% if not user.is_authenticated %}
                                 <!-- Product image-->
-                                <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                                <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
                                 <!-- Product details-->
                                 <div class="card-body p-4">
                                     <div class="text-center">
@@ -178,7 +178,7 @@
                                 </div>
                                 {% else %}
                                 <!-- Product image-->
-                                <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                                <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
                                 <!-- Product details-->
                                 <div class="card-body p-4">
                                     <div class="text-center">
