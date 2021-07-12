@@ -37,7 +37,7 @@
                     <tbody>
                         {% for itm in items %}
                         <tr>
-                            <td><a href="{% url 'swapshop:swapdetail' itm.item.slug %}"><img class="img-thumbnail" src="{{itm.item.image.url}}" alt="{{itm.item.title}}" /> {{itm.item.title|truncatechars:9}}</a></td>
+                            <td><a href="{% url 'swapshop:swapdetail' itm.item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="width: 80px; height: 80px" src="{{itm.item.image.url}}" alt="{{itm.item.title}}" /></center>{{itm.item.title|truncatechars:15}}</a></td>
                             <td>{{itm.swap_status}}</td>
                             <td>{{itm.created_at|timesince}} ago</td>
                         </tr>
