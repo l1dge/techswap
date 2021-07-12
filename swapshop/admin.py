@@ -12,11 +12,14 @@ admin.site.register(
 )
 
 
-# class WantedAdmin(admin.ModelAdmin):
-#     pass
+class SwapAdmin(admin.ModelAdmin):
+    pass
 
 
-# admin.site.register(Wanted, WantedAdmin)
+admin.site.register(
+    [Swap, SwapList, SwapListItem, WishList, WishListItem],
+    SwapAdmin,
+)
 
 
 # class ForSwapAdmin(admin.ModelAdmin):
