@@ -439,26 +439,6 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
 
 
 def RequestSwapView(request, **kwargs):
-
-    # def form_valid(self, form):
-    #     user_id = self.request.user.id
-    #     list_id = SwapList.objects.filter(client_id=user_id).first()
-    #     item_owner = Item.objects.get(id=self.kwargs.get("itm_id"))
-
-    #     list_item = Swap.objects.filter(
-    #         swap_list_id=list_id, item_id=self.kwargs.get("itm_id")
-    #     )
-    #     if not list_item:
-    #         swp = form.save(commit=False)
-    #         swp.swap_list_id = list_id.id
-    #         swp.swap_status = "Swap Initiated"
-    #         swp.requested_by = self.request.user
-    #         swp.item_id = self.kwargs.get("itm_id")
-    #         swp.email_from = User.objects.get(id=self.request.user.id).email
-    #         swp.email_to = User.objects.get(id=item_owner.created_by.id).email
-    #         swp.save()
-
-    #         return super().form_valid(form)
     if request.method == "GET":
         form = SwapForm()
     else:
@@ -502,24 +482,6 @@ def RequestSwapView(request, **kwargs):
 
 def SwapSuccessView(request):
     return render(request, "swapsuccess.html")
-
-
-# def AboutView(request):
-#     if request.method == "GET":
-#         form = ContactForm()
-#     else:
-#         form = ContactForm(request.POST)
-#         if form.is_valid():
-#             subject = form.cleaned_data["subject"]
-#             from_email = User.objects.get(id=request.user.id).email
-#             message = form.cleaned_data["message"]
-#             try:
-#                 send_mail(subject, message, from_email, ["info@techswap.uk"])
-#             except BadHeaderError:
-#                 # return HttpResponse("Invalid header found.")
-#                 return redirect("swapshop:about")
-#             return redirect("swapshop:success")
-#     return render(request, "about.html", {"form": form})
 
 
 class AlreadyRequestedView(TemplateView):
