@@ -217,7 +217,9 @@ def send_welcome_email(sender, **kwargs):
         welcome_Message,
         "info@techswap.uk",
         [User.email],
-        reply_to="donotreply@TechSwap.UK",
+        reply_to=[
+            "donotreply@TechSwap.UK",
+        ],
     )
 
     email.send()
