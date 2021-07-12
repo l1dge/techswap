@@ -14,7 +14,7 @@
                         <div class="row">
                             {% for ii in item_obj.itemimage_set.all %}
                                 <div class="col-md-4 p-3">
-                                    <img src="{{ii.image.url}}" class="img-fluid" style="height:100px; width: 100px; object-fit: contain;" alt="{{item_obj.name}} Images">
+                                    <img src="{{ii.image.url}}" class="img-fluid float-left ml-1 rounded mt-2" style="height:100px; width: 150px; object-fit: cover;" alt="{{item_obj.name}} Images">
                                 </div>
                             {% endfor %}
                         </div>
