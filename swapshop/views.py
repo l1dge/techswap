@@ -17,7 +17,7 @@ from django.views.generic import (
     FormView,
     ListView,
 )
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 
 from .forms import ItemForm, SwapForm, ContactForm
 from .models import (
@@ -481,11 +481,19 @@ def RequestSwapView(request, **kwargs):
                 swp.save()
 
                 subject = "Swap requested for Item: " + swp.item.title
-                from_email = swp.email_from
+                cc_email = swp.email_from
                 to_email = swp.email_to
                 message = form.cleaned_data["message_sent"]
+                email = EmailMessage(
+                    subject,
+                    message,
+                    "info@techswap.uk",
+                    [to_email],
+                    [cc_email],
+                    reply_to=[cc_email],
+                )
                 try:
-                    send_mail(subject, message, from_email, [to_email])
+                    email.send()
                 except BadHeaderError:
                     return redirect("swapshop:myswaplist")
                 return redirect("swapshop:swapsuccess")
