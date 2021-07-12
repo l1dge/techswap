@@ -29,10 +29,10 @@
             <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
                 {% for item in all_items %}
                 <div class="col mb-5">
-                    <div class="card h-100 rounded">
+                    <div class="card h-100 rounded" >
                         {% if not user.is_authenticated %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -41,7 +41,7 @@
                         </div>
                         {% else %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow " style="width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></center></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -88,10 +88,10 @@
                 <!-- Give me the latest 10 items in each category -->
                 {% for item in other_items|dictsortreversed:'created_at'|slice:':50' %}
                 <div class="col mb-5">
-                    <div class="card h-100 rounded">
+                    <div class="card h-100 rounded" >
                         {% if not user.is_authenticated %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -101,7 +101,7 @@
                         </div>
                         {% else %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -126,10 +126,10 @@
                 <!-- Give me the latest 10 items in each category -->
                 {% for item in other_items|dictsortreversed:'view_count'|slice:':50' %}
                 <div class="col mb-5">
-                    <div class="card h-100 rounded">
+                    <div class="card h-100 rounded" >
                         {% if not user.is_authenticated %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -139,7 +139,7 @@
                         </div>
                         {% else %}
                         <!-- Product image-->
-                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                        <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
                         <!-- Product details-->
                         <div class="card-body p-4">
                             <div class="text-center">
@@ -166,10 +166,10 @@
                         <!-- Give me the latest 10 items in each category -->
                         {% for item in cat.item_set.all|dictsortreversed:'created_at' %}
                         <div class="col mb-5">
-                            <div class="card h-100 rounded">
+                            <div class="card h-100 rounded" >
                                 {% if not user.is_authenticated %}
                                 <!-- Product image-->
-                                <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                                <a href="{% url 'swapshop:guestitemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
                                 <!-- Product details-->
                                 <div class="card-body p-4">
                                     <div class="text-center">
@@ -178,7 +178,7 @@
                                 </div>
                                 {% else %}
                                 <!-- Product image-->
-                                <a href="{% url 'swapshop:itemdetail' item.slug %}"><img class="card-img-top" src="{{item.image.url}}" alt="{{item.title}}" /></a>
+                                <a href="{% url 'swapshop:itemdetail' item.slug %}"><center><img class="card-img-top shadow m-2 mt-3" style="text-align: center; width: 150px; height: 150px" src="{{item.image.url}}" alt="{{item.title}}" /></a>
                                 <!-- Product details-->
                                 <div class="card-body p-4">
                                     <div class="text-center">
