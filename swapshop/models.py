@@ -93,7 +93,7 @@ class WishListItem(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"WishList: {self.WishList.id} WishlistItem: {self.id}"
+        return f"WishList: {self.item_list.id} WishlistItem: {self.id}"
 
 
 class SwapList(models.Model):
@@ -109,7 +109,7 @@ class SwapListItem(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"SwapList: {self.SwapList.id} SwaplistItem: {self.id}"
+        return f"SwapList: {self.item_list.id} SwaplistItem: {self.id}"
 
 
 SWAP_STATUS = (
