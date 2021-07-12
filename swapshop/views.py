@@ -4,7 +4,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.utils.html import strip_tags
@@ -17,7 +16,7 @@ from django.views.generic import (
     FormView,
     ListView,
 )
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import send_mail, EmailMessage, BadHeaderError
 
 from .forms import ItemForm, SwapForm, ContactForm
 from .models import (

@@ -2,10 +2,13 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.fields import TextField
 from django.db.models.signals import post_save
-from django.dispatch import receiver
+from allauth.account.signals import user_signed_up
+from django.dispatch import receiver, Signal
 from django.urls import reverse
 from location_field.models.plain import PlainLocationField
 from django.utils.text import slugify
+from django.core.mail import EmailMessage
+
 
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -182,6 +185,42 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+welcome_Message = """
+A Big Thank You for signing up to TechSwap.UK. We hope you enjoy your time on our site.
+Our aim is to provide you, the end users, a way of swapping unused tech items with other 
+likeminded TechSwap.UK users. Our hope is that this will become a useful marketplace for 
+those users wishing to pass on technology that they no longer use in exchange for items 
+other users may have to swap. Our intention is that this is done in a friendly and 
+convenient manor for all involved. We just facilitate the exchange, it is down to you as 
+an end user to negotiate for items you may want. 
+This is not a selling site. we do not expect to see items listed for cash/quick sale etc.
+Our site is for use by like minded people who want to "Pay it forward" and swap unused 
+technology for something they may need. 
+
+Users found abusing the system will be removed. 
+
+Above all please enjoy using the site, and if at anytime you find something wrong or have
+any issues please don't hesitate to contact us using the form on the About page. 
+
+Thank you, 
+The Techswap.UK Team
+
+"""
+
+
+@receiver(user_signed_up, sender=User)
+def send_welcome_email(sender, **kwargs):
+    email = EmailMessage(
+        "Welcome to TechSwap.UK",
+        welcome_Message,
+        "info@techswap.uk",
+        [User.email],
+        reply_to="donotreply@TechSwap.UK",
+    )
+
+    email.send()
 
 
 class Address(models.Model):
