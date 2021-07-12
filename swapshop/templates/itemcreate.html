@@ -4,16 +4,20 @@
 {% include 'itemhead.html' %}
 <div class="container">
     <div class="row">
-        <div class="col-md-10 mx-auto p-5">
-            <h3>Add New Item</h3>
-            <hr>
-            <form method="POST" enctype="multipart/form-data"> 
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button class="btn btn-info">Submit Item</button>
-                {{ form.media }}
-            </form>
-        </div>
+        <div class="col">
+            <div class=" m-3 mb-3 shadow-lg p-2 rounded" >
+                <div class="card-body p-4">
+                    <h3>Add New Item</h3>
+                    <hr>
+                    <form method="POST" enctype="multipart/form-data"> 
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button class="btn btn-info">Submit Item</button>
+                        {{ form.media }}
+                    </form>
+                </div>
+            </div>
+        </div>        
     </div>
 </div>
 

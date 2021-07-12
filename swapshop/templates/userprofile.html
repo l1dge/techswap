@@ -13,7 +13,7 @@
             <div class="card h-100 rounded shadow p-3">  
                 <h3>Detailed Information</h3><hr>
                     <p><h3>{{user.username}}</h3></p>
-                    <img src="{{user.profile.image.url}}" class="img-fluid" style="height:100px; object-fit: contain;" alt="{{user.username}}">
+                    <img src="{{user.profile.image.url}}" class="card-img-top shadow mb-3" style="width: 80px; height: 80px"  alt="{{user.username}}">
                 
                 <p><span class="font-weight-bold">Name: </span> {{ user.first_name }} {{ user.last_name }}</p>
                 <p><span class="font-weight-bold">Username: </span> {{user.username}}</p>
