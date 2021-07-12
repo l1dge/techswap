@@ -5,43 +5,50 @@
 {% include 'itemhead.html' %}
 
 <div class="container">
-    <h3>Item: {{ item_obj.title }} </h3><hr>
     <div class="row">
-        <div class="col-md-4">
-            <img src="{{item_obj.image.url}}" style="height:250px; object-fit: contain;" alt="{{ item_obj.title }} Image" class="img-fluid">
-            <div class="row">
-                {% for ii in item_obj.itemimage_set.all %}
-                    <div class="col-md-4 p-3">
-                        <img src="{{ii.image.url}}" class="img-fluid" style="height:100px; object-fit: contain;" alt="{{item_obj.title}} Images">
+        <div class="col">
+            <div class=" m-3 mb-3 shadow-lg p-2 rounded" >
+                <div class="card-body p-4">
+                    <h3>Item: {{ item_obj.title }} </h3><hr>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="{{item_obj.image.url}}" style="height:250px; object-fit: contain;" alt="{{ item_obj.title }} Image" class="img-fluid">
+                            <div class="row">
+                                {% for ii in item_obj.itemimage_set.all %}
+                                    <div class="col-md-4 p-3">
+                                        <img src="{{ii.image.url}}" class="img-fluid" style="height:100px; object-fit: contain;" alt="{{item_obj.title}} Images">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h4>Item: {{ item_obj.title }} </h4>
+                            <h5>Categories:
+                            {% for cat in item_obj.category.all %}
+                                {{ cat.title }}  
+                            {% endfor %}
+                            </h5><hr>
+                            <p>Condition: {{ item_obj.condition }}</p>
+                            <p>City: {{ item_obj.city }}</p>
+                                <div id="map">
+                                    <img class="img-fluid" src="https://maps.googleapis.com/maps/api/staticmap?center={{ item_obj.location }}&zoom=13&size=600x300&maptype=roadmap&key={{ API_KEY }}">
+                                </div>
+
+
+                            <hr>
+                            <p>Description: {{ item_obj.description }}</p>
+                            <p>Created by: {{ item_obj.created_by }}
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="btn-group">
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto m-2" href="{% url 'swapshop:addtoslist' item_obj.id %}" >Add To Swap List</a></div>
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto m-2" onclick="goBack()" >Back</a></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="col-md-8">
-            <h4>Item: {{ item_obj.title }} </h4>
-            <h5>Categories:
-            {% for cat in item_obj.category.all %}
-                {{ cat.title }}  
-            {% endfor %}
-            </h5><hr>
-            <p>Condition: {{ item_obj.condition }}</p>
-            <p>City: {{ item_obj.city }}</p>
-                <div id="map">
-                    <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ item_obj.location }}&zoom=13&size=600x300&maptype=roadmap&key={{ API_KEY }}">
-                </div>
-
-
-            <hr>
-            <p>Description: {{ item_obj.description }}</p>
-            <p>Created by: {{ item_obj.created_by }}
-            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                <div class="btn-group">
-                    <div class="text-center"><a class="btn btn-outline-dark mt-auto m-2" href="{% url 'swapshop:addtoslist' item_obj.id %}" >Add To Swap List</a></div>
-                    <div class="text-center"><a class="btn btn-outline-dark mt-auto m-2" onclick="goBack()" >Back</a></div>
                 </div>
             </div>
         </div>
     </div>
-   
 </div>
 {% endblock %}
