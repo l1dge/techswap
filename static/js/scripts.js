@@ -106,6 +106,7 @@ $(document).ready(function() {
       document.documentElement.scrollTop > 20
     ) {
       mybtn.style.display = "block";
+      mybtn.style.zIndex = "100";
     } else {
       mybtn.style.display = "none";
     }
