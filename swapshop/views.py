@@ -7,6 +7,7 @@ from django.db.models import Q
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.utils.html import strip_tags
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -415,6 +416,8 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
 
         itm = form.save(commit=False)
+        itm.title = strip_tags(itm.title)
+        itm.description = strip_tags(itm.description)
         itm.created_by = self.request.user
         itm.slug = f"{self.RNDITMNO} {itm.created_by} {itm.title}"
         itm.location = self.delimiter.join(
@@ -423,6 +426,7 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
         itm.save()
         images = self.request.FILES.getlist("more_images")
         for i in images:
+            i = strip_tags(i)
             ItemImage.objects.create(item=itm, image=i)
 
         return super().form_valid(form)
