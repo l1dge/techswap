@@ -17,8 +17,8 @@
                 My Account
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'account_email' %}">Change E-mail</a>
                     <a class="dropdown-item" href="{% url 'swapshop:userprofile' %}">My Profile</a>
-                    
                     <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
                 </div>
             </li>
