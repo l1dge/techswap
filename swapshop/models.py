@@ -39,7 +39,7 @@ ITEM_CONDITION = (
 
 class Item(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True, default="", editable=False, max_length=255)
+    slug = models.SlugField(unique=True, default="", editable=True, max_length=255)
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
     description = models.TextField(max_length=500, default=None)
     image = models.FileField(upload_to="items")
