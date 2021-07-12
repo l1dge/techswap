@@ -469,7 +469,6 @@ def RequestSwapView(request, **kwargs):
                     message,
                     "info@techswap.uk",
                     [to_email],
-                    [cc_email],
                     reply_to=[cc_email],
                 )
                 try:
