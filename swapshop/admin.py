@@ -22,13 +22,6 @@ admin.site.register(
 )
 
 
-# class ForSwapAdmin(admin.ModelAdmin):
-#     pass
-
-
-# admin.site.register(ForSwap, ForSwapAdmin)
-
-
 class ProfileAdmin(admin.ModelAdmin):
     pass
 

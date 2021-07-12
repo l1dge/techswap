@@ -30,6 +30,7 @@ from .views import (
     WLItemDetailView,
     AlreadyRequestedView,
     SuccessView,
+    SwapSuccessView,
 )
 
 app_name = "swapshop"
@@ -38,6 +39,7 @@ urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("about/", AboutView, name="about"),
     path("success/", SuccessView, name="success"),
+    path("swapsuccess/", SwapSuccessView, name="swapsuccess"),
     path("all-items/", AllItemsView.as_view(), name="allitems"),
     path("item/<slug:slug>/", ItemDetailView.as_view(), name="itemdetail"),
     path("wlitem/<slug:slug>/", WLItemDetailView.as_view(), name="wlitemdetail"),
@@ -58,7 +60,7 @@ urlpatterns = [
     path("arc-myitem/<slug:slug>/", ArcMyItemView.as_view(), name="arcmyitem"),
     path("emptyswaplist/", EmptySwapListView.as_view(), name="emptyswaplist"),
     path("rem-slitem/<slug:slug>/", RemSwapListItemView.as_view(), name="remslitem"),
-    path("reqswap-<int:itm_id>/", RequestSwapView.as_view(), name="reqswap"),
+    path("reqswap-<int:itm_id>/", RequestSwapView, name="reqswap"),
     path("notyouritem/", NotYourItemView.as_view(), name="notyouritem"),
     path("alreadyrequested/", AlreadyRequestedView.as_view(), name="alreadyrequested"),
     path("accounts/profile/", UserProfileView.as_view(), name="userprofile"),
