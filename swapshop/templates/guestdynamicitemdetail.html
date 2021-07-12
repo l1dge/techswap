@@ -7,26 +7,36 @@
 <div class="container">
     <h3>{{ item_obj.title }} </h3><hr>
     <div class="row">
-        <div class="col-md-4">
-            <img src="{{item_obj.image.url}}" style="height:250px; object-fit: contain;" alt="{{ item_obj.name }} Image" class="img-fluid p-3">
-            <div class="row">
-                {% for ii in item_obj.itemimage_set.all %}
-                    <div class="col-md-4 p-3">
-                        <img src="{{ii.image.url}}" class="img-fluid" style="height:100px; width: 100px; object-fit: contain;" alt="{{item_obj.name}} Images">
+        <div class="col">
+            <div class=" h-100 shadow-lg p-2 rounded" >
+                <div class="card-body p-4">
+                    <img src="{{item_obj.image.url}}" style="height:250px; object-fit: contain;" alt="{{ item_obj.name }} Image" class="img-fluid p-3">
+                        <div class="row">
+                            {% for ii in item_obj.itemimage_set.all %}
+                                <div class="col-md-4 p-3">
+                                    <img src="{{ii.image.url}}" class="img-fluid" style="height:100px; width: 100px; object-fit: contain;" alt="{{item_obj.name}} Images">
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                {% endfor %}
+                    <div class="col-md-8">
+                        <h4>{{ item_obj.title }} </h4>
+                        <h5>Categories:
+                        {% for cat in item_obj.category.all %}
+                            {{ cat.title }}{% comment %} <a href="{{ cat.get_absolute_url }}">{{ cat }}  </a> {% endcomment %}
+                        {% endfor %}
+                        </h5><hr>
+                        <p>Condition: {{ item_obj.condition }}</p>
+                        <hr>
+                        <p>Description: {{ item_obj.description }}</p>
+                    </div>
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="btn-group">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto m-2" href="{% url 'swapshop:home' %}" >Back</a></div>
+                            </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-md-8">
-            <h4>{{ item_obj.title }} </h4>
-            <h5>Categories:
-            {% for cat in item_obj.category.all %}
-                {{ cat.title }}{% comment %} <a href="{{ cat.get_absolute_url }}">{{ cat }}  </a> {% endcomment %}
-            {% endfor %}
-            </h5><hr>
-            <p>Condition: {{ item_obj.condition }}</p>
-            <hr>
-            <p>Description: {{ item_obj.description }}</p>
         </div>
     </div>
 </div>

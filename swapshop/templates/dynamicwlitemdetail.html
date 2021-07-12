@@ -36,7 +36,8 @@
             <p>Created by: {{ item_obj.created_by }}
             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                 <div class="btn-group">
-                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'swapshop:addtoslist' item_obj.id %}" >Add To Swap List</a></div>
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto m-2" href="{% url 'swapshop:addtoslist' item_obj.id %}" >Add To Swap List</a></div>
+                    <div class="text-center"><a class="btn btn-outline-dark mt-auto m-2" onclick="goBack()" >Back</a></div>
                 </div>
             </div>
         </div>

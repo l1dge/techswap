@@ -120,3 +120,7 @@ $(document).ready(function() {
   
   // document ready  
 });
+
+function goBack() {
+  window.history.back();
+}
