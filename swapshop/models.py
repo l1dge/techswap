@@ -164,7 +164,7 @@ class Profile(models.Model):
         upload_to="profile_images",
         null=True,
         blank=True,
-        default="profile_images/dummy-avatar.png",
+        default="profile_images/dummy/dummy-avatar.png",
     )
     rating = models.IntegerField(default=0, blank=True)
     feedback = models.ManyToManyField("Feedback", related_name="Feedback", blank=True)

@@ -161,7 +161,7 @@ class Command(BaseCommand):
                 user.profile.bio = fakeuser.paragraph(nb_sentences=5)
                 user.profile.phone = fakeuser.phone_number()
                 user.profile.birth_date = fakeuser.date_of_birth()
-                user.profile.image = f"profile_images/dummy-avatar{imgnum}.jpg"
+                user.profile.image = f"profile_images/dummy/dummy-avatar{imgnum}.jpg"
                 if admin:
                     user.is_staff = True
                     user.is_superuser = True
@@ -186,7 +186,7 @@ class Command(BaseCommand):
                 title=itm,
                 slug=str(random.randint(50000, 600000)) + " " + str(uid) + " " + itm,
                 description=fakeitem.paragraph(nb_sentences=5),
-                image=f"items/dummy-item{imgnum}.jpg",
+                image=f"items/dummy/dummy-item{imgnum}.jpg",
                 condition=random.choice(ITEM_CONDITION),
                 city=place,
                 location=lat,
