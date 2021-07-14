@@ -423,9 +423,9 @@ class ItemCreateView(LoginRequiredMixin, CreateView):
             [str(value) for value in retrieve_location(itm.city)]
         )
         itm.save()
+
         images = self.request.FILES.getlist("more_images")
         for i in images:
-            i = strip_tags(i)
             ItemImage.objects.create(item=itm, image=i)
 
         return super().form_valid(form)

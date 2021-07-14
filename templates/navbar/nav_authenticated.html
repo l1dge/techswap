@@ -5,36 +5,37 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-            <li {% if request.path == "/" %} class="nav-item active" {% else %} class="nav-item" {% endif %}>
-                <a class="nav-link" href="{% url 'swapshop:home' %}">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li {% if request.path == "/about/" %} class="nav-item active"{% else %} class="nav-item" {% endif %}> <a class="nav-link" a href="{% url 'swapshop:about' %}">About</a></li>
-            {% comment %} <li {% if request.path == "/social/" %} class="nav-item active"{% else %} class="nav-item" {% endif %}><a class="nav-link" href="{% url 'swapshop:social' %}">Community</a></li> {% endcomment %}
-            {% comment %} <li {% if request.path == "/contact-us/" %} class="nav-item active"{% else %} class="nav-item" {% endif %}><a class="nav-link" href="{% url 'swapshop:contact' %}">Contact</a></li> {% endcomment %}
-            <li {% if request.path == "/accounts/profile/" %} class="nav-item dropdown active" {% else %} class="nav-item dropdown" {% endif %}>
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                My Account
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'account_email' %}">Change E-mail</a>
-                    <a class="dropdown-item" href="{% url 'swapshop:userprofile' %}">My Profile</a>
-                    <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
-                </div>
-            </li>
-            <li {% if request.path == "/my-item-list/" or request.path == "/my-wish-list/" or request.path == "/my-swap-list/" or request.path == "/additem/" %} class="nav-item dropdown active" {% else %} class="nav-item dropdown" {% endif %}>
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Swaps</a>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                <li {% if request.path == "/" %} class="nav-item active" {% else %} class="nav-item" {% endif %}>
+                    <a class="nav-link" href="{% url 'swapshop:home' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li {% if request.path == "/about/" %} class="nav-item active"{% else %} class="nav-item" {% endif %}> <a class="nav-link" a href="{% url 'swapshop:about' %}">About</a></li>
+                {% comment %} <li {% if request.path == "/social/" %} class="nav-item active"{% else %} class="nav-item" {% endif %}><a class="nav-link" href="{% url 'swapshop:social' %}">Community</a></li> {% endcomment %}
+                {% comment %} <li {% if request.path == "/contact-us/" %} class="nav-item active"{% else %} class="nav-item" {% endif %}><a class="nav-link" href="{% url 'swapshop:contact' %}">Contact</a></li> {% endcomment %}
+                <li {% if request.path == "/accounts/profile/" %} class="nav-item dropdown active" {% else %} class="nav-item dropdown" {% endif %}>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    My Account
+                    </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{% url 'swapshop:myitemlist' %}">My Items</a>
-                        <a class="dropdown-item" href="{% url 'swapshop:mywishlist' %}">My Wish List</a>
-                        <a class="dropdown-item" href="{% url 'swapshop:myswaplist' %}">My Swap List</a>
-                        <a class="dropdown-item" href="{% url 'swapshop:itemcreate' %}">New Item</a>
+                        <a class="dropdown-item" href="{% url 'account_email' %}">Change E-mail</a>
+                        <a class="dropdown-item" href="{% url 'swapshop:userprofile' %}">My Profile</a>
+                        <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
                     </div>
-            </li> 
+                </li>
+                <li {% if request.path == "/my-item-list/" or request.path == "/my-wish-list/" or request.path == "/my-swap-list/" or request.path == "/additem/" %} class="nav-item dropdown active" {% else %} class="nav-item dropdown" {% endif %}>
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Swaps</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'swapshop:myitemlist' %}">My Items</a>
+                            <a class="dropdown-item" href="{% url 'swapshop:mywishlist' %}">My Wish List</a>
+                            <a class="dropdown-item" href="{% url 'swapshop:myswaplist' %}">My Swap List</a>
+                            <a class="dropdown-item" href="{% url 'swapshop:itemcreate' %}">New Item</a>
+                        </div>
+                </li> 
             </ul>
-            <form class="form-inline my-2 my-lg-0" action="{% url 'swapshop:search' %}" method="GET">
+        </div>
+        <form class="form-inline mx-auto my-2 my-lg-0" action="{% url 'swapshop:search' %}" method="GET">
             <input name="keyword" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" required>
             <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
+        </form>
+        
 </nav>
