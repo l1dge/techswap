@@ -21,6 +21,7 @@ ALLOWED_HOSTS = [
     "www.techswap.uk",
     ".techswap.uk",
     "192.168.68.221",
+    "192.168.68.223",
 ]
 
 
