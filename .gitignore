@@ -136,3 +136,4 @@ dmypy.json
 *.code-workspace
 static_cdn/
 .idea/
+erd.png
