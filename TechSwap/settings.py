@@ -17,11 +17,8 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = [
     "127.0.0.1",
     ".herokuapp.com",
-    "glacial-sierra-78162.herokuapp.com",
     "www.techswap.uk",
     ".techswap.uk",
-    "192.168.68.221",
-    "192.168.68.223",
 ]
 
 
