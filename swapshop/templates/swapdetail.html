@@ -11,7 +11,7 @@
             <div class="row">
                 {% for pi in item.itemimage_set.all %}
                 <div class="col-md-4 p-3">
-                    <a href="{{pi.image.url}}" target="_blank">
+                    <a href="{{pi.image.url}}" target="_blank" rel="noopener noreferrer">
                         <img src="{{pi.image.url}}" class="img-fluid" style="height: 100px; object-fit: contain;" alt="">
                     </a>
                 </div>
