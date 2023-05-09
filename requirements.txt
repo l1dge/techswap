@@ -16,7 +16,7 @@ cryptography==39.0.1
 dateutils==0.6.12
 defusedxml==0.7.1
 dj-database-url==0.5.0
-Django==3.2.18
+Django==3.2.19
 django-allauth==0.44.0
 django-debug-toolbar==3.2.1
 django-location-field==2.1.0
