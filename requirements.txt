@@ -10,7 +10,7 @@ cffi==1.14.5
 chardet==4.0.0
 cli-helpers==2.1.0
 click==8.0.1
-configobj==5.0.6
+configobj==5.0.8
 coverage==5.5
 cryptography==41.0.6
 dateutils==0.6.12
