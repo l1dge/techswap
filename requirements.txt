@@ -32,7 +32,7 @@ geopy==2.1.0
 googlemaps==4.4.5
 gunicorn==22.0.0
 humanize==3.10.0
-idna==2.10
+idna==3.7
 importlib-metadata==4.5.0
 iniconfig==1.1.1
 jmespath==0.10.0
