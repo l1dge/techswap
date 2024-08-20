@@ -5,7 +5,7 @@ black==21.5b1
 boto==2.49.0
 boto3==1.17.86
 botocore==1.20.86
-certifi==2023.7.22
+certifi==2024.7.4
 cffi==1.14.5
 chardet==4.0.0
 cli-helpers==2.1.0
